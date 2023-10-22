@@ -481,8 +481,9 @@
                                     <div class="padding_eight_all bg-white">
                                         <div class="heading_s1">
                                             <h3 class="mb-30">Create an Account</h3>
-                                            <h4 style="color: red;"><%=locals.error%></h4>
-                                            
+                                            <h4 style="color: green;"><%=locals.message%></h4>
+                                            <h4 style="color:red;"><%=locals.error%></h4>
+                                            <h4 style="color: red;"><%=locals.subreddit%></h4>
                                         </div>
                                         <!-- <p class="mb-50 font-sm">
                                             Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our privacy policy
@@ -539,7 +540,12 @@
                                                 </div>
                                                 <div id="errSignupOtp " class="error-message"></div>
                                                 <br>
-
+                                                <div id="timer" class="mb-3" style="display: none; color: blue;"></div>
+                                                <br>
+                                                <button class="btn btn-primary" type="button" id="resendOTPButton" style="display: none;">
+                                                    Resend OTP
+                                                </button>
+                                                <br>
                                                 <button class="btn btn-primary" type="button" id="verifyOTPButton" data-mdb-ripple-color="dark">
                                                    <a href="/verify-otp" style="color: beige;">Verify OTP</a> 
                                                 </button>
@@ -582,6 +588,8 @@
             const sendOTPButton = document.getElementById("sendOTPButton");
             const verifyOTPButton = document.getElementById("verifyOTPButton");
             const otpInput = document.getElementById("otp");
+            const resendOTPButton = document.getElementById("resendOTPButton");
+             const timerElement = document.getElementById("timer");
 
             sendOTPButton.addEventListener("click", function (e) {
                 e.preventDefault();
@@ -602,10 +610,53 @@
                     })
                     .then((data) => {
                         console.log("Response from server:", data);
+                        startResendTimer();
                     })
                     .catch((error) => {
                         console.error("Error sending OTP:", error);
                     });
+            });
+
+            function startResendTimer(){
+                let remaningTime=60;
+                timerElement.style.display ="block";
+                resendOTPButton.style.display="none"
+
+                const countdown =setInterval(()=>{
+                    timerElement.textContent=`Resend in ${remaningTime}seconds`;
+                    remaningTime--;
+
+                    if(remaningTime < 0){
+                        clearInterval(countdown);
+                        timerElement.style.display="none";
+                        resendOTPButton.style.display ="block"
+                    }
+                },1000)
+            }
+
+            resendOTPButton.addEventListener("click",function(e){
+                e.preventDefault();
+                const phoneNumber=document.querySelector('input[name="phoneNumber"]').value
+            if(!phoneNumber){
+             errSignupPhoneNumber.innerHTML="Phone Number is required.";
+             return;   
+            }
+
+            fetch(`/sent-otp?phoneNumber=${phoneNumber}`)
+            .then((response)=>{
+                if(!response.ok){
+                    throw new Error(`HTTP erroe!Status:${response.status}`);
+                }
+                return response.json();
+
+            })
+            .then((data)=>{
+                console.log("Resent OTP. Response from server:", data);
+                startResendTimer();
+            })
+            .catch((error)=>{
+                console.error("Error resending OTP:", error);
+            })
             });
 
 
