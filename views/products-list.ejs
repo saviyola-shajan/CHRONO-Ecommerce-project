@@ -29,6 +29,17 @@
         background-color: green;
         color: white; /* You can adjust the text color as needed */
     }
+    .button-link {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  font-weight: bold;
+  text-align: center;
+}
     </style>
 
 </head>
@@ -47,7 +58,7 @@
         <nav>
             <ul class="menu-aside">
                 <li class="menu-item active">
-                    <a class="menu-link" href=""> <i class="icon material-icons md-home"></i>
+                    <a class="menu-link" href="#"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
@@ -71,22 +82,15 @@
                      <a href="page-orders-detail.html">Order detail</a> -->
                     </div> 
                 </li>
-                <li class="">
+                <!-- <li class="">
                     <a class="menu-link" href="page-form-product-1.html"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">A product</span>
-                    </a>
+                    </a> -->
                     <!-- <div class="submenu">
                         <a href="page-form-product-1.html">Add product</a>
                     </div> -->
                 </li>
-                <li class="">
-                    <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
-                        <span class="text">Transactions</span>
-                    </a>
-                    <!-- <div class="submenu">
-                        <a href="page-transactions-1.html">Transaction 1</a>
-                    </div> -->
-                </li>
+               
 
 
 
@@ -101,8 +105,23 @@
                     </div> 
                 </li>
 
-
-                
+                <li class="">
+                    <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-add_box"></i>
+                        <span class="text">Category</span>
+                    </a>
+                    <!-- <div class="submenu">
+                        <a href="/admin/add-products">Add products</a>
+                  
+                    </div> -->
+                </li>
+                <li class="">
+                    <a class="menu-link" href="page-transactions-1.html"> <i class="icon material-icons md-monetization_on"></i>
+                        <span class="text">Transactions</span>
+                    </a>
+                    <!-- <div class="submenu">
+                        <a href="page-transactions-1.html">Transaction 1</a>
+                    </div> -->
+                </li>
                 <!-- <li class="">
                     <a class="menu-link" href="page-reviews.html"> <i class="icon material-icons md-comment"></i>
                         <span class="text">Reviews</span>
@@ -240,11 +259,12 @@
                                     <th>Selling Price</th>
                                     <th>Stock</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    <th>Action</th> 
+                                    <th>Update</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <% product.forEach(product => { %>
+                                <%product.forEach(product => { %>
                                     <tr>
                                         <td><%= product._id %></td>
                                         <td>
@@ -259,11 +279,14 @@
                                         <td>
                                             <button class="btn<%= product.status === 'Avaliable' ? ' red-button' : (product.status === 'Out of stock' ? ' green-button' : '') %>" onclick="toggleProductStatus('<%= product._id %>', '<%= product.status %>')">
                                                 <% if (product.status === 'Avaliable') { %>
-                                                    Unblock
+                                                   Unlist
                                                 <% } else { %>
-                                                    Block
+                                                    List
                                                 <% } %>
                                             </button>
+                                        </td>
+                                        <td>
+                                            <a href="/admin/edit-product/?productId=<%=product._id%>" class="button-link">Edit</a>
                                         </td>
                                     </tr>
                                 <% }); %>
@@ -273,6 +296,9 @@
                     
                    
                     <script>
+//                         editButton.addEventListener("click", function() {
+//     window.location.href = "/admin/edit-product/:productId";
+// });
                         function toggleProductStatus(productId, currentStatus) {
                             const statusElement = document.querySelector(`#status-${productId}`);
                             
@@ -308,16 +334,16 @@
                         }
                     </script>    
 
-                    <!-- for pagination -->
-                              <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                             <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-                                <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-                              <script>
-                                $(document).ready(function () {
-                             new DataTable('#users');
+                   <!-- for pagination -->
+                   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+                      <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+                    <script>
+                      $(document).ready(function () {
+                   new DataTable('#products');
 
-                              })
-                               </script>
+                    })
+                     </script>
                                         
                 
 

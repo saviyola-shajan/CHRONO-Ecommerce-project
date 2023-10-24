@@ -213,3 +213,7 @@ module.exports.getlogout = (req, res) => {
   res.clearCookie("token");
   res.redirect("/page-login");
 };
+
+module.exports.getCart=(req,res)=>{
+  res.render("cart")
+}

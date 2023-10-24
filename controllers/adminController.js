@@ -1,7 +1,9 @@
 const admincollecn = require("../models/adminlogin");
 const usercollecn = require("../models/userlogin");
 const products = require("../models/addProduct");
+const category = require("../models/category");
 const multer = require("multer");
+const path =require("path")
 
 module.exports.getAdminLogin = (req, res) => {
   res.render("admin-login");
@@ -138,5 +140,97 @@ module.exports.postProductStatus =async(req,res)=>{
   }catch(error){
     console.error(error);
     res.status(500).send("Error updating Product status")
+  }
+};
+
+module.exports.getEditProduct = async(req,res)=>{
+  const editItem = req.query.productId;
+  try{
+  const productDeatils = await products.findById(editItem)
+  res.render("edit-product",{productDeatils})
+  }catch(error){
+    console.error(error);
+    res.status(500).send("Error in updatting product")
+  }
+}
+
+//saving edited details into the db
+module.exports.postEditedProduct = async (req, res) => {
+  try {
+    const editId = req.params.productId;
+    const existingProduct = await products.findById(editId);
+    const {
+      name,
+      description,
+      regular_price,
+      selling_price,
+      category,
+      brand,
+      stock,
+    } = req.body;
+
+    const photos = req.files;
+    const newPhotos = photos.map((element) => ({ name: element.filename, path: element.path }));
+    const picPaths=newPhotos.map((photo) => photo.path);
+  
+    const updatedPhotos = existingProduct.photos.map((oldPhoto, index) =>
+    picPaths[index] ? picPaths[index] : oldPhoto
+    );
+  
+    const updatedData = {
+      name,
+      description,
+      regular_price,
+      selling_price,
+      category,
+      brand,
+      stock,
+      status: existingProduct.status,
+      photos: updatedPhotos,
+    };
+
+    const updatedProduct = await products.findByIdAndUpdate(editId, updatedData, { new: true });
+    const successMessage = "Product updated successfully";
+   
+    res.redirect('/admin/product-list');
+  } catch (error) {
+    console.log(error);
+    res.render("edit-product", { error: "An error occurred while updating the product, please try again" });
+  }
+};
+
+
+module.exports.getCategory = async(req,res)=>{
+  try{
+  const dataCategory =await category.find();
+  res.render("categories",{dataCategory});
+}catch(error){
+  console.error(error);
+  res.redirect("/admin-dash");
+}
+}
+
+module.exports.postCreateCategory = async(req,res)=>{
+  const{
+    name,
+    description,
+    status,
+  }=req.body;
+const photoPath =req.file.path
+  if(!name || !description){
+    res.status(400).json({error:"Name and Description is required."})
+  }
+  const categoryData = new category({
+    name,
+    description,
+    status,
+    photo:photoPath
+  });
+  try{
+    await categoryData.save();
+    res.redirect("/admin/categories")
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };

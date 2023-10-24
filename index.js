@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const path = require("path");
 const usercollecn = require("./models/userlogin");
 const admincollecn = require("./models/adminlogin");
+const products = require("./models/addProduct");
 const bcrypt = require("bcrypt");
 const bodyparser = require("body-parser");
 const cookieparser = require("cookie-parser");
@@ -18,7 +19,6 @@ app.use(express.static(__dirname + "/public"));
 
 const userRouter = require("./routes/userRoutes");
 const adminRouter = require("./routes/adminRoutes");
-const products = require("./models/addProduct");
 app.use("/", userRouter);
 app.use("/admin", adminRouter);
 app.use("/uploads", express.static("uploads"));

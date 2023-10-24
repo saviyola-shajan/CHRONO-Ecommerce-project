@@ -4,7 +4,7 @@ const userRouter = express.Router();
 const usercontroller = require("../controllers/userController");
 const cookieparser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
-const userMiddleware = require("../middleware/user/userAuth");
+const userMiddleware = require("../middleware/user/usermiddleware");
 userRouter.use(cookieparser());
 
 //  userRouter.get('/verify',usercontroller.verifymail)
@@ -17,5 +17,6 @@ userRouter.post("/verify-otp", usercontroller.getVerifyOtp);
 userRouter.post("/home", usercontroller.getUserHomepage);
 userRouter.get("/single-product/:productId", usercontroller.getSingleProduct);
 userRouter.get("/logout", usercontroller.getlogout);
+userRouter.get("/cart",usercontroller.getCart)
 
 module.exports = userRouter;
