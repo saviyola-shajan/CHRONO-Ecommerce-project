@@ -222,38 +222,39 @@
                                     <label for="product_name" class="form-label">Product stock</label>
                                     <input type="text" name="stock" value="<%= productDeatils.stock %>" class="form-control" id="product_name">
                                 </div>
+                               
+
+                                <div class="col-lg-6">
+                                    <div class="card mb-4">
+                                        <div class="card-header d-flex justify-content-between">
+                                            <h4>Photos</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="input-upload">
+                                                
+                                                <img src="/<%= productDeatils.photos[0] %>" alt="">
+                                            
+                                                <input class="form-control" type="file" name="photo" >
+                                            </div>
+                                            <div class="input-upload">
+                                                
+                                                <img src="/<%= productDeatils.photos[1] %>" alt="">
+                                           
+                                                <input class="form-control" type="file" name="photo" >
+                                            </div>
+                                            <div class="input-upload">
+                                                
+                                                <img src="/<%= productDeatils.photos[2] %>" alt="">
+                                            
+                                                <input class="form-control" type="file" name="photo">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div>
                                     <button type="submit" class="btn btn-md rounded font-sm hover-up">Apply Changes</button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-            
-                <div class="col-lg-6">
-                    <div class="card mb-4">
-                        <div class="card-header d-flex justify-content-between">
-                            <h4>Photos</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="input-upload">
-                                <label for="photoInput">
-                                <img src="/<%= productDeatils.photos[0] %>" alt="">
-                            </label>
-                                <input class="form-control" type="file" name="photo" id="photoInput">
-                            </div>
-                            <div class="input-upload">
-                                <label for="photoInput">
-                                <img src="/<%= productDeatils.photos[1] %>" alt="">
-                            </label>
-                                <input class="form-control" type="file" name="photo" id="photoInput">
-                            </div>
-                            <div class="input-upload">
-                                <label for="photoInput">
-                                <img src="/<%= productDeatils.photos[2] %>" alt="">
-                            </label>
-                                <input class="form-control" type="file" name="photo" id="photoInput">
-                            </div>
                         </div>
                     </div>
                 </div>

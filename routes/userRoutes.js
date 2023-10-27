@@ -14,9 +14,15 @@ userRouter.get("/signup", usercontroller.getUserSignup);
 userRouter.post("/signupsubmit", usercontroller.postUserSignup);
 userRouter.get("/sent-otp", usercontroller.getSendOtp);
 userRouter.post("/verify-otp", usercontroller.getVerifyOtp);
-userRouter.post("/home", usercontroller.getUserHomepage);
+userRouter.post("/home",usercontroller.getUserHomepage);
 userRouter.get("/single-product/:productId", usercontroller.getSingleProduct);
-userRouter.get("/logout", usercontroller.getlogout);
-userRouter.get("/cart",usercontroller.getCart)
+userRouter.get("/cart",userMiddleware.verifyUser,usercontroller.getCart)
+userRouter.post("/addToCart",userMiddleware.verifyUser,usercontroller.goTOCart)
+userRouter.post("/update-quantity",userMiddleware.verifyUser,usercontroller.updateQuantity)
+userRouter.get("/user-account",usercontroller.getUserAccount)
 
+
+
+
+userRouter.get("/logout",userMiddleware.verifyUser,usercontroller.getlogout);
 module.exports = userRouter;

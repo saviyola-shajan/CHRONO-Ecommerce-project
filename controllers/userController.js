@@ -1,4 +1,7 @@
+const mongoose = require("mongoose");
 const usercollecn = require("../models/userlogin");
+const cart = require("../models/cartModel")
+const address = require("../models/address")
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const twilio = require("twilio")(
@@ -14,8 +17,9 @@ let phoneNumber;
 
 module.exports.getHomePage = async (req, res) => {
   try {
-    const product = await products.find();
-    res.render("home", { product });
+    const loggedIn = req.user?true:false
+    const product = await products.find({status:"Avaliable"})
+    res.render("home", { product,loggedIn });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error fetching products");
@@ -104,14 +108,16 @@ module.exports.postUserSignup = async (req, res) => {
 
       //     }
 
-      res.render("page-login", { message: "User Logged in Successfully" });
+      res.render("page-login", { message: "User Sign in Successfully" });
     } else res.render("page-signup", { error: "OTP is incorrect" });
   }
 };
 
+
 //  getting user home page
 module.exports.getUserHomepage = async (req, res) => {
   const logindata = await usercollecn.findOne({ email: req.body.email });
+  console.log(logindata);
   if (!logindata) {
     res.render("page-login", { subreddit: "This email is not registered" });
   } else if (logindata) {
@@ -123,15 +129,18 @@ module.exports.getUserHomepage = async (req, res) => {
       if (
         req.body.email == logindata.email &&
         req.body.password == logindata.password
+          
       ) {
         {
           try {
+            const loggedIn =true;
             email = req.body.email;
             const token = jwt.sign(email, secretKey);
             res.cookie("token", token);
-            const product = await products.find();
+            const product = await products.find({status:"Avaliable"});
             res.render("home", {
               product: product,
+              loggedIn:loggedIn,
               message: "User Logged in Successfully",
             });
           } catch (error) {
@@ -214,6 +223,88 @@ module.exports.getlogout = (req, res) => {
   res.redirect("/page-login");
 };
 
-module.exports.getCart=(req,res)=>{
-  res.render("cart")
+module.exports.getCart= async(req,res)=>{
+try{
+  const userData = await usercollecn.findOne({email:req.user})
+  const userCart = await cart.findOne({userId:userData._id}).populate({
+    path:'products.productId',
+    model:'products'
+  });
+  console.log(userCart)
+  res.render("cart",{userCart})
+  
+}catch(error){
+  console.log('error while loading cart',error)
+}    
 }
+
+
+
+ //  add a product to the user's cart
+ module.exports.goTOCart = async (req, res) => {
+  try {
+    const userId = req.user.email;
+    const userData = await usercollecn.findOne({email:req.user}) 
+    const userid = userData._id;
+    const { productId } = req.body;
+    let userCart = await cart.findOne({ userId: userid });
+    if (!userCart) {
+      userCart = new cart({
+        userId: userid,
+        products: [],
+      });
+    }
+    const existingProduct = userCart.products.find(
+      (product) => product.productId.toString() === productId
+    );
+
+    if (existingProduct) {
+      console.log("The product is already inside the cart.")
+    } else {
+      userCart.products.push({
+        productId:new mongoose.Types.ObjectId(productId),
+        quantity: 1,
+      });
+    }
+    await userCart.save();
+
+    res.json({ message: "Product added to the cart" });
+  } catch (error) {
+    console.error("Error adding to cart:", error);
+    res.status(500).json({ error: "Failed to add the product to the cart" });
+  }
+};
+
+module.exports.updateQuantity = async (req,res)=>{
+  try{
+  const productId = req.body.productId;
+  console.log(productId)
+  const newQuantity = req.body.quantity;
+  console.log(newQuantity)
+  const user=await usercollecn.findOne({email:req.user})
+   const result = await cart.findOne({userId:user._id})
+  for (const item of result.products) {
+    if (item._id == productId) {
+      await cart.updateOne(
+        { userId: user._id, 'products._id': productId },
+        { $set: { 'products.$.quantity': newQuantity } }
+      );
+    }
+  }
+   if(result){
+   res.json({data :{productId,quantity:newQuantity}})
+   }else{
+    console.log("error");
+   }
+  }catch(error){
+    console.log("error in updating quantity",error);
+  }
+};
+
+module.exports.getUserAccount=async(req,res)=>{
+ res.render("user-account")
+}
+
+
+
+

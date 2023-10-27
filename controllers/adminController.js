@@ -168,6 +168,7 @@ module.exports.postEditedProduct = async (req, res) => {
       brand,
       stock,
     } = req.body;
+    console.log(existingProduct)
 
     const photos = req.files;
     const newPhotos = photos.map((element) => ({ name: element.filename, path: element.path }));
@@ -176,6 +177,7 @@ module.exports.postEditedProduct = async (req, res) => {
     const updatedPhotos = existingProduct.photos.map((oldPhoto, index) =>
     picPaths[index] ? picPaths[index] : oldPhoto
     );
+    console.log(updatedPhotos)
   
     const updatedData = {
       name,
@@ -190,14 +192,66 @@ module.exports.postEditedProduct = async (req, res) => {
     };
 
     const updatedProduct = await products.findByIdAndUpdate(editId, updatedData, { new: true });
+    updatedProduct.save();
     const successMessage = "Product updated successfully";
-   
+   console.log(updatedProduct);
     res.redirect('/admin/product-list');
   } catch (error) {
     console.log(error);
     res.render("edit-product", { error: "An error occurred while updating the product, please try again" });
   }
 };
+
+
+//saving edited details into the db
+// module.exports.postEditProduct = async (req, res) => {
+//   try {
+//     const editId = req.params.productId;
+//     const existingProduct = await products.findById(editId);
+
+//     const {
+//       name,
+//       description,
+//       regular_price,
+//       selling_price,
+//       category,
+//       brand,
+//       stock,
+//     } = req.body;
+
+//     // Get newly uploaded photos
+//     const photos = req.files;
+//     const newPhotos = photos.map((element) => ({ name: element.filename, path: element.path }));
+//     const picPaths=newPhotos.map((photo) => photo.path);
+//     // Include old photos that weren't edited
+//     const updatedPhotos = existingProduct.photos.map((oldPhoto, index) =>
+//     picPaths[index] ? picPaths[index] : oldPhoto
+//     );
+//     const updatedData = {
+//       name,
+//       description,
+//       regular_price,
+//       selling_price,
+//       category,
+//       brand,
+//       stock,
+//       status: existingProduct.status,
+//       photos: updatedPhotos,
+//     };
+
+//     const updatedProduct = await products.findByIdAndUpdate(editId, updatedData, { new: true });
+//     const successMessage = "Product updated successfully";
+//     // console.log(updatedProduct);
+//     res.redirect('/admin/product-list');
+//   } catch (error) {
+//     console.log(error);
+//     res.render("admin-product-edit-page", { error: "An error occurred while updating the product, please try again" });
+//   }
+// };
+
+
+
+
 
 
 module.exports.getCategory = async(req,res)=>{
