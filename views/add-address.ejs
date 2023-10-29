@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Address</title>
+    <!-- Add Bootstrap CSS link -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Add custom CSS styles here if needed */
+        body {
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0 25%;
+        }
+        .container {
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 60%; /* Set the maximum width of the container */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center">Add Address</h2>
+        <form action="/add-address" method="post">
+            <div class="form-group">
+                <label for="addressType">Address Type</label>
+                <select class="form-control" id="addressType" name="addressType" required>
+                    <option value="" disabled selected>Select Address Type</option>
+                    <option value="Home">Home</option>
+                    <option value="Work">Work</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="userName" required>
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" class="form-control" id="city" name="city" required>
+            </div>
+            <div class="form-group">
+                <label for="landmark">Landmark</label>
+                <input type="text" class="form-control" id="landmark" name="landMark">
+            </div>
+            <div class="form-group">
+                <label for="state">State</label>
+                <input type="text" class="form-control" id="state" name="state" required>
+            </div>
+            <div class="form-group">
+                <label for="pincode">Pincode</label>
+                <input type="text" class="form-control" id="pincode" name="pinCode" required>
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber">Phone Number</label>
+                <input type="tel" class="form-control" id="phonenumber" name="phoneNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="altPhoneNumber">Alternate Phone Number</label>
+                <input type="tel" class="form-control" id="altPhoneNumber" name="altPhone">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Add Address</button>
+        </form>
+    </div>
+
+    <!-- Add Bootstrap JS and Popper.js (for Bootstrap dropdowns) scripts here -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -662,7 +662,7 @@
                         </ul>
                     </nav> -->
                     <!-- mobile menu end -->
-                </div> -->
+                </div> 
                 <div class="mobile-header-info-wrap mobile-header-border">
                     <div class="single-mobile-header-info mt-30">
                         <a  href="page-contact.html"> Our location </a>
@@ -725,31 +725,35 @@
                                       <td class="product-des product-name">
                                         <h5 class="product-name"><%= product.productId.name %></h5>
                                       </td>
-                                      <td class="price" data-title="Price"><span><%= product.productId.s_price %></span></td>
+                                      <td class="peice"  data-title="Price" ><span><%= product.productId.s_price %></span></td>
                                       <td class="text-center" data-title="Stock">
                                         <div class="detail-qty border radius m-auto" data-product-id="<%= product._id %>">
                                             <a href="javascript:void(0);" class="qty-up">
                                               <i class="fi-rs-angle-small-up"></i>
                                             </a>
-                                            <span class="qty-val"><%= Number(product.quantity) %></span>
+                                            <span class="qty-val" class="product-price"><%= Number(product.quantity) %></span>
                                             <a href="javascript:void(0);" class="qty-down">
                                               <i class="fi-rs-angle-small-down"></i>
                                             </a>
                                           </div>
                                       </td>
                                       <td class="text-right" data-title="Cart">
-                                        <span><%= product.productId.s_price %></span>
+                                        <span class="cart-total"> <%= product.productId.s_price * Number(product.quantity) %></span>
                                       </td>
-                                      <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td>
+                                      <td class="action" data-title="Remove">
+                                        <a href="javascript:void(0);" class="text-muted remove-item" data-product-id="<%= product.productId._id %>">
+                                          <i class="fi-rs-trash"></i>
+                                        </a>
+                                      </td>
                                     </tr>
                                     <% }); %>
                                     <% } else { %>
                                       <tr>
                                         <td colspan="2">
                                           <% if (userCart) { %>
-                                            User cart does not exist
+                                            <h4>No items in the cart</h4>
                                           <% } else { %>
-                                            No items in the cart
+                                            <h4>No items in the cart</h4>
                                           <% } %>
                                         </td>
                                       </tr>
@@ -757,37 +761,16 @@
                                 </tbody>
                               </table>
                         <div class="cart-action text-end">
-                            <!-- <a class="btn  mr-10 mb-sm-15"><i class="fi-rs-shuffle mr-10"></i>Update Cart</a> -->
-                            <a class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                            <% if (userCart && userCart.products.length > 0) { %>
+                            <a class="btn " href="/"><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                           
+                            <% } %>
                         </div>
-                        <!-- <div class="divider center_icon mt-50 mb-50"><i class="fi-rs-fingerprint"></i></div> -->
                         <div class="row mb-50">
+                            <% if (userCart && userCart.products.length > 0) { %>
                             <div class="col-lg-6 col-md-12">
-                                <!-- <div class="heading_s1 mb-3">
-                                    <h4>Calculate Shipping</h4>
-                                </div> -->
-                                <!-- <p class="mt-15 mb-30">Flat rate: <span class="font-xl text-brand fw-900">5%</span></p> -->
-                                <form class="field_form shipping_calculator">
-                                    <div class="form-row">
-                                        <div class="form-group col-lg-12">
-                                            <div class="custom_select"> </div>
-                                        </div>
-                                    </div>
-                                    <!-- <div class="form-row row">
-                                        <div class="form-group col-lg-6">
-                                            <input required="required" placeholder="State / Country" name="name" type="text">
-                                        </div>
-                                        <div class="form-group col-lg-6">
-                                            <input required="required" placeholder="PostCode / ZIP" name="name" type="text">
-                                        </div>
-                                    </div> -->
-                                    <!-- <div class="form-row">
-                                        <div class="form-group col-lg-12">
-                                            <button class="btn  btn-sm"><i class="fi-rs-shuffle mr-10"></i>Update</button>
-                                        </div>
-                                    </div> -->
-                                </form>
-                                <div class="mb-30 mt-50">
+                               
+                                <!-- <div class="mb-30 mt-50">
                                     <div class="heading_s1 mb-3">
                                         <h4>Apply Coupon</h4>
                                     </div>
@@ -807,7 +790,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                             <div class="col-lg-6 col-md-12">
                                 <div class="border p-md-4 p-30 border-radius cart-totals">
@@ -817,24 +800,27 @@
                                     <div class="table-responsive">
                                         <table class="table">
                                             <tbody>
-                                                <tr>
+                                                <!-- <tr>
                                                     <td class="cart_total_label">Cart Subtotal</td>
-                                                    <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">$240.00</span></td>
-                                                </tr>
+                                                    <td class="cart_total_amount"><span class="font-lg fw-900 text-brand" id="cartSubtotal">₹0.00</span></td>
+
+                                                </tr> -->
                                                 <tr>
                                                     <td class="cart_total_label">Shipping</td>
                                                     <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
                                                 </tr>
                                                 <tr>
                                                     <td class="cart_total_label">Total</td>
-                                                    <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand">$240.00</span></strong></td>
+                                                    <td class="cart_total_amount"><span class="font-lg fw-900 text-brand" id="grandTotal">₹0.00</span></td>
+
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    <a href="#" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
+                                    <a href="/checkout" class="btn "> <i class="fi-rs-box-alt mr-10"></i> Proceed To CheckOut</a>
                                 </div>
                             </div>
+                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -849,6 +835,7 @@
     const qtyval = qunty.querySelector(".qty-val");
     const qtyup = qunty.querySelector(".qty-up");
     const qtydown = qunty.querySelector(".qty-down");
+    
 
     const productId = qunty.getAttribute("data-product-id");
 
@@ -904,7 +891,106 @@
 });
 
 
-    </script>
+    const qtyUpButtons = document.querySelectorAll('.qty-up');
+    const qtyDownButtons = document.querySelectorAll('.qty-down');
+    const cartTotalElements = document.querySelectorAll('.cart-total');
+    const productPrices = document.querySelectorAll('.peice span'); 
+      const initialPrices = Array.from(productPrices).map(price => Number(price.textContent));
+    const initialQuantities = Array.from(document.querySelectorAll('.qty-val')).map(qty => Number(qty.textContent));
+  
+    qtyUpButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        const qtyVal = Number(initialQuantities[index]);
+          const newQty = qtyVal + 1;
+        initialQuantities[index] = newQty;
+  
+        const newTotal = initialPrices[index] * newQty;
+  
+        cartTotalElements[index].textContent = newTotal;
+      });
+    });
+  
+    qtyDownButtons.forEach((button, index) => {
+      button.addEventListener('click', () => {
+        const qtyVal = Number(initialQuantities[index]);
+  
+        if (qtyVal > 1) {
+          const newQty = qtyVal - 1;
+          initialQuantities[index] = newQty;
+  
+          const newTotal = initialPrices[index] * newQty;
+  
+          cartTotalElements[index].textContent = newTotal;
+        }
+      });
+    });
+
+
+
+    
+  document.addEventListener("DOMContentLoaded", function () {
+    const removeButtons = document.querySelectorAll(".remove-item");
+
+    removeButtons.forEach(removeButton => {
+      removeButton.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        const productId = removeButton.getAttribute("data-product-id");
+        console.log(productId);
+
+        fetch(`/remove-from-cart/${productId}`, {
+          method: "POST", 
+          headers: {
+            'Content-Type': 'application/json'
+          }
+          
+        })
+   
+          .then(data => {
+              window.location.href = "/cart";
+          })
+          .catch(error => {
+            console.error("Error removing product:", error);
+          });
+      });
+    });
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+  // Helper function to calculate the grand total
+  function calculateGrandTotal() {
+    const productTotalElements = document.querySelectorAll('.cart-total');
+    const productTotals = Array.from(productTotalElements).map(element => parseFloat(element.textContent));
+    const grandTotal = productTotals.reduce((total, productTotal) => total + productTotal, 0);
+    return grandTotal;
+  }
+
+  // Helper function to format currency in Indian Rupees
+  function formatCurrency(value) {
+    return `₹${value.toFixed(2)}`;
+  }
+
+  const grandTotalElement = document.getElementById('grandTotal');
+
+  // Calculate the initial grand total
+  const initialGrandTotal = calculateGrandTotal();
+  grandTotalElement.textContent = formatCurrency(initialGrandTotal);
+
+  // Update the grand total when quantity changes
+  const quantityButtons = document.querySelectorAll('.qty-up, .qty-down');
+  quantityButtons.forEach(qunty => {
+    qunty.addEventListener("click", (event) => {
+      // ... (your existing code for updating quantity)
+
+      // Update the grand total
+      const newGrandTotal = calculateGrandTotal();
+      grandTotalElement.textContent = formatCurrency(newGrandTotal);
+    });
+  });
+});
+
+ </script>
+  
     <footer class="main">
         <section class="newsletter p-30 text-white wow fadeIn animated">
             <div class="container">

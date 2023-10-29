@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const usercollecn = require("../models/userlogin");
 const cart = require("../models/cartModel")
 const address = require("../models/address")
+const order = require("../models/order")
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const twilio = require("twilio")(
@@ -17,9 +18,10 @@ let phoneNumber;
 
 module.exports.getHomePage = async (req, res) => {
   try {
-    const loggedIn = req.user?true:false
+   const loggedIn=req.cookies.loggedIn
     const product = await products.find({status:"Avaliable"})
-    res.render("home", { product,loggedIn });
+    res.render("home", { product,loggedIn});
+    
   } catch (error) {
     console.error(error);
     res.status(500).send("Error fetching products");
@@ -77,8 +79,13 @@ module.exports.getUserSignup = (req, res) => {
   res.render("page-signup");
 };
 module.exports.getUserLogin = (req, res) => {
+  if(req.cookies.loggedIn){
+    res.redirect("/")
+  }else{
   res.render("page-login");
-};
+  }
+  }
+
 
 //posting user deatils to database
 module.exports.postUserSignup = async (req, res) => {
@@ -115,9 +122,8 @@ module.exports.postUserSignup = async (req, res) => {
 
 
 //  getting user home page
-module.exports.getUserHomepage = async (req, res) => {
+module.exports.postUserLogin = async (req, res) => {
   const logindata = await usercollecn.findOne({ email: req.body.email });
-  console.log(logindata);
   if (!logindata) {
     res.render("page-login", { subreddit: "This email is not registered" });
   } else if (logindata) {
@@ -133,16 +139,13 @@ module.exports.getUserHomepage = async (req, res) => {
       ) {
         {
           try {
-            const loggedIn =true;
+            
             email = req.body.email;
             const token = jwt.sign(email, secretKey);
-            res.cookie("token", token);
+            res.cookie("token", token,{maxAge:24*60*60*1000});
+            res.cookie("loggedIn",true,{maxAge:24*60*60*1000});
             const product = await products.find({status:"Avaliable"});
-            res.render("home", {
-              product: product,
-              loggedIn:loggedIn,
-              message: "User Logged in Successfully",
-            });
+            res.redirect("/") 
           } catch (error) {
             console.error(error);
             res.status(500).send("Error fetching products");
@@ -220,7 +223,8 @@ module.exports.getSingleProduct = async (req, res) => {
 
 module.exports.getlogout = (req, res) => {
   res.clearCookie("token");
-  res.redirect("/page-login");
+  res.clearCookie("loggedIn")
+  res.redirect("/get-login");
 };
 
 module.exports.getCart= async(req,res)=>{
@@ -230,7 +234,6 @@ try{
     path:'products.productId',
     model:'products'
   });
-  console.log(userCart)
   res.render("cart",{userCart})
   
 }catch(error){
@@ -278,9 +281,7 @@ try{
 module.exports.updateQuantity = async (req,res)=>{
   try{
   const productId = req.body.productId;
-  console.log(productId)
   const newQuantity = req.body.quantity;
-  console.log(newQuantity)
   const user=await usercollecn.findOne({email:req.user})
    const result = await cart.findOne({userId:user._id})
   for (const item of result.products) {
@@ -302,9 +303,112 @@ module.exports.updateQuantity = async (req,res)=>{
 };
 
 module.exports.getUserAccount=async(req,res)=>{
- res.render("user-account")
+  try{
+    console.log("heyy");
+    const userId = await usercollecn.findOne({email:req.user})
+    const useraddress = await address.findOne({userId:userId._id})
+    
+    res.render("user-account",{useraddress})
+  }catch(error){
+    console.log(error)
+  }
+
 }
 
 
+module.exports.removeFromCart = async (req, res) => {
+  try {
+    console.log(req.user);
+    const user = await usercollecn.findOne({email:req.user})
+    const productId = req.params.productId;
+    const updateproduct =await cart.updateOne({userId:user._id},{
+      $pull :{
+        products : {
+          productId : productId 
+        }
+      }
+    })
+    res.redirect("/cart")
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
 
+module.exports.getCheckout = async(req,res)=>{
+  try{
+    const userData = await usercollecn.findOne({email:req.user})
+    const userCart = await cart.findOne({userId:userData._id}).populate({
+      path:'products.productId',
+      model:'products'
+    });
+    res.render("checkout",{userCart})
+    
+  }catch(error){
+    console.log('error while loading cart',error)
+  }    
+  }
+
+  module.exports.getAddAddress = async (req,res)=>{
+      res.render("add-address")
+  }
+
+  module.exports.postAddAddress = async (req,res)=>{
+    try{
+      const userId = req.user
+      const userdata = await usercollecn.findOne({email:req.user})
+      const userAddress = await address.findOne({userId:userdata._id})
+      const{
+        addressType,
+        userName,
+        city,
+        landMark,
+        state,
+        pinCode,
+        phoneNumber,
+        altPhone,
+      }=req.body
+
+      if(userAddress){
+        userAddress.address.push({
+          addressType,
+          userName,
+          city,
+          landMark,
+          state,
+          pinCode,
+          phoneNumber,
+          altPhone,
+        });
+        await userAddress.save()
+      }else{
+        const newUser = new address({
+          userId:userdata._id,
+          address: {
+            addressType,
+            userName,
+            city,
+            landMark,
+            state,
+            pinCode,
+            phoneNumber,
+            altPhone,
+          },
+        })
+        await newUser.save()
+      }
+      res.redirect('/user-account')
+    }catch(error){
+      console.log(error);
+      res.render('user-account', { error: 'Failed to add address' });
+
+    }
+    
+  }
+
+  module.exports.getCOD = (req,res)=>{
+    res.render("cod")
+  }
+
+  
 
