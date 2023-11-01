@@ -33,18 +33,24 @@ const orderSchema = new mongoose.Schema({
   },
   orderStatus: {
     type: String,
-    enum: ["Pending", "Shipped", "Delivered", "Cancelled"],
-    default: "Pending",
+    enum: ["Order Placed", "Shipped", "Delivered", "Cancelled", "Returned"],
+    default: "Order Placed",
   },
   paymentStatus: {
     type: String,
-    enum: ["Pending", "Completed", "Failed"],
+    enum: ["Pending", "Success", "Failed"],
     default: "Pending",
   },
   paymentMethod: {
     type: String, 
     required: true, 
   },
+  cancelReason:{
+    type:String,
+  },
+  returnReason:{
+    type:String,
+  }
 });
 
 const order = mongoose.model("order", orderSchema);

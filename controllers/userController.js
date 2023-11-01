@@ -13,7 +13,7 @@ const products = require("../models/addProduct");
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.JWT_SECRET;
 
-let isOtpVerified = false;
+// let isOtpVerified = false;
 // let phoneNumber;
 
 module.exports.getHomePage = async (req, res) => {
@@ -89,13 +89,19 @@ module.exports.getUserLogin = (req, res) => {
 
 //posting user deatils to database
 module.exports.postUserSignup = async (req, res) => {
-  const signupdata = await usercollecn.findOne({ email: req.body.email });
-  if (signupdata) {
-    res.render("page-signup", {
-      error: "User with this email already exist...! Try another email. ",
-    });
-  } else {
-    // if (isOtpVerified) {
+  try {
+    const emailExists = await usercollecn.findOne({ email: req.body.email });
+    const phoneExists = await usercollecn.findOne({ phoneNumber: req.body.phoneNumber });
+
+    if (emailExists) {
+      res.render("page-signup", {
+        error: "User with this email already exists. Try another email.",
+      });
+    } else if (phoneExists) {
+      res.render("page-signup", {
+        error: "User with this phone number already exists. Try another phone number.",
+      });
+    } else {
       await usercollecn.create({
         username: req.body.username,
         password: req.body.password,
@@ -106,20 +112,13 @@ module.exports.postUserSignup = async (req, res) => {
         status: "Unblocked",
         isverified: 0,
       });
-      // const userdata = await usercollecn.findOne({
-      //     username:req.body.username,
-      //     email:req.body.email,
-      //     });
-      //     if(userdata){
-      //     sendverifymail(req.body.username,req.body.email,userdata._id);
-
-      //     }
-
       res.render("page-login", { message: "User Sign in Successfully" });
-  //   } else res.render("page-signup", { error: "OTP is incorrect" });
-  // }
+    }
+  } catch (error) {
+    res.render("page-login", { error: "Error in sign-up" });
+  }
 };
-}
+
 
 
 //  getting user home page
@@ -179,7 +178,7 @@ module.exports.getSendOtp = async (req, res) => {
 };
 
 //for veriyfing otp
-module.exports.getVerifyOtp = async (req, res) => {
+module.exports.postVerifyOtp = async (req, res) => {
   try {
   const phoneNumber = req.query.phoneNumber;
     const otp = req.query.otp;
@@ -195,13 +194,9 @@ module.exports.getVerifyOtp = async (req, res) => {
       });
 
     if (verifyOTP.valid) {
-      console.log("VALID AANE");
-      // isOtpVerified = true;
       res.status(200).json({ data: "OTP verified successfully" });
     } else {
-      console.log("INVALID");
-      // isOtpVerified = false;
-      res.status(500).json({ error: "Invalid OTP" });
+      res.status(400).json({ error: "Invalid OTP" });
     }
   } catch (err) {
     console.error(err);
@@ -245,34 +240,33 @@ try{
 }    
 }
 
-
-
- //  add a product to the user's cart
- module.exports.goTOCart = async (req, res) => {
+module.exports.goTOCart = async (req, res) => {
   try {
-    const userId = req.user.email;
-    const userData = await usercollecn.findOne({email:req.user}) 
-    const userid = userData._id;
+    const userid = req.user.email;
+    const userData = await usercollecn.findOne({ email: req.user });
+    const userId = userData._id;
     const { productId } = req.body;
-    let userCart = await cart.findOne({ userId: userid });
+    let userCart = await cart.findOne({ userId });
     if (!userCart) {
       userCart = new cart({
-        userId: userid,
+        userId,
         products: [],
       });
     }
-    const existingProduct = userCart.products.find(
+    
+    const existingProductIndex = userCart.products.findIndex(
       (product) => product.productId.toString() === productId
     );
 
-    if (existingProduct) {
-      console.log("The product is already inside the cart.")
+    if (existingProductIndex !== -1) {
+      userCart.products[existingProductIndex].quantity += 1;
     } else {
       userCart.products.push({
-        productId:new mongoose.Types.ObjectId(productId),
+        productId: new mongoose.Types.ObjectId(productId),
         quantity: 1,
       });
     }
+    
     await userCart.save();
 
     res.json({ message: "Product added to the cart" });
@@ -281,6 +275,41 @@ try{
     res.status(500).json({ error: "Failed to add the product to the cart" });
   }
 };
+
+
+//  module.exports.goTOCart = async (req, res) => {
+//   try {
+//     const userId = req.user.email;
+//     const userData = await usercollecn.findOne({email:req.user}) 
+//     const userid = userData._id;
+//     const { productId } = req.body;
+//     let userCart = await cart.findOne({ userId: userid });
+//     if (!userCart) {
+//       userCart = new cart({
+//         userId: userid,
+//         products: [],
+//       });
+//     }
+//     const existingProduct = userCart.products.find(
+//       (product) => product.productId.toString() === productId
+//     );
+
+//     if (existingProduct) {
+//       userCart.products[existingProduct].quantity += 1;
+//     } else {
+//       userCart.products.push({
+//         productId:new mongoose.Types.ObjectId(productId),
+//         quantity: 1,
+//       });
+//     }
+//     await userCart.save();
+
+//     res.json({ message: "Product added to the cart" });
+//   } catch (error) {
+//     console.error("Error adding to cart:", error);
+//     res.status(500).json({ error: "Failed to add the product to the cart" });
+//   }
+// };
 
 module.exports.updateQuantity = async (req,res)=>{
   try{
@@ -308,17 +337,18 @@ module.exports.updateQuantity = async (req,res)=>{
 
 module.exports.getUserAccount=async(req,res)=>{
   try{
-    console.log("heyy");
     const userId = await usercollecn.findOne({email:req.user})
     const useraddress = await address.findOne({userId:userId._id})
-    
-    res.render("user-account",{useraddress})
+    const listorders = await order.find({userId:userId._id}).populate({
+      path:"products.productId",
+      model:"products"
+    })
+    res.render("user-account",{userId,useraddress,listorders})
   }catch(error){
     console.log(error)
   }
 
 }
-
 
 module.exports.removeFromCart = async (req, res) => {
   try {
@@ -342,11 +372,12 @@ module.exports.removeFromCart = async (req, res) => {
 module.exports.getCheckout = async(req,res)=>{
   try{
     const userData = await usercollecn.findOne({email:req.user})
+    const addresses = await address.findOne({userId:userData._id})
     const userCart = await cart.findOne({userId:userData._id}).populate({
       path:'products.productId',
       model:'products'
     });
-    res.render("checkout",{userCart})
+    res.render("checkout",{addresses,userCart})
     
   }catch(error){
     console.log('error while loading cart',error)
@@ -416,7 +447,6 @@ module.exports.getCheckout = async(req,res)=>{
 
   module.exports.postOrders = async (req,res)=>{
     try{
-      console.log("heyy")
       const userId =req.user
       const userdata = await usercollecn.findOne({email:req.user})
       const userCart = await cart.findOne({userId:userdata._id}).populate({
@@ -444,6 +474,7 @@ module.exports.getCheckout = async(req,res)=>{
         paymentMethod:"Cash on delivery"
        })
            await newOrder.save()
+           await cart.deleteOne({userId:userdata._id})
         res.render("place-order")
     }catch(error){
       console.log(error)
@@ -451,11 +482,118 @@ module.exports.getCheckout = async(req,res)=>{
   }
   
 
-  module.exports.getForgotPassword =(req,res)=>{
-
-    res.render("forgotpassword")
+  module.exports.getPasswordResetPage =(req,res)=>{
+    try{
+      const loggedIn =req.cookies.loggedIn;
+      res.render("forgotpassword",{loggedIn})
+    }catch(error){
+     console.log(error)
+    }
   }
 
-  module.exports.changePassword = (req,res)=>{
-    res.render("change password")
+  module.exports.getPasswordResetOtp = async(req,res)=>{
+    try{
+      console.log("heyy")
+      const userEmail=req.query.email
+      const user = await usercollecn.findOne({email:userEmail})
+      if(user){
+        await twilio.verify.v2
+        .services(process.env.TWILIO_SERVICES_ID)
+        .verifications.create({
+          to: `+91${user.phoneNumber}`,
+          channel: "sms",
+        })
+        .then(()=>{
+          res.status(200).json({data:"send"})
+        })
+
+      }else{
+        res.status(500).json({data:"user with this Email don't exist"})
+      }
+    }catch(error){
+        console.log(error)
+    }
   }
+
+  module.exports.getVerifyPasswordResetOtp = async(req,res)=>{
+    try{
+    const otp = req.query.otp
+    const email = req.query.email
+    const user = await usercollecn.findOne({email:email})
+    const verifyOTP =  await twilio.verify.v2
+    .services(process.env.TWILIO_SERVICES_ID)
+    .verificationChecks.create({
+      to: `+91${user.phoneNumber}`,
+      code: otp,
+    })
+    if(verifyOTP.valid){
+      res.status(200).json({data:"verified"})
+    }else{
+      res.status(500).json({data:"OTP incorrect"})
+    }
+    }catch(error){
+      console.log(error)
+    }
+  }
+
+  module.exports.changePassword = async(req,res)=>{
+    try{
+      const Email= req.query.email
+      const loggedIn = req.cookies.loggedIn
+      res.render("changepassword",{Email,loggedIn})
+    }catch(error){
+    console.log(error)
+    }
+  }
+  
+  module.exports.postNewPassword = async(req,res)=>{
+    try{
+      const {email,password}=req.body
+      await usercollecn.updateOne({email:email},{$set:{password:password}})
+      res.status(200).json({data:"password Updated"})
+    }catch(error){
+      console.log(error)
+      res.status(500).json({data:"passwor updatiom failed"})
+    }
+  }
+
+
+ module.exports.orderDeatils = async (req,res)=>{
+  try{
+    const orderId = req.params.orderId
+    const orderDetails = await order.findById({_id:orderId}).populate({
+      path:"products.productId",
+      model:"products"
+    })
+      res.render("orderDetails",{orderDetails}) 
+  }catch(error){
+console.log(error)
+  }  
+ }
+
+
+//handling cancels
+ module.exports.productCancel=async (req, res)=>{
+  try{
+    const userData= await usercollecn.findOne({email:req.user});
+    let userCancel= await order.findOne({userId:userData._id});
+    await order.updateOne({ _id: req.body.orderID }, { $set: { orderStatus: "Cancelled",cancelReason:req.body.reason} });
+    res.redirect("/user-account");
+  }
+  catch(error){
+    console.log("An error happened while processig return! :"+error);
+  }
+}
+
+//handling returns
+module.exports.returnOrder = async(req,res)=>{
+  try{
+    const userData= await usercollecn.findOne({email:req.user});
+    let userReturn= await order.findOne({userId:userData._id});
+    await order.updateOne({ _id: req.body.orderID }, { $set: { orderStatus: "Returned",returnReason:req.body.reason } });
+    res.redirect("/user-account");
+  }
+  catch(error){
+    console.log("An error happened while processig return! :"+error);
+  }
+}

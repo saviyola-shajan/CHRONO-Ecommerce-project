@@ -488,69 +488,47 @@
                                         <!-- <p class="mb-50 font-sm">
                                             Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our privacy policy
                                         </p> -->
-                                        <form action="/signupsubmit" method="post"  >
+                                        <form action="/signupsubmit" method="post" id="registrationForm">
                                             <div class="form-group">
-                                                <input type="text" required="" name="username" placeholder="Username">
+                                                <input type="text" required name="username" placeholder="Username" id="username">
+                                                <div class="error-message" id="errSignupName"></div>
                                             </div>
-                                            <div id="errSignupName" class="error-message"></div>
                                             <div class="form-group">
-                                                <input required="" type="email" name="email" placeholder="Email" id="errEmail">
-                                               
+                                                <input type="email" required name="email" placeholder="Email" id="email">
+                                                <div class="error-message" id="errSignupEmail"></div>
                                             </div>
-                                            <div id="errSignupEmail" class="error-message"></div>
                                             <div class="form-group">
-                                                <input type="password" required="" name="password" placeholder="Password" id="errPassword">
+                                                <input type="password" required name="password" placeholder="Password" id="password">
+                                                <div class="error-message" id="errSignupPassword"></div>
                                             </div>
-                                            <div id="errSignupPassword" class="error-message"></div>
                                             <div class="form-group">
-
-                                                <input required="" type="password" name="confirmpassword" placeholder="Confirm Password" id="err">
+                                                <input type="password" required name="confirmpassword" placeholder="Confirm Password" id="confirmpassword">
+                                                <div class="error-message" id="errSignupConfirmPassword"></div>
                                             </div>
-                                            <div id="errSignupConfirmPassword" class="error-message"></div>
-                                          
-                                           
-                                            
-                                                <div class="input-group w-auto">
-                                                    <input
-                                                      type="number"
-                                                      class="form-control"
-                                                      placeholder="Mobile Number"
-                                                      name="phoneNumber"
-                                                      id="phoneNumber"
-                                                    />
-                                                    <button class="btn btn-primary" type="button" id="sendOTPButton" data-mdb-ripple-color="dark">
-                                                        <a href="/sent-otp" style="color: beige;">Send OTP</a>
-  
-
-                                                    </button>
-                                                </div>
-
-                                                <div id="errSignupPhoneNumber" class="error-message"></div>
-
-                                                <br>
-                                                <div class="input-group w-auto" >
-                                                    <input
-                                                      type="number"
-                                                      class="form-control"
-                                                      placeholder="Enter OTP"
-                                                      name="otpInput"
-                                                      id="otp"
-                                                    />
-                                                   
-                                                </div>
-                                                <div id="errSignupOtp " class="error-message"></div>
-                                                <br>
-                                                <div id="timer" class="mb-3" style="display: none; color: blue;"></div>
-                                                <br>
-                                                <button class="btn btn-primary" type="button" id="resendOTPButton" style="display: none;">
-                                                    Resend OTP
+                                            <div class="form-group">
+                                                <input type="number" class="form-control" placeholder="Mobile Number" name="phoneNumber" id="phoneNumber">
+                                                <div class="error-message" id="errSignupPhoneNumber"></div> <!-- Error message next to the field -->
+                                            </div>
+                                            <div class="input-group w-auto">
+                                                <button class="btn btn-primary" type="button" id="sendOTPButton" data-mdb-ripple-color="dark">
+                                                    <a href="/sent-otp" style="color: beige;">Send OTP</a>
                                                 </button>
-                                                <br>
-                                                <button class="btn btn-primary" type="button" id="verifyOTPButton" data-mdb-ripple-color="dark">
-                                                   <a href="/verify-otp" style="color: beige;">Verify OTP</a> 
-                                                </button>
-                                                <div id="errSignupOtp" class="error-message"></div>
-                                                 
+                                            </div>
+                                            <br>
+                                            <div class="input-group w-auto">
+                                                <input type="number" class="form-control" placeholder="Enter OTP" name="otpInput" id="otp">
+                                                <div class="error-message" id="errSignupOtp"></div>
+                                            </div>
+                                            <div id="timer" class="mb-3" style="display: none; color: blue;"></div>
+                                            <br>
+                                            <button class="btn btn-primary" type="button" id="resendOTPButton" style="display: none;">
+                                                Resend OTP
+                                            </button>
+                                            <br>
+                                            <button class="btn btn-primary" type="button" id="verifyOTPButton" data-mdb-ripple-color="dark">
+                                                <a href="/verify-otp" style="color: beige;">Verify OTP</a>
+                                            </button>
+                                            <div class="error-message" id="errSignupOtp"></div>
                                             <div class="login_footer form-group">
                                                 <div class="chek-form">
                                                     <br>
@@ -559,12 +537,15 @@
                                                         <label class="form-check-label" for="exampleCheckbox12"><span>I agree to terms &amp; Policy.</span></label>
                                                     </div>
                                                 </div>
-                                                <a href="page-privacy-policy.html"><i class="fi-rs-book-alt mr-5 text-muted"></i>Lean more</a>
+                                                <a href="page-privacy-policy.html"><i class="fi-rs-book-alt mr-5 text-muted"></i>Learn more</a>
                                             </div>
                                             <div class="form-group">
                                                 <button type="submit" class="btn btn-fill-out btn-block hover-up" name="submit">Submit &amp; Register</button>
                                             </div>
                                         </form>
+                                        
+                                        
+                                        
                                         <div class="divider-text-center mt-15 mb-15">
                                             <span> or</span>
                                         </div>
@@ -705,95 +686,91 @@
                          showConfirmButton: false,
                          timer: 1500
                          }) 
+                         document.querySelector('[name="submit"]').disabled = false;
                     })
                     .catch((error) => {
                         console.error("Error verifying OTP:", error);
+                               Swal.fire({
+                                icon: 'error',
+                                   title: 'Oops...',
+                                    text: 'incorrect OTP!',
+                                })  
+                                document.querySelector('[name="submit"]').disabled = true;         
                     });
             });
 
-
+        })
 
             // const loginForm = document.querySelector('form[action="/signin"]');
             // const loginEmailInput = document.getElementById("loginEmail");
             // const loginPasswordInput = document.getElementById("loginPassword");
+            document.addEventListener("DOMContentLoaded", function () {
+    const registrationForm = document.getElementById("registrationForm");
 
-            const errEmail = document.getElementById('errEmail')
-            const errPassword = document.getElementById('errPassword') 
-            const registrationForm = document.querySelector('form[action="/signupsubmit"]');
-            const registrationEmailInput = document.querySelector('input[name="email"]');
-            const registrationPasswordInput = document.querySelector('input[name="signupPassword"]');
-            const registrationConfirmPasswordInput = document.querySelector('input[name="Confirmpassword"]');
-            const registrationPhoneNumberInput = document.getElementById("phoneNumber");
-            const registrationOTPInput = document.getElementById("otp");
+    registrationForm.addEventListener("submit", function (e) {
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmpassword").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        const otp = document.getElementById("otp").value;
 
-             
-            const errSignupEmail = document.getElementById('errSignupEmail');
-            const errSignupPassword = document.getElementById('errSignupPassword');
-            const errSignupConfirmPassword = document.getElementById('errSignupConfirmPassword');
-            const errSignupPhoneNumber = document.getElementById('errSignupPhoneNumber');
-            const errSignupOtp = document.getElementById('errSignupOtp');
-            const errSignupName = document.getElementById('errSignupName')
+        // Reset error messages
+        document.getElementById("errSignupName").textContent = "";
+        document.getElementById("errSignupEmail").textContent = "";
+        document.getElementById("errSignupPassword").textContent = "";
+        document.getElementById("errSignupConfirmPassword").textContent = "";
+        document.getElementById("errSignupPhoneNumber").textContent = "";
+        document.getElementById("errSignupOtp").textContent = "";
 
-            registrationForm.addEventListener("submit", function (e) {
-                if (registrationForm.querySelector('input[name="username"]').value.trim() === "") {
-                    e.preventDefault();
-                    errSignupName.innerHTML = "Please enter your Name."
-                    return;
-                }
+        if (username.trim() === "") {
+            e.preventDefault();
+            document.getElementById("errSignupName").textContent = "Please enter your Name.";
+        }
 
-                // if (registrationForm.querySelector('input[name="lname"]').value.trim() === "") {
-                //     e.preventDefault();
-                //     errSignupName.innerHTML = "Please enter your Last Name."
-                //     return;
-                // }
+        if (!isValidEmail(email)) {
+            e.preventDefault();
+            document.getElementById("errSignupEmail").textContent = "Please enter a valid email address.";
+        }
 
-                if (!isValidEmail(registrationEmailInput.value)) {
-                    e.preventDefault();
-                    errSignupEmail.innerHTML = "Please enter a valid email address."
-                    return;
-                }
+        if (password.length < 6) {
+            e.preventDefault();
+            document.getElementById("errSignupPassword").textContent = "Password must have at least 6 characters.";
+        }
 
-                if (registrationPasswordInput.value.length < 6) {
-                    e.preventDefault();
-                    errSignupPassword.innerHTML = "Password must be entered and Must have alteast 6 characters."
-                    return;
-                }
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            document.getElementById("errSignupConfirmPassword").textContent = "Passwords do not match.";
+        }
 
-                if (registrationPasswordInput.value !== registrationConfirmPasswordInput.value) {
-                    e.preventDefault();
-                    errSignupConfirmPassword.innerHTML = "Passwords do not match."
-                    return;
-                }
+        if (!isValidPhoneNumber(phoneNumber)) {
+            e.preventDefault();
+            document.getElementById("errSignupPhoneNumber").textContent = "Please enter a valid phone number.";
+        }
 
-                if (!isValidPhoneNumber(registrationPhoneNumberInput.value)) {
-                    e.preventDefault();
-                    errSignupPhoneNumber.innerHTML = "Please enter a valid phone number."
-                    return;
-                }
+        if (!isValidOTP(otp)) {
+            e.preventDefault();
+            document.getElementById("errSignupOtp").textContent = "Please enter a valid OTP.";
+        }
+    });
 
-                if (!isValidOTP(registrationOTPInput.value)) {
-                    e.preventDefault();
-                    errSignupOtp.innerHTML = "Please enter a valid OTP."
-                    return;
-                }
-            });
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
 
-            function isValidEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
-            }
+    function isValidPhoneNumber(phoneNumber) {
+        const phoneNumberRegex = /^\d{10}$/;
+        return phoneNumberRegex.test(phoneNumber);
+    }
 
-            function isValidPhoneNumber(phoneNumber) {
-                const phoneNumberRegex = /^[0-9]{10}$/;
-                return phoneNumberRegex.test(phoneNumber);
-            }
+    function isValidOTP(otp) {
+        const otpRegex = /^\d{6}$/;
+        return otpRegex.test(otp);
+    }
+});
 
-            function isValidOTP(otp) {
-                const otpRegex = /^[0-9]{6}$/;
-                return otpRegex.test(otp);
-            }
 
-        })
 
     </script>
 

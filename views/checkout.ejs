@@ -123,7 +123,7 @@
                         <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
                             <nav>
                                 <ul>
-                                    <li><a class="active" style="color: black;" href="index.html">Home <i class=""></i></a>
+                                    <li><a class="active" style="color: black;" href="/">Home <i class=""></i></a>
                                        
                                     </li>
                                     <li>
@@ -363,6 +363,7 @@
             </div>
         </div>
     </div>
+      
     <main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
@@ -406,7 +407,7 @@
                             </div>
                         </div>
                     </div> -->
-                    <div class="col-lg-6">
+                    <!-- <div class="col-lg-6">
                         <div class="toggle_info">
                             <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
                         </div>
@@ -430,6 +431,31 @@
                         <div class="divider mt-50 mb-50"></div>
                     </div>
                 </div>
+                <div class="row">
+                    <div><button class="btn btn-fill-out "><a style="color: beige;" href="/getadd-address">Add Address</a></button></div>
+                    <% if (!addresses) { %>
+                    <br>
+                    <h4 style="margin-top: 10px;">No Address Found</h4>
+                    <% } else { %>
+                        <% let addressNumber = 1; %>
+                        <% addresses.address.forEach((item) => { %>
+                            <div class="col-lg-6">
+                                <div class="card mb-3 mb-lg-0">
+                                    <div class="card-header">
+                                        <h5 class="mb-0">Address <%= addressNumber %></h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <address><%= item.userName %><br><%= item.city %><br><%= item.landMark %><br><%= item.state %></address>
+                                        <p><%= item.pinCode %></p>
+                                        <p><%= item.phoneNumber %></p>
+                                        <a href="#" class="btn-small">Edit</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <% addressNumber++; %>
+                        <% }) %>
+                    <% } %>
+            </div>
                 <div class="row" >
                     <div class="col-md-6" style="max-width: 35vw;">
                         <div class="mb-25">
@@ -530,8 +556,10 @@
                                 <textarea rows="5" placeholder="Order notes"></textarea>
                             </div>
                         </form>
-                    </div>
-                    <div class="col-md-6">
+                    </div> -->
+                   
+                    <!-- <div class="col-md-6">
+
                         <div class="order_review"  style="border: 1px solid rgb(98, 97, 97); border-radius: 15px;">
                             <div class="mb-20">
                                 <h4 style="font-weight: 800;">Your Orders</h4>
@@ -574,7 +602,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+                            <div class="bt-1 border-color-1 mt-30 mb-30"></div> -->
                             <!-- <div class="payment_method">
                                 <div class="mb-25">
                                     <h5>Payment</h5>
@@ -603,12 +631,87 @@
                                     </div>
                                 </div>
                             </div> -->
-                            <a href="/orders" class="btn btn-fill-out btn-block mt-30" style="margin-left: 50px;">Place Order (COD)</a>
+                            <!-- <a href="/orders" class="btn btn-fill-out btn-block mt-30" style="margin-left: 50px;">Place Order (COD)</a>
                             <a href="/onlinepayment" class="btn btn-fill-out btn-block mt-30" style="margin-left: 125px;" >Online Payment</a>
                         </div>
                     </div>
                 </div>
+            </div> -->
+
+
+            <div class="col-lg-5">
+                <button class="btn btn-fill-out"><a style="color: beige;" href="/getadd-address">Add Address</a></button>
+                <% if (!addresses) { %>
+                <br>
+                <h4 style="margin-top: 10px;">No Address Found</h4>
+                <% } else { %>
+                <% addresses.address.forEach((item, index) => { %>
+                <div class="card mb-3 mb-lg-0">
+                    <div class="card-header" style="display: flex; align-items: center;">
+                        <label style="margin-right: 10px;">
+                            <input type="radio" name="selectedAddress" value="<%= item.addressId %>" style="transform: scale(1.2);"> <!-- Adjust the scale value as needed -->
+                        </label>
+                        <h5 class="mb-0">Address <%= index + 1 %></h5>
+                    </div>
+                    <div class="card-body">
+                        <address><%= item.userName %><br><%= item.city %><br><%= item.landMark %><br><%= item.state %></address>
+                        <p><%= item.pinCode %></p>
+                        <p><%= item.phoneNumber %></p>
+                        <a href="#" class="btn-small">Edit</a>
+                    </div>
+                </div>
+                <% }) %>
+                <% } %>
             </div>
+            
+            
+            
+            
+            
+                
+  <div class="col-lg-6">
+    <!-- Place your order details here -->
+    <div class="order_review" style="border: 1px solid rgb(98, 97, 97); border-radius: 15px;">
+      <div class="mb-20">
+        <h4 style="font-weight: 800;">Your Orders</h4>
+      </div>
+      <div class="table-responsive order_table text-center p-4" style="border: 1px solid rgb(180, 180, 180); border-radius: 15px;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th colspan="2">Product</th>
+              <th style="font-weight: bold;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Your order details go here -->
+            <%userCart.products.forEach((product)=>{%>
+            <tr>
+              <td class="image product-thumbnail"><img src="<%= product.productId.photos[0] %>" alt="#"></td>
+              <td>
+                <h5><a href="shop-product-full.html"><%= product.productId.name %></a></h5> <span class="product-qty">× <%= Number(product.quantity) %></span>
+              </td>
+              <td class="price-span"><%= product.productId.s_price * Number(product.quantity) %></td>
+            </tr>
+            <%})%> 
+            <tr>
+              <th>Shipping</th>
+              <td colspan="2"><em>Free Shipping</em></td>
+            </tr>
+            <tr>
+              <th style="font-weight: 700;">Total</th>
+              <td colspan="2" class="product-subtotal"><span id="grandTotal" style="color: black;font-size: large;font-weight: 800;"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="bt-1 border-color-1 mt-30 mb-30"></div>
+      <a href="/orders" class="btn btn-fill-out btn-block mt-30" style="margin-left: 50px;">Place Order (COD)</a>
+      <a href="/onlinepayment" class="btn btn-fill-out btn-block mt-30" style="margin-left: 125px;">Online Payment</a>
+    </div>
+  </div>
+</div>
+
         </section>
     </main>
     <script>

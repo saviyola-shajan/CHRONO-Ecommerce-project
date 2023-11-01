@@ -177,21 +177,23 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form action="/admin/create-category" method="post" enctype="multipart/form-data">
+                            <form action="/admin/create-category" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" />
+                                    <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required />
+                                    <span id="nameError" style="color: red;"></span>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" name="description" class="form-control"></textarea>
+                                    <textarea placeholder="Type here" name="description" class="form-control" required></textarea>
+                                    <span id="descriptionError" style="color: red;"></span>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Photo</label>
-                                <input type="file" name="photo" accept="image/*" required="" >
+                                    <input type="file" name="photo" accept="image/*" required />
                                 </div>
-                                  <div class="mb-4">
-                                    <label class="form-label">status</label>
+                                <div class="mb-4">
+                                    <label class="form-label">Status</label>
                                     <select class="form-select">
                                         <option>Active</option>
                                         <option>Inactive</option>
@@ -201,6 +203,7 @@
                                     <button type="submit" class="btn btn-primary">Create category</button>
                                 </div>
                             </form>
+                            
                         </div>
                         <div class="col-md-9">
                             <div class="table-responsive" >
@@ -252,7 +255,49 @@
                     </div> <!-- .row // -->
                 </div> <!-- card body .// -->
             </div> <!-- card .// -->
-        </section> <!-- content-main end// -->
+        </section>
+         <!-- content-main end// -->
+
+         <script>
+            const valuesEntered = {};
+            
+            function validateForm() {
+                const name = document.getElementById('product_name').value;
+                const description = document.querySelector('textarea[name="description"]').value;
+                const nameError = document.getElementById('nameError');
+                const descriptionError = document.getElementById('descriptionError');
+            
+                // Reset any previous error messages
+                nameError.textContent = '';
+                descriptionError.textContent = '';
+            
+                let isValid = true;
+            
+                if (name.trim() === '') {
+                    nameError.textContent = 'Name is required';
+                    isValid = false;
+                }
+            
+                if (description.trim() === '') {
+                    descriptionError.textContent = 'Description is required';
+                    isValid = false;
+                }
+            
+                // Check for duplicate values in the object
+                if (valuesEntered[name]) {
+                    nameError.textContent = 'Name already exists';
+                    isValid = false;
+                } else {
+                    valuesEntered[name] = true; // Store the value in the object
+                }
+            
+                // Add more validation rules as needed
+            
+                return isValid;
+            }
+            </script>
+            
+            
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
