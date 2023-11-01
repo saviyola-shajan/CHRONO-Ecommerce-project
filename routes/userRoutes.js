@@ -27,7 +27,10 @@ userRouter.post("/remove-from-cart/:productId",userMiddleware.verifyUser,usercon
 userRouter.get("/checkout",userMiddleware.verifyUser,usercontroller.getCheckout)
 userRouter.get("/getadd-address",userMiddleware.verifyUser,usercontroller.getAddAddress)
 userRouter.post("/add-address",userMiddleware.verifyUser,usercontroller.postAddAddress)
-userRouter.get("/cod",usercontroller.getCOD)
+// userRouter.get("/placeorder",userMiddleware.verifyUser,usercontroller.getPlaceOrder)
+userRouter.get("/orders",userMiddleware.verifyUser,usercontroller.postOrders)
+userRouter.get("/forgotpassword",usercontroller.getForgotPassword)
+userRouter.get("/changepassword",usercontroller.changePassword)
 
 
 

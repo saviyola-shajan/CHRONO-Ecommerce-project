@@ -168,7 +168,7 @@ module.exports.postEditedProduct = async (req, res) => {
       brand,
       stock,
     } = req.body;
-    console.log(existingProduct)
+   
 
     const photos = req.files;
     const newPhotos = photos.map((element) => ({ name: element.filename, path: element.path }));
@@ -177,7 +177,7 @@ module.exports.postEditedProduct = async (req, res) => {
     const updatedPhotos = existingProduct.photos.map((oldPhoto, index) =>
     picPaths[index] ? picPaths[index] : oldPhoto
     );
-    console.log(updatedPhotos)
+    
   
     const updatedData = {
       name,
@@ -194,7 +194,7 @@ module.exports.postEditedProduct = async (req, res) => {
     const updatedProduct = await products.findByIdAndUpdate(editId, updatedData, { new: true });
     updatedProduct.save();
     const successMessage = "Product updated successfully";
-   console.log(updatedProduct);
+   
     res.redirect('/admin/product-list');
   } catch (error) {
     console.log(error);

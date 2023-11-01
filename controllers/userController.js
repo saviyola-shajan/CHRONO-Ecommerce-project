@@ -14,7 +14,7 @@ const jwt = require("jsonwebtoken");
 const secretKey = process.env.JWT_SECRET;
 
 let isOtpVerified = false;
-let phoneNumber;
+// let phoneNumber;
 
 module.exports.getHomePage = async (req, res) => {
   try {
@@ -95,7 +95,7 @@ module.exports.postUserSignup = async (req, res) => {
       error: "User with this email already exist...! Try another email. ",
     });
   } else {
-    if (isOtpVerified) {
+    // if (isOtpVerified) {
       await usercollecn.create({
         username: req.body.username,
         password: req.body.password,
@@ -116,9 +116,10 @@ module.exports.postUserSignup = async (req, res) => {
       //     }
 
       res.render("page-login", { message: "User Sign in Successfully" });
-    } else res.render("page-signup", { error: "OTP is incorrect" });
-  }
+  //   } else res.render("page-signup", { error: "OTP is incorrect" });
+  // }
 };
+}
 
 
 //  getting user home page
@@ -160,7 +161,7 @@ module.exports.postUserLogin = async (req, res) => {
 // for sending otp
 module.exports.getSendOtp = async (req, res) => {
   try {
-    phoneNumber = req.query.phoneNumber;
+    const phoneNumber = req.query.phoneNumber;
     await twilio.verify.v2
       .services(process.env.TWILIO_SERVICES_ID)
       .verifications.create({
@@ -180,8 +181,9 @@ module.exports.getSendOtp = async (req, res) => {
 //for veriyfing otp
 module.exports.getVerifyOtp = async (req, res) => {
   try {
+  const phoneNumber = req.query.phoneNumber;
     const otp = req.query.otp;
-    console.log(otp);
+    console.log(phoneNumber);
     if (!phoneNumber) {
       return res.status(400).json({ error: "Phone number not provided" });
     }
@@ -193,11 +195,13 @@ module.exports.getVerifyOtp = async (req, res) => {
       });
 
     if (verifyOTP.valid) {
-      isOtpVerified = true;
-      res.json({ message: "OTP verified successfully" });
+      console.log("VALID AANE");
+      // isOtpVerified = true;
+      res.status(200).json({ data: "OTP verified successfully" });
     } else {
-      isOtpVerified = false;
-      res.status(400).json({ error: "Invalid OTP" });
+      console.log("INVALID");
+      // isOtpVerified = false;
+      res.status(500).json({ error: "Invalid OTP" });
     }
   } catch (err) {
     console.error(err);
@@ -406,9 +410,52 @@ module.exports.getCheckout = async(req,res)=>{
     
   }
 
-  module.exports.getCOD = (req,res)=>{
-    res.render("cod")
-  }
+  // module.exports.getPlaceOrder = (req,res)=>{
+  //   res.render("place-order")
+  // }
 
+  module.exports.postOrders = async (req,res)=>{
+    try{
+      console.log("heyy")
+      const userId =req.user
+      const userdata = await usercollecn.findOne({email:req.user})
+      const userCart = await cart.findOne({userId:userdata._id}).populate({
+        path:"products.productId",
+        model:"products"
+      })
+      let orderTotal=0;
+      let orderProducts=[];
+      userCart.products.forEach((item)=>{
+        const orderItem={
+          productId:item.productId._id,
+          quantity:item.quantity,
+          price:item.productId.s_price
+        }
+        orderTotal += orderItem.price * orderItem.quantity;
+       orderProducts.push(orderItem);
+      })
+      
+
+       const newOrder = await order.create({
+        userId:userCart.userId._id,
+        products:orderProducts,
+        orderDate:new Date(),
+        totalAmount:orderTotal,
+        paymentMethod:"Cash on delivery"
+       })
+           await newOrder.save()
+        res.render("place-order")
+    }catch(error){
+      console.log(error)
+    }
+  }
   
 
+  module.exports.getForgotPassword =(req,res)=>{
+
+    res.render("forgotpassword")
+  }
+
+  module.exports.changePassword = (req,res)=>{
+    res.render("change password")
+  }
