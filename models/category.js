@@ -8,9 +8,9 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  photo:{
-    type:String,
-  },
+  // photo:{
+  //   type:String,
+  // },
   status:{
     type:String,
     default:'Active'

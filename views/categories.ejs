@@ -33,7 +33,7 @@
         <nav>
             <ul class="menu-aside">
                 <li class="">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-home"></i>
+                    <a class="menu-link" href="/admin/getadmin-dash"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
@@ -44,7 +44,7 @@
                    
                 </li>
                 <li class="">
-                    <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
+                    <a class="menu-link" href="/admin/orderlist"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
                     <!-- <li class="">
@@ -177,21 +177,22 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3">
-                            <form action="/admin/create-category" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+                            <form action="/admin/create-category" method="post"  >
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Name</label>
                                     <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required />
-                                    <span id="nameError" style="color: red;"></span>
+                                    <!-- <span id="nameError" style="color: red;"></span> -->
+                                    <span style="color: red;"><%=error%></span>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label">Description</label>
                                     <textarea placeholder="Type here" name="description" class="form-control" required></textarea>
                                     <span id="descriptionError" style="color: red;"></span>
                                 </div>
-                                <div class="mb-4">
+                                <!-- <div class="mb-4">
                                     <label class="form-label">Photo</label>
                                     <input type="file" name="photo" accept="image/*" required />
-                                </div>
+                                </div> -->
                                 <div class="mb-4">
                                     <label class="form-label">Status</label>
                                     <select class="form-select">
@@ -218,13 +219,13 @@
                                            
                                             <th>Name</th>
                                             <th>Description</th>
-                                            <th>Photo</th>
+                                            <!-- <th>Photo</th> -->
                                             <th>Status</th>
-                                            <!-- <th>Action</th> -->
+                                            <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <% dataCategory.forEach(categories=> {%>
+                                        <% dataCategory.reverse().forEach(categories=> {%>
                                         <tr>
                                             <td class="text-center">
                                                 <!-- <div class="form-check">
@@ -234,18 +235,15 @@
                                             
                                             <td><b><%=categories.name%></b></td>
                                             <td><%=categories.description%></td>
-                                            <td><img src="<%=categories.photo%>" alt="category photo" height="68"></td>
+                                            <!-- <td><img src="<%=categories.photo%>" alt="category photo" height="68"></td> -->
                                             <td><%=categories.status%></td>
-                                             <!-- <td class="text-end"> -->
-                                                <!-- <div class="dropdown">
-                                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                                    <div class="dropdown-menu">
-                                                        <a class="dropdown-item" href="#">View detail</a>
+                                            <td class="text-end">
+                                                <div>
+                                                        <!-- <a class="dropdown-item" href="#">View detail</a> -->
                                                         <a class="dropdown-item" href="#">Edit info</a>
                                                         <a class="dropdown-item text-danger" href="#">Delete</a>
-                                                    </div>
-                                                </div> dropdown //end -->
-                                            <!-- </td> -->
+                                                    </div>                                                
+                                            </td>
                                         </tr>
                                         <% });%>
                                     </tbody>
@@ -258,7 +256,9 @@
         </section>
          <!-- content-main end// -->
 
-         <script>
+         <!-- <script>
+
+onsubmit="return validateForm()"
             const valuesEntered = {};
             
             function validateForm() {
@@ -295,7 +295,7 @@
             
                 return isValid;
             }
-            </script>
+            </script> -->
             
             
         <footer class="main-footer font-xs">
@@ -318,12 +318,13 @@
       <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
       <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
          <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-       <script>
-         $(document).ready(function () {
-      new DataTable('#category');
-
-       })
-        </script>
+         <script>
+            $(document).ready(function () {
+                new DataTable('#category', {
+                    order: [[0, 'desc']] 
+                });
+            });
+            </script>
                   
 
     <script src="/adminAssets/assets/js/vendors/jquery-3.6.0.min.js"></script>

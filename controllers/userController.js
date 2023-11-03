@@ -1,27 +1,26 @@
 const mongoose = require("mongoose");
 const usercollecn = require("../models/userlogin");
-const cart = require("../models/cartModel")
-const address = require("../models/address")
-const order = require("../models/order")
+const cart = require("../models/cartModel");
+const address = require("../models/address");
+const order = require("../models/order");
+const products = require("../models/addProduct");
+const wishlist = require("../models/whishlist");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const twilio = require("twilio")(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
-const products = require("../models/addProduct");
 const jwt = require("jsonwebtoken");
+const category = require("../models/category");
 const secretKey = process.env.JWT_SECRET;
 
-// let isOtpVerified = false;
-// let phoneNumber;
-
+//get user home page
 module.exports.getHomePage = async (req, res) => {
   try {
-   const loggedIn=req.cookies.loggedIn
-    const product = await products.find({status:"Avaliable"})
-    res.render("home", { product,loggedIn});
-    
+    const loggedIn = req.cookies.loggedIn;
+    const product = await products.find({ status: "Avaliable" });
+    res.render("home", { product, loggedIn });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error fetching products");
@@ -78,20 +77,23 @@ module.exports.getHomePage = async (req, res) => {
 module.exports.getUserSignup = (req, res) => {
   res.render("page-signup");
 };
-module.exports.getUserLogin = (req, res) => {
-  if(req.cookies.loggedIn){
-    res.redirect("/")
-  }else{
-  res.render("page-login");
-  }
-  }
 
+//get user login
+module.exports.getUserLogin = (req, res) => {
+  if (req.cookies.loggedIn) {
+    res.redirect("/");
+  } else {
+    res.render("page-login");
+  }
+};
 
 //posting user deatils to database
 module.exports.postUserSignup = async (req, res) => {
   try {
     const emailExists = await usercollecn.findOne({ email: req.body.email });
-    const phoneExists = await usercollecn.findOne({ phoneNumber: req.body.phoneNumber });
+    const phoneExists = await usercollecn.findOne({
+      phoneNumber: req.body.phoneNumber,
+    });
 
     if (emailExists) {
       res.render("page-signup", {
@@ -99,7 +101,8 @@ module.exports.postUserSignup = async (req, res) => {
       });
     } else if (phoneExists) {
       res.render("page-signup", {
-        error: "User with this phone number already exists. Try another phone number.",
+        error:
+          "User with this phone number already exists. Try another phone number.",
       });
     } else {
       await usercollecn.create({
@@ -119,9 +122,7 @@ module.exports.postUserSignup = async (req, res) => {
   }
 };
 
-
-
-//  getting user home page
+//  check user login deatils and create session
 module.exports.postUserLogin = async (req, res) => {
   const logindata = await usercollecn.findOne({ email: req.body.email });
   if (!logindata) {
@@ -135,17 +136,15 @@ module.exports.postUserLogin = async (req, res) => {
       if (
         req.body.email == logindata.email &&
         req.body.password == logindata.password
-          
       ) {
         {
           try {
-            
             email = req.body.email;
             const token = jwt.sign(email, secretKey);
-            res.cookie("token", token,{maxAge:24*60*60*1000});
-            res.cookie("loggedIn",true,{maxAge:24*60*60*1000});
-            const product = await products.find({status:"Avaliable"});
-            res.redirect("/") 
+            res.cookie("token", token, { maxAge: 24 * 60 * 60 * 1000 });
+            res.cookie("loggedIn", true, { maxAge: 24 * 60 * 60 * 1000 });
+            const product = await products.find({ status: "Avaliable" });
+            res.redirect("/");
           } catch (error) {
             console.error(error);
             res.status(500).send("Error fetching products");
@@ -157,6 +156,7 @@ module.exports.postUserLogin = async (req, res) => {
     }
   }
 };
+
 // for sending otp
 module.exports.getSendOtp = async (req, res) => {
   try {
@@ -180,9 +180,8 @@ module.exports.getSendOtp = async (req, res) => {
 //for veriyfing otp
 module.exports.postVerifyOtp = async (req, res) => {
   try {
-  const phoneNumber = req.query.phoneNumber;
+    const phoneNumber = req.query.phoneNumber;
     const otp = req.query.otp;
-    console.log(phoneNumber);
     if (!phoneNumber) {
       return res.status(400).json({ error: "Phone number not provided" });
     }
@@ -219,27 +218,30 @@ module.exports.getSingleProduct = async (req, res) => {
   }
 };
 
-
+// for logout
 module.exports.getlogout = (req, res) => {
   res.clearCookie("token");
-  res.clearCookie("loggedIn")
+  res.clearCookie("loggedIn");
   res.redirect("/get-login");
 };
 
-module.exports.getCart= async(req,res)=>{
-try{
-  const userData = await usercollecn.findOne({email:req.user})
-  const userCart = await cart.findOne({userId:userData._id}).populate({
-    path:'products.productId',
-    model:'products'
-  });
-  res.render("cart",{userCart})
-  
-}catch(error){
-  console.log('error while loading cart',error)
-}    
-}
+// get cart page
+module.exports.getCart = async (req, res) => {
+  try {
+    const userData = await usercollecn.findOne({ email: req.user });
+    console.log(userData);
+    const userCart = await cart.findOne({ userId: userData._id }).populate({
+      path: "products.productId",
+      model: "products",
+    });
+    console.log(userCart);
+    res.render("cart", { userCart });
+  } catch (error) {
+    console.log("error while loading cart", error);
+  }
+};
 
+//add products to cart and save in DB
 module.exports.goTOCart = async (req, res) => {
   try {
     const userid = req.user.email;
@@ -253,7 +255,7 @@ module.exports.goTOCart = async (req, res) => {
         products: [],
       });
     }
-    
+
     const existingProductIndex = userCart.products.findIndex(
       (product) => product.productId.toString() === productId
     );
@@ -266,7 +268,7 @@ module.exports.goTOCart = async (req, res) => {
         quantity: 1,
       });
     }
-    
+
     await userCart.save();
 
     res.json({ message: "Product added to the cart" });
@@ -276,11 +278,10 @@ module.exports.goTOCart = async (req, res) => {
   }
 };
 
-
 //  module.exports.goTOCart = async (req, res) => {
 //   try {
 //     const userId = req.user.email;
-//     const userData = await usercollecn.findOne({email:req.user}) 
+//     const userData = await usercollecn.findOne({email:req.user})
 //     const userid = userData._id;
 //     const { productId } = req.body;
 //     let userCart = await cart.findOne({ userId: userid });
@@ -289,6 +290,7 @@ module.exports.goTOCart = async (req, res) => {
 //         userId: userid,
 //         products: [],
 //       });
+//       console.log(userCart);
 //     }
 //     const existingProduct = userCart.products.find(
 //       (product) => product.productId.toString() === productId
@@ -302,6 +304,7 @@ module.exports.goTOCart = async (req, res) => {
 //         quantity: 1,
 //       });
 //     }
+//     console.log(userCart);
 //     await userCart.save();
 
 //     res.json({ message: "Product added to the cart" });
@@ -311,89 +314,109 @@ module.exports.goTOCart = async (req, res) => {
 //   }
 // };
 
-module.exports.updateQuantity = async (req,res)=>{
-  try{
-  const productId = req.body.productId;
-  const newQuantity = req.body.quantity;
-  const user=await usercollecn.findOne({email:req.user})
-   const result = await cart.findOne({userId:user._id})
-  for (const item of result.products) {
-    if (item._id == productId) {
-      await cart.updateOne(
-        { userId: user._id, 'products._id': productId },
-        { $set: { 'products.$.quantity': newQuantity } }
-      );
+module.exports.updateQuantity = async (req, res) => {
+  try {
+    const productId = req.body.productId;
+    const newQuantity = req.body.quantity;
+    const user = await usercollecn.findOne({ email: req.user });
+    const result = await cart.findOne({ userId: user._id });
+    for (const item of result.products) {
+      if (item._id == productId) {
+        await cart.updateOne(
+          { userId: user._id, "products._id": productId },
+          { $set: { "products.$.quantity": newQuantity } }
+        );
+      }
     }
-  }
-   if(result){
-   res.json({data :{productId,quantity:newQuantity}})
-   }else{
-    console.log("error");
-   }
-  }catch(error){
-    console.log("error in updating quantity",error);
+    if (result) {
+      res.json({ data: { productId, quantity: newQuantity } });
+    } else {
+      console.log("error");
+    }
+  } catch (error) {
+    console.log("error in updating quantity", error);
   }
 };
 
-module.exports.getUserAccount=async(req,res)=>{
-  try{
-    const userId = await usercollecn.findOne({email:req.user})
-    const useraddress = await address.findOne({userId:userId._id})
-    const listorders = await order.find({userId:userId._id}).populate({
-      path:"products.productId",
-      model:"products"
-    })
-    res.render("user-account",{userId,useraddress,listorders})
-  }catch(error){
-    console.log(error)
+//get user account deatils
+module.exports.getUserAccount = async (req, res) => {
+  try {
+    const userId = await usercollecn.findOne({ email: req.user });
+    const useraddress = await address.findOne({ userId: userId._id });
+    const listorders = await order.find({ userId: userId._id }).populate({
+      path: "products.productId",
+      model: "products",
+    });
+    res.render("user-account", { userId, useraddress, listorders });
+  } catch (error) {
+    console.log(error);
   }
+};
 
-}
-
+//remove item from cart
 module.exports.removeFromCart = async (req, res) => {
   try {
     console.log(req.user);
-    const user = await usercollecn.findOne({email:req.user})
+    const user = await usercollecn.findOne({ email: req.user });
     const productId = req.params.productId;
-    const updateproduct =await cart.updateOne({userId:user._id},{
-      $pull :{
-        products : {
-          productId : productId 
-        }
+    const updateproduct = await cart.updateOne(
+      { userId: user._id },
+      {
+        $pull: {
+          products: {
+            productId: productId,
+          },
+        },
       }
-    })
-    res.redirect("/cart")
+    );
+    res.redirect("/cart");
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ success: false, message: 'Internal server error' });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
-module.exports.getCheckout = async(req,res)=>{
-  try{
-    const userData = await usercollecn.findOne({email:req.user})
-    const addresses = await address.findOne({userId:userData._id})
-    const userCart = await cart.findOne({userId:userData._id}).populate({
-      path:'products.productId',
-      model:'products'
+//cart to checkout page
+module.exports.getCheckout = async (req, res) => {
+  try {
+    const userData = await usercollecn.findOne({ email: req.user });
+    const addresses = await address.findOne({ userId: userData._id });
+    const userCart = await cart.findOne({ userId: userData._id }).populate({
+      path: "products.productId",
+      model: "products",
     });
-    res.render("checkout",{addresses,userCart})
-    
-  }catch(error){
-    console.log('error while loading cart',error)
-  }    
+    res.render("checkout", { addresses, userCart });
+  } catch (error) {
+    console.log("error while loading cart", error);
   }
+};
 
-  module.exports.getAddAddress = async (req,res)=>{
-      res.render("add-address")
-  }
+//get address page
+module.exports.getAddAddress = async (req, res) => {
+  res.render("add-address");
+};
 
-  module.exports.postAddAddress = async (req,res)=>{
-    try{
-      const userId = req.user
-      const userdata = await usercollecn.findOne({email:req.user})
-      const userAddress = await address.findOne({userId:userdata._id})
-      const{
+//post address to DB
+module.exports.postAddAddress = async (req, res) => {
+  try {
+    const userId = req.user;
+    const userdata = await usercollecn.findOne({ email: req.user });
+    const userAddress = await address.findOne({ userId: userdata._id });
+    const {
+      addressType,
+      userName,
+      city,
+      landMark,
+      state,
+      pinCode,
+      phoneNumber,
+      altPhone,
+    } = req.body;
+
+    if (userAddress) {
+      userAddress.address.push({
         addressType,
         userName,
         city,
@@ -402,10 +425,12 @@ module.exports.getCheckout = async(req,res)=>{
         pinCode,
         phoneNumber,
         altPhone,
-      }=req.body
-
-      if(userAddress){
-        userAddress.address.push({
+      });
+      await userAddress.save();
+    } else {
+      const newUser = new address({
+        userId: userdata._id,
+        address: {
           addressType,
           userName,
           city,
@@ -414,186 +439,321 @@ module.exports.getCheckout = async(req,res)=>{
           pinCode,
           phoneNumber,
           altPhone,
-        });
-        await userAddress.save()
-      }else{
-        const newUser = new address({
-          userId:userdata._id,
-          address: {
-            addressType,
-            userName,
-            city,
-            landMark,
-            state,
-            pinCode,
-            phoneNumber,
-            altPhone,
-          },
-        })
-        await newUser.save()
-      }
-      res.redirect('/user-account')
-    }catch(error){
-      console.log(error);
-      res.render('user-account', { error: 'Failed to add address' });
-
+        },
+      });
+      await newUser.save();
     }
-    
+    res.redirect("/user-account");
+  } catch (error) {
+    console.log(error);
+    res.render("user-account", { error: "Failed to add address" });
   }
+};
 
-  // module.exports.getPlaceOrder = (req,res)=>{
-  //   res.render("place-order")
-  // }
+// module.exports.getPlaceOrder = (req,res)=>{
+//   res.render("place-order")
+// }
 
-  module.exports.postOrders = async (req,res)=>{
-    try{
-      const userId =req.user
-      const userdata = await usercollecn.findOne({email:req.user})
-      const userCart = await cart.findOne({userId:userdata._id}).populate({
-        path:"products.productId",
-        model:"products"
-      })
-      let orderTotal=0;
-      let orderProducts=[];
-      userCart.products.forEach((item)=>{
-        const orderItem={
-          productId:item.productId._id,
-          quantity:item.quantity,
-          price:item.productId.s_price
-        }
-        orderTotal += orderItem.price * orderItem.quantity;
-       orderProducts.push(orderItem);
-      })
-      
+//save orders to the DB
+module.exports.postOrders = async (req, res) => {
+  try {
+    const userId = req.user;
+    const userdata = await usercollecn.findOne({ email: req.user });
+    const userCart = await cart.findOne({ userId: userdata._id }).populate({
+      path: "products.productId",
+      model: "products",
+    });
+    let orderTotal = 0;
+    let orderProducts = [];
+    userCart.products.forEach((item) => {
+      const orderItem = {
+        productId: item.productId._id,
+        quantity: item.quantity,
+        price: item.productId.s_price,
+      };
+      orderTotal += orderItem.price * orderItem.quantity;
+      orderProducts.push(orderItem);
+    });
 
-       const newOrder = await order.create({
-        userId:userCart.userId._id,
-        products:orderProducts,
-        orderDate:new Date(),
-        totalAmount:orderTotal,
-        paymentMethod:"Cash on delivery"
-       })
-           await newOrder.save()
-           await cart.deleteOne({userId:userdata._id})
-        res.render("place-order")
-    }catch(error){
-      console.log(error)
-    }
+    const newOrder = await order.create({
+      userId: userCart.userId._id,
+      products: orderProducts,
+      orderDate: new Date(),
+      totalAmount: orderTotal,
+      paymentMethod: "Cash on delivery",
+    });
+    await newOrder.save();
+    await cart.deleteOne({ userId: userdata._id });
+    res.render("place-order");
+  } catch (error) {
+    console.log(error);
   }
-  
+};
 
-  module.exports.getPasswordResetPage =(req,res)=>{
-    try{
-      const loggedIn =req.cookies.loggedIn;
-      res.render("forgotpassword",{loggedIn})
-    }catch(error){
-     console.log(error)
-    }
+//get password reset page
+module.exports.getPasswordResetPage = (req, res) => {
+  try {
+    const loggedIn = req.cookies.loggedIn;
+    res.render("forgotpassword", { loggedIn });
+  } catch (error) {
+    console.log(error);
   }
+};
 
-  module.exports.getPasswordResetOtp = async(req,res)=>{
-    try{
-      console.log("heyy")
-      const userEmail=req.query.email
-      const user = await usercollecn.findOne({email:userEmail})
-      if(user){
-        await twilio.verify.v2
+//get password reset otp
+module.exports.getPasswordResetOtp = async (req, res) => {
+  try {
+    console.log("heyy");
+    const userEmail = req.query.email;
+    const user = await usercollecn.findOne({ email: userEmail });
+    if (user) {
+      await twilio.verify.v2
         .services(process.env.TWILIO_SERVICES_ID)
         .verifications.create({
           to: `+91${user.phoneNumber}`,
           channel: "sms",
         })
-        .then(()=>{
-          res.status(200).json({data:"send"})
-        })
-
-      }else{
-        res.status(500).json({data:"user with this Email don't exist"})
-      }
-    }catch(error){
-        console.log(error)
+        .then(() => {
+          res.status(200).json({ data: "send" });
+        });
+    } else {
+      res.status(500).json({ data: "user with this Email don't exist" });
     }
+  } catch (error) {
+    console.log(error);
   }
+};
 
-  module.exports.getVerifyPasswordResetOtp = async(req,res)=>{
-    try{
-    const otp = req.query.otp
-    const email = req.query.email
-    const user = await usercollecn.findOne({email:email})
-    const verifyOTP =  await twilio.verify.v2
-    .services(process.env.TWILIO_SERVICES_ID)
-    .verificationChecks.create({
-      to: `+91${user.phoneNumber}`,
-      code: otp,
-    })
-    if(verifyOTP.valid){
-      res.status(200).json({data:"verified"})
-    }else{
-      res.status(500).json({data:"OTP incorrect"})
+//get verify password reset otp
+module.exports.getVerifyPasswordResetOtp = async (req, res) => {
+  try {
+    const otp = req.query.otp;
+    const email = req.query.email;
+    const user = await usercollecn.findOne({ email: email });
+    const verifyOTP = await twilio.verify.v2
+      .services(process.env.TWILIO_SERVICES_ID)
+      .verificationChecks.create({
+        to: `+91${user.phoneNumber}`,
+        code: otp,
+      });
+    if (verifyOTP.valid) {
+      res.status(200).json({ data: "verified" });
+    } else {
+      res.status(500).json({ data: "OTP incorrect" });
     }
-    }catch(error){
-      console.log(error)
-    }
+  } catch (error) {
+    console.log(error);
   }
+};
 
-  module.exports.changePassword = async(req,res)=>{
-    try{
-      const Email= req.query.email
-      const loggedIn = req.cookies.loggedIn
-      res.render("changepassword",{Email,loggedIn})
-    }catch(error){
-    console.log(error)
-    }
+//change password page
+module.exports.changePassword = async (req, res) => {
+  try {
+    const Email = req.query.email;
+    const loggedIn = req.cookies.loggedIn;
+    res.render("changepassword", { Email, loggedIn });
+  } catch (error) {
+    console.log(error);
   }
-  
-  module.exports.postNewPassword = async(req,res)=>{
-    try{
-      const {email,password}=req.body
-      await usercollecn.updateOne({email:email},{$set:{password:password}})
-      res.status(200).json({data:"password Updated"})
-    }catch(error){
-      console.log(error)
-      res.status(500).json({data:"passwor updatiom failed"})
-    }
+};
+
+//save new password to DB
+module.exports.postNewPassword = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    await usercollecn.updateOne(
+      { email: email },
+      { $set: { password: password } }
+    );
+    res.status(200).json({ data: "password Updated" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ data: "passwor updatiom failed" });
   }
+};
 
-
- module.exports.orderDeatils = async (req,res)=>{
-  try{
-    const orderId = req.params.orderId
-    const orderDetails = await order.findById({_id:orderId}).populate({
-      path:"products.productId",
-      model:"products"
-    })
-      res.render("orderDetails",{orderDetails}) 
-  }catch(error){
-console.log(error)
-  }  
- }
-
+// get order details page
+module.exports.orderDeatils = async (req, res) => {
+  try {
+    const orderId = req.params.orderId;
+    const orderDetails = await order.findById({ _id: orderId }).populate({
+      path: "products.productId",
+      model: "products",
+    });
+    res.render("admin-orderDetails", { orderDetails });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 //handling cancels
- module.exports.productCancel=async (req, res)=>{
-  try{
-    const userData= await usercollecn.findOne({email:req.user});
-    let userCancel= await order.findOne({userId:userData._id});
-    await order.updateOne({ _id: req.body.orderID }, { $set: { orderStatus: "Cancelled",cancelReason:req.body.reason} });
+module.exports.productCancel = async (req, res) => {
+  try {
+    const userData = await usercollecn.findOne({ email: req.user });
+    let userCancel = await order.findOne({ userId: userData._id });
+    await order.updateOne(
+      { _id: req.body.orderID },
+      { $set: { orderStatus: "Cancelled", cancelReason: req.body.reason } }
+    );
     res.redirect("/user-account");
+  } catch (error) {
+    console.log("An error happened while processig return! :" + error);
   }
-  catch(error){
-    console.log("An error happened while processig return! :"+error);
-  }
-}
+};
 
 //handling returns
-module.exports.returnOrder = async(req,res)=>{
-  try{
-    const userData= await usercollecn.findOne({email:req.user});
-    let userReturn= await order.findOne({userId:userData._id});
-    await order.updateOne({ _id: req.body.orderID }, { $set: { orderStatus: "Returned",returnReason:req.body.reason } });
+module.exports.returnOrder = async (req, res) => {
+  try {
+    const userData = await usercollecn.findOne({ email: req.user });
+    let userReturn = await order.findOne({ userId: userData._id });
+    await order.updateOne(
+      { _id: req.body.orderID },
+      { $set: { orderStatus: "Returned", returnReason: req.body.reason } }
+    );
     res.redirect("/user-account");
+  } catch (error) {
+    console.log("An error happened while processig return! :" + error);
   }
-  catch(error){
-    console.log("An error happened while processig return! :"+error);
+};
+
+//search in home page
+module.exports.searchProducts = async (req, res) => {
+  try {
+    const loggedIn = req.cookies.loggedIn;
+    const { search_product } = req.query;
+    const regex = new RegExp(search_product, "i");
+    const product = await products.find({ name: regex });
+    if (product.length === 0) {
+      res.render("home", { message: "No products found", product, loggedIn });
+    } else {
+      res.render("home", { product, loggedIn });
+    }
+  } catch (error) {
+    console.log(error);
   }
-}
+};
+
+//filter category
+module.exports.filterCategory = async (req, res) => {
+  try {
+    const loggedIn = req.cookies.loggedIn;
+    const categories = req.query.category;
+    const product = await products.find({ category: categories });
+    if (product.length === 0) {
+      res.render("home", {
+        message: "No items found in specified category",
+        product,
+        loggedIn,
+      });
+    } else {
+      res.render("home", { product, loggedIn });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// get wishlist
+module.exports.getWishlist = async (req, res) => {
+  try {
+    const userData = await usercollecn.findOne({ email: req.user });
+    const userWishlist = await wishlist
+      .findOne({ userId: userData._id })
+      .populate({
+        path: "products.productId",
+        model: "products",
+      });
+    res.render("wishlist", { userWishlist });
+  } catch (error) {
+    console.log("error while loading cart", error);
+  }
+};
+
+//add products to wishlist
+module.exports.goToWishlist = async (req, res) => {
+  try {
+    const userid = req.user.email;
+    const userData = await usercollecn.findOne({ email: req.user });
+    const userId = userData._id;
+    const { productId } = req.body;
+    let userWishlist = await wishlist.findOne({ userId });
+    if (!userWishlist) {
+      userWishlist = new wishlist({
+        userId,
+        products: [{ productId }],
+      });
+    } else {
+      userWishlist.products.push({
+        productId: new mongoose.Types.ObjectId(productId),
+      });
+    }
+    await userWishlist.save();
+
+    res.json({ message: "Product added to the Wishlist" });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ error: "Failed to add the product to the Wishlist" });
+  }
+};
+
+//remove products from wishlist
+module.exports.removeFromWishlist = async (req, res) => {
+  try {
+    console.log(req.user);
+    const user = await usercollecn.findOne({ email: req.user });
+    const productId = req.params.productId;
+    const updateproduct = await wishlist.updateOne(
+      { userId: user._id },
+      {
+        $pull: {
+          products: {
+            productId: productId,
+          },
+        },
+      }
+    );
+    res.redirect("/wishlist");
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+//add to cart from wishlist
+module.exports.wishlistToCart = async (req, res) => {
+  try {
+    const userId = req.user;
+    const userData = await usercollecn.findOne({ email: req.user });
+    const productId = req.params.productId;
+    const updateproduct = await wishlist.updateOne(
+      { userId: userData._id },
+      {
+        $pull: {
+          products: {
+            productId: productId,
+          },
+        },
+      }
+    );
+    const userCart = await cart.findOne({ userId: userData._id });
+    if (!userCart) {
+      const newCart = new cart({
+        userId,
+        products: [productId],
+      });
+      await newCart.save();
+    } else {
+      userCart.products.push({
+        productId: productId,
+        quantity: 1,
+      });
+    }
+    res.redirect("/wishlist");
+  } catch (error) {
+    console.log(error);
+  }
+};

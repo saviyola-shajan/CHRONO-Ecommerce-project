@@ -37,6 +37,12 @@ userRouter.post("/newpassword",usercontroller.postNewPassword)
 userRouter.get("/orderdetails/:orderId",userMiddleware.verifyUser,usercontroller.orderDeatils) 
 userRouter.post("/cancelorder",userMiddleware.verifyUser,usercontroller.productCancel)
 userRouter.post("/returnorder",userMiddleware.verifyUser,usercontroller.returnOrder)
+userRouter.get("/search",userMiddleware.verifyUser,usercontroller.searchProducts)
+userRouter.get("/filtercategory",userMiddleware.verifyUser,usercontroller.filterCategory)
+userRouter.get("/wishlist",userMiddleware.verifyUser,usercontroller.getWishlist)
+userRouter.post("/addtowishlist",userMiddleware.verifyUser,usercontroller.goToWishlist)
+userRouter.post("/removefromwishlist/:productId",userMiddleware.verifyUser,usercontroller.removeFromWishlist)
+userRouter.get("/wishlistTocart/:productId",userMiddleware.verifyUser,usercontroller.wishlistToCart)
 
 
 

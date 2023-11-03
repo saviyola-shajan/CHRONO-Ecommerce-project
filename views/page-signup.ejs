@@ -507,7 +507,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <input type="number" class="form-control" placeholder="Mobile Number" name="phoneNumber" id="phoneNumber">
-                                                <div class="error-message" id="errSignupPhoneNumber"></div> <!-- Error message next to the field -->
+                                                <div class="error-message" id="errSignupPhoneNumber"></div> 
                                             </div>
                                             <div class="input-group w-auto">
                                                 <button class="btn btn-primary" type="button" id="sendOTPButton" data-mdb-ripple-color="dark">
@@ -710,6 +710,7 @@
     registrationForm.addEventListener("submit", function (e) {
         const username = document.getElementById("username").value;
         const email = document.getElementById("email").value;
+        const alphabetPattern = /^[A-Za-z]+$/;
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("confirmpassword").value;
         const phoneNumber = document.getElementById("phoneNumber").value;
@@ -724,9 +725,12 @@
         document.getElementById("errSignupOtp").textContent = "";
 
         if (username.trim() === "") {
-            e.preventDefault();
-            document.getElementById("errSignupName").textContent = "Please enter your Name.";
-        }
+    e.preventDefault();
+    document.getElementById("errSignupName").textContent = "Please enter your Name.";
+} else if (!alphabetPattern.test(username)) {
+    e.preventDefault();
+    document.getElementById("errSignupName").textContent = "Only alphabet characters are allowed.";
+}
 
         if (!isValidEmail(email)) {
             e.preventDefault();
@@ -800,8 +804,8 @@
                 </div>
             </div>
         </section> 
-        <section class="section-padding footer-mid">
-            <div class="container pt-15 pb-20">
+        <!-- <section class="section-padding footer-mid"> -->
+            <!-- <div class="container pt-15 pb-20">
                 <div class="row">
                     <div class="col-lg-4 col-md-6">
                         <div class="widget-about font-md mb-md-5 mb-lg-0">
@@ -827,7 +831,7 @@
                                 <a href="#"><img src="/userAssets/assets/imgs/theme/icons/icon-youtube.svg" alt=""></a>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- <div class="col-lg-2 col-md-3">
                         <h5 class="widget-title wow fadeIn animated">About</h5>
                         <ul class="footer-list wow fadeIn animated mb-sm-5 mb-md-0">
@@ -866,9 +870,9 @@
                             </div>
                         </div>
                     </div> -->
-                </div>
-            </div>
-        </section>
+                <!-- </div> -->
+            <!-- </div> -->
+        <!-- </section> -->
         <div class="container pb-20 wow fadeIn animated">
             <div class="row">
                 <div class="col-12 mb-20">

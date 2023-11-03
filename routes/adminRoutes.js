@@ -10,8 +10,8 @@ adminRouter.use("/uploads", express.static("uploads"));
 
 
 adminRouter.get("", admincontroller.getAdminLogin);
-adminRouter.get("/admin-dash", admincontroller.getAdminDashboard);
-adminRouter.post("/admin-dash", admincontroller.getAdminDashboard);
+adminRouter.get("/getadmin-dash", admincontroller.getAdminDashboard);
+adminRouter.post("/admin-dash", admincontroller.postAdminDashboard);
 adminRouter.get("/users", admincontroller.getUsers);
 adminRouter.get("/product-list", admincontroller.getProductsList);
 adminRouter.get("/add-product", admincontroller.getAddProduct);
@@ -21,6 +21,9 @@ adminRouter.post("/update-product-status/:productId",admincontroller.postProduct
 adminRouter.get("/edit-product",admincontroller.getEditProduct)
 adminRouter.post('/submit-edited-product/:productId',multerMiddleware.upload.array("photo"),admincontroller.postEditedProduct)
 adminRouter.get("/categories",admincontroller.getCategory)
-adminRouter.post("/create-category",multerMiddleware.upload.single("photo"),admincontroller.postCreateCategory)
+adminRouter.post("/create-category",admincontroller.postCreateCategory)
+adminRouter.get("/orderlist",admincontroller.getOrderList)
+adminRouter.get("/editorderdetails/:id",admincontroller.getOrderdetails)
+adminRouter.post("/editorderstatus",admincontroller.editOrderStatus)
 
 module.exports = adminRouter;

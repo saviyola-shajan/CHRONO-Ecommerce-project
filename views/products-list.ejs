@@ -58,7 +58,7 @@
         <nav>
             <ul class="menu-aside">
                 <li class="menu-item active">
-                    <a class="menu-link" href="#"> <i class="icon material-icons md-home"></i>
+                    <a class="menu-link" href="/admin/getadmin-dash"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
@@ -74,7 +74,7 @@
                     </div> -->
                 </li>
                 <li class="">
-                    <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
+                    <a class="menu-link" href="/admin/orderlist"> <i class="icon material-icons md-shopping_cart"></i>
                         <span class="text">Orders</span>
                     </a>
                     <!-- <div class="submenu">
@@ -281,7 +281,7 @@
                                                 <% if (product.status === 'Avaliable') { %>
                                                    Unlist
                                                 <% } else { %>
-                                                    List
+                                                    list
                                                 <% } %>
                                             </button>
                                         </td>
@@ -338,12 +338,13 @@
                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
                       <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-                    <script>
-                      $(document).ready(function () {
-                   new DataTable('#products');
-
-                    })
-                     </script>
+                      <script>
+                        $(document).ready(function () {
+                            new DataTable('#products', {
+                                order: [[0, 'desc']] 
+                            });
+                        });
+                        </script>
                                         
                 
 

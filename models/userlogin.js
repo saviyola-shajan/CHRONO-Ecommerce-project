@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
   isverified: {
     type: Number,
   },
+  createdOn:{
+      type: Date,
+      default: Date.now,
+  }
 });
 const usercollecn = mongoose.model("usercollecn", userSchema);
 module.exports = usercollecn;
