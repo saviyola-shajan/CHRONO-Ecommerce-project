@@ -4,7 +4,6 @@ require("dotenv").config();
 
 module.exports.verifyUser = (req, res, next) => {
   const token = req.cookies.token;
-  console.log(req.cookies);
   const verifyToken = jwt.verify(
     token,
     process.env.JWT_SECRET,

@@ -28,7 +28,7 @@
 <body>
     <div class="container">
         <h2 class="text-center">Add Address</h2>
-        <form action="/add-address" method="post">
+        <form action="/add-address" method="post" onsubmit="return validateForm()">
             <div class="form-group">
                 <label for="addressType">Address Type</label>
                 <select class="form-control" id="addressType" name="addressType" required>
@@ -69,6 +69,46 @@
             <button type="submit" class="btn btn-primary btn-block">Add Address</button>
         </form>
     </div>
+
+
+    <script>
+        function validateForm() {
+            const addressType = document.getElementById('addressType').value;
+            const userName = document.getElementById('username').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const pinCode = document.getElementById('pincode').value;
+            const phoneNumber = document.getElementById('phonenumber').value;
+    
+            // Validation for addressType (selection is mandatory)
+            if (addressType === '') {
+                alert('Please select an Address Type.');
+                return false; // Prevent form submission
+            }
+    
+            // Validation for userName (only alphabets)
+            const nameRegex = /^[A-Za-z\s]+$/;
+            if (!nameRegex.test(userName)) {
+                alert('Username should contain alphabetic characters only.');
+                return false; // Prevent form submission
+            }
+    
+            // Validation for city and state (only alphabets)
+            if (!/^[A-Za-z\s]+$/.test(city) || !/^[A-Za-z\s]+$/.test(state)) {
+                alert('City and State should contain alphabetic characters only.');
+                return false; // Prevent form submission
+            }
+    
+            // Validation for pinCode and phoneNumber (only numbers)
+            if (!/^[0-9]+$/.test(pinCode) || !/^[0-9]+$/.test(phoneNumber)) {
+                alert('Pincode and Phone Number should contain numbers only.');
+                return false; // Prevent form submission
+            }
+    
+            return true; // Allow form submission if all validations pass
+        }
+    </script>
+    
 
     <!-- Add Bootstrap JS and Popper.js (for Bootstrap dropdowns) scripts here -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

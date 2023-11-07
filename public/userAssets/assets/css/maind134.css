@@ -3389,7 +3389,7 @@ table .product-thumbnail img {
 .product-cart-wrap {
   position: relative;
   background-color: #fff;
-  border: 1px solid #cce7d0;
+  border: 1px solid #cbcbcb;
   border-radius: 25px;
   overflow: hidden;
   transition: .2s;

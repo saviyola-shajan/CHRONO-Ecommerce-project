@@ -13,7 +13,7 @@ const categorySchema = new mongoose.Schema({
   // },
   status:{
     type:String,
-    default:'Active'
+    default:'Unhide'
   }
 });
 const category = mongoose.model("category", categorySchema);

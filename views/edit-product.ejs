@@ -24,8 +24,8 @@
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
-            <a href="index.html" class="brand-wrap">
-                <img src="/adminAssets/assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+            <a href="/admin/getadmin-dash" class="brand-wrap">
+                <img src="/adminAssets/assets/imgs/icons/mainlogo.svg.jpg" class="logo" alt="Evara Dashboard">
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
@@ -193,37 +193,38 @@
                             <h4>Details</h4>
                         </div>
                         <div class="card-body">
-                            <form action="/admin/submit-edited-product/<%=productDeatils._id%>" method="post" enctype="multipart/form-data">
+                            <form action="/admin/submit-edited-product/<%=productDeatils._id%>" method="post" enctype="multipart/form-data" id="productForm">
                                 <div class="mb-4">
                                     <label for="product_name" class="form-label">Product name</label>
                                     <input type="text" name="name" value="<%= productDeatils.name %>" class="form-control" id="product_name">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Product brand</label>
-                                    <input type="text" name="brand" value="<%= productDeatils.brand %>" class="form-control" id="product_name">
+                                    <label for="product_brand" class="form-label">Product brand</label>
+                                    <input type="text" name="brand" value="<%= productDeatils.brand %>" class="form-control" id="product_brand">
                                 </div>
                                 <div class="mb-4">
-                                    <div> <label for="w3review">Product description</label></div>
+                                    <div>
+                                        <label for="w3review">Product description</label>
+                                    </div>
                                     <textarea id="w3review" name="description" rows="4" cols="50"><%= productDeatils.description %></textarea>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Regular price</label>
-                                    <input type="text" name="regular price" value="<%= productDeatils.r_price %>" class="form-control" id="product_">
+                                    <label for="regular_price" class="form-label">Regular price</label>
+                                    <input type="text" name="r_price" value="<%= productDeatils.r_price %>" class="form-control" id="regular_price">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Selling price</label>
-                                    <input type="text" name="selling price" value="<%= productDeatils.s_price %>" class="form-control" id="product_name">
+                                    <label for="sales_price" class="form-label">Selling Price</label>
+                                    <input type="text" name="s_price" value="<%= productDeatils.s_price %>" class="form-control" id="sales_price">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Product category</label>
-                                    <input type="text" name="category" value="<%= productDeatils.category %>" class="form-control" id="product_name">
+                                    <label for="product_category" class="form-label">Product category</label>
+                                    <input type="text" name="category" value="<%= productDeatils.category %>" class="form-control" id="product_category">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_name" class="form-label">Product stock</label>
-                                    <input type="text" name="stock" value="<%= productDeatils.stock %>" class="form-control" id="product_name">
+                                    <label for="product_stock" class="form-label">Product stock</label>
+                                    <input type="text" name="stock" value="<%= productDeatils.stock %>" class="form-control" id="product_stock">
                                 </div>
-                               
-
+                            
                                 <div class="col-lg-6">
                                     <div class="card mb-4">
                                         <div class="card-header d-flex justify-content-between">
@@ -231,21 +232,15 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="input-upload">
-                                                
                                                 <img src="/<%= productDeatils.photos[0] %>" alt="">
-                                            
-                                                <input class="form-control" type="file" name="photo" >
+                                                <input class="form-control" type="file" name="photo">
                                             </div>
                                             <div class="input-upload">
-                                                
                                                 <img src="/<%= productDeatils.photos[1] %>" alt="">
-                                           
-                                                <input class="form-control" type="file" name="photo" >
+                                                <input class="form-control" type="file" name="photo">
                                             </div>
                                             <div class="input-upload">
-                                                
                                                 <img src="/<%= productDeatils.photos[2] %>" alt="">
-                                            
                                                 <input class="form-control" type="file" name="photo">
                                             </div>
                                         </div>
@@ -255,23 +250,64 @@
                                     <button type="submit" class="btn btn-md rounded font-sm hover-up">Apply Changes</button>
                                 </div>
                             </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-               
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            
+                            <script>
+                            document.querySelector('#productForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Prevent the form from submitting
+
+    var product_name = document.querySelector('input[name="name"]').value.trim();
+    var product_brand = document.querySelector('input[name="brand"]').value;
+    var product_description = document.querySelector('textarea[name="description"]').value.trim();
+    var regular_price = parseFloat(document.querySelector('input[name="r_price"]').value);
+    var sales_price = parseFloat(document.querySelector('input[name="s_price"]').value);
+    var stock = parseFloat(document.querySelector('input[name="stock"]').value);
+
+    // Check if product_name is empty
+    var nameRegex = /^[A-Za-z\s]+/;
+    if (!nameRegex.test(product_name)) {
+        alert("Product Name should contain alphabetic characters only.");
+        return false; // Prevent form submission
+    }
+
+    // Check if product_brand is not empty
+    if (product_brand === "") {
+        alert("Please select a Product Brand.");
+        return false; // Prevent form submission
+    }
+
+    // Validation for regular_price and sales_price (positive numbers)
+    if (isNaN(regular_price) || regular_price <= 0) {
+        alert("Regular Price must be a valid positive number.");
+        return false; // Prevent form submission
+    }
+
+    if (isNaN(sales_price) || sales_price <= 0) {
+        alert("Sales Price must be a valid positive number.");
+        return false; // Prevent form submission
+    }
+
+    if (sales_price > regular_price) {
+        alert("Sales Price should not be higher than Regular Price.");
+        return false; // Prevent form submission
+    }
+
+    // Validation for stock (non-negative number)
+    if (isNaN(stock) || stock < 0) {
+        alert("Stock must be a valid non-negative number.");
+        return false; // Prevent form submission
+    }
+
+    // All fields are valid, allow form submission
+    e.target.submit(); // Submit the form
+});
+    </script>
+                            
                 
-
-
-
-
-
-
-
-
-
-
                 <!-- <div class="col-lg-6">
                     <div class="card mb-4">
                         <div class="card-header">

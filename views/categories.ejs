@@ -23,8 +23,8 @@
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
-            <a href="index.html" class="brand-wrap">
-                <img src="/adminAssets/assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+            <a href="/admin/getadmin-dash" class="brand-wrap">
+                <img src="/adminAssets/assets/imgs/icons/mainlogo.svg.jpg" class="logo" alt="Evara Dashboard">
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
@@ -196,8 +196,8 @@
                                 <div class="mb-4">
                                     <label class="form-label">Status</label>
                                     <select class="form-select">
-                                        <option>Active</option>
-                                        <option>Inactive</option>
+                                        <option>Unhide</option>
+                                        <option>Hide</option>
                                     </select>
                                 </div>
                                 <div class="d-grid">
@@ -236,12 +236,18 @@
                                             <td><b><%=categories.name%></b></td>
                                             <td><%=categories.description%></td>
                                             <!-- <td><img src="<%=categories.photo%>" alt="category photo" height="68"></td> -->
-                                            <td><%=categories.status%></td>
+                                            <td>
+                                                <a class="status-action btn
+                                                   <%= categories.status === 'Unhide' ? 'btn-success' : 'btn-danger' %>"
+                                                   href="/admin/<%= categories.status === 'Unhide' ? 'hidecategory' : 'unhidecategory' %>/<%= categories._id %>">
+                                                   <%= categories.status === 'Unhide' ? 'Unhide' : 'Hide' %>
+                                                </a>
+                                            </td>
                                             <td class="text-end">
                                                 <div>
                                                         <!-- <a class="dropdown-item" href="#">View detail</a> -->
-                                                        <a class="dropdown-item" href="#">Edit info</a>
-                                                        <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                       <button class="btn btn-info"> <a style="color: black;" href="/admin/editcategory/<%=categories._id%>">Edit</a></button>
+                                                        <!-- <a class="dropdown-item text-danger" href="#">Delete</a> -->
                                                     </div>                                                
                                             </td>
                                         </tr>

@@ -205,13 +205,14 @@ module.exports.postVerifyOtp = async (req, res) => {
 
 //to get single product page
 module.exports.getSingleProduct = async (req, res) => {
+  const loggedIn =req.cookies.loggedIn
   const productId = req.params.productId;
   try {
     const singleProduct = await products.findById(productId);
     if (!singleProduct) {
       return res.status(404).send("product not found");
     }
-    res.render("single-product", { singleProduct });
+    res.render("single-product", { singleProduct,loggedIn });
   } catch (error) {
     console.error(error);
     res.status(500).send("error fetching product deatils");
@@ -229,13 +230,11 @@ module.exports.getlogout = (req, res) => {
 module.exports.getCart = async (req, res) => {
   try {
     const userData = await usercollecn.findOne({ email: req.user });
-    console.log(userData);
     const userCart = await cart.findOne({ userId: userData._id }).populate({
       path: "products.productId",
       model: "products",
     });
-    console.log(userCart);
-    res.render("cart", { userCart });
+    res.render("cart", { userCart});
   } catch (error) {
     console.log("error while loading cart", error);
   }
@@ -343,7 +342,7 @@ module.exports.getUserAccount = async (req, res) => {
   try {
     const userId = await usercollecn.findOne({ email: req.user });
     const useraddress = await address.findOne({ userId: userId._id });
-    const listorders = await order.find({ userId: userId._id }).populate({
+    const listorders = await order.find({ userId: userId._id }).sort({orderDate:-1}).populate({
       path: "products.productId",
       model: "products",
     });
@@ -450,15 +449,82 @@ module.exports.postAddAddress = async (req, res) => {
   }
 };
 
-// module.exports.getPlaceOrder = (req,res)=>{
-//   res.render("place-order")
-// }
+// edit address
+module.exports.getEditAddress = async(req,res)=>{
+  try{
+    // console.log(req.query.addressId);
+    // const useraddressId =req.query.addressId
+     const userdata = await usercollecn.findOne({email:req.user})
+    const useraddress = await address.findOne({userId:userdata._id})
+    let thataddress;
+    useraddress.address.forEach((address)=>{
+      if(address._id==req.query.addressId){
+      thataddress=address
+      }
+    })
+    console.log(thataddress)
+    res.render("edit-address",{thataddress})
+    
+  }catch(error){
+ console.log(error)
+  }
+  
+}
+//post edited address
+module.exports.postEditedAddress = async (req, res) => {
+  try {
+    const addressId = req.body.addressId;
+    const addressType = req.body.addressType;
+    const userName = req.body.userName;
+    const city = req.body.city;
+    const landMark = req.body.landMark;
+    const state = req.body.state;
+    const pinCode = req.body.pinCode;
+    const phoneNumber = req.body.phoneNumber;
+    const altPhone = req.body.altPhone;
+    const userData = await usercollecn.findOne({ email: req.user });
+    const userAddress = await address.findOne({ userId: userData._id });
+
+    const existingAddressIndex = userAddress.address.findIndex(
+      (address) => address._id == addressId
+    );
+
+    if (existingAddressIndex !== -1) {
+      userAddress.address[existingAddressIndex].addressType = addressType;
+      userAddress.address[existingAddressIndex].userName = userName;
+      userAddress.address[existingAddressIndex].city = city;
+      userAddress.address[existingAddressIndex].landMark = landMark;
+      userAddress.address[existingAddressIndex].state = state;
+      userAddress.address[existingAddressIndex].pinCode = pinCode;
+      userAddress.address[existingAddressIndex].phoneNumber = phoneNumber;
+      userAddress.address[existingAddressIndex].altPhone = altPhone;
+      userAddress.address[existingAddressIndex].userData = userData;
+
+      await userAddress.save();
+
+      res.redirect("/user-account");
+    } else {
+      res.status(404).send("Address not found");
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Internal server error");
+  }
+};
+
+
+module.exports.getPlaceOrder = (req,res)=>{
+  res.render("place-order")
+}
+
 
 //save orders to the DB
 module.exports.postOrders = async (req, res) => {
   try {
+    const UseraddressId =req.body.addressId
     const userId = req.user;
     const userdata = await usercollecn.findOne({ email: req.user });
+    const userAddress = await address.findOne({userId:userdata._id})
     const userCart = await cart.findOne({ userId: userdata._id }).populate({
       path: "products.productId",
       model: "products",
@@ -474,6 +540,14 @@ module.exports.postOrders = async (req, res) => {
       orderTotal += orderItem.price * orderItem.quantity;
       orderProducts.push(orderItem);
     });
+    let delAddress;
+    userAddress.address.forEach( (addressId) => {
+      if(UseraddressId== addressId._id){
+        delAddress=addressId
+      }
+      
+    });
+
 
     const newOrder = await order.create({
       userId: userCart.userId._id,
@@ -481,10 +555,11 @@ module.exports.postOrders = async (req, res) => {
       orderDate: new Date(),
       totalAmount: orderTotal,
       paymentMethod: "Cash on delivery",
+      address:delAddress
     });
     await newOrder.save();
     await cart.deleteOne({ userId: userdata._id });
-    res.render("place-order");
+    res.redirect("/placeorder");
   } catch (error) {
     console.log(error);
   }
@@ -503,7 +578,6 @@ module.exports.getPasswordResetPage = (req, res) => {
 //get password reset otp
 module.exports.getPasswordResetOtp = async (req, res) => {
   try {
-    console.log("heyy");
     const userEmail = req.query.email;
     const user = await usercollecn.findOne({ email: userEmail });
     if (user) {
@@ -537,6 +611,7 @@ module.exports.getVerifyPasswordResetOtp = async (req, res) => {
         code: otp,
       });
     if (verifyOTP.valid) {
+      
       res.status(200).json({ data: "verified" });
     } else {
       res.status(500).json({ data: "OTP incorrect" });
@@ -576,11 +651,11 @@ module.exports.postNewPassword = async (req, res) => {
 module.exports.orderDeatils = async (req, res) => {
   try {
     const orderId = req.params.orderId;
-    const orderDetails = await order.findById({ _id: orderId }).populate({
+    const orderDetails = await order.findById({ _id: orderId}).populate({
       path: "products.productId",
       model: "products",
     });
-    res.render("admin-orderDetails", { orderDetails });
+    res.render("orderdetails", { orderDetails });
   } catch (error) {
     console.log(error);
   }
@@ -701,7 +776,6 @@ module.exports.goToWishlist = async (req, res) => {
 //remove products from wishlist
 module.exports.removeFromWishlist = async (req, res) => {
   try {
-    console.log(req.user);
     const user = await usercollecn.findOne({ email: req.user });
     const productId = req.params.productId;
     const updateproduct = await wishlist.updateOne(
