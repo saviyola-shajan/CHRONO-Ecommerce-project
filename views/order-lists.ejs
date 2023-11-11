@@ -204,26 +204,31 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% orderList.forEach((order)=>{ let i=0 %>
+                                <% orderList.forEach((order, index) => { %>
                                     <tr style="border-bottom: 1px solid rgb(43, 40, 40);">
-                                        <td><%=orderList.indexOf(order)+1%></td>
-                                    <td><%=order.orderDate.toLocaleDateString()%></td>
-                                        <td><b><%=userData[orderList.indexOf(order)]%></b></td>
-                                    <td>₹<%=order.totalAmount%></td>
-                                    <td><span class="badge rounded-pill alert-warning"><%=order.orderStatus%></span></td>
-                                    <td><span class="badge rounded-pill alert-warning"><%=order.paymentStatus%></span></td>
-                                    <td class="text-end">
-                                        <a href="/admin/editorderdetails/<%=order._id%>" class="btn btn-md rounded font-sm">Detail</a>
-                                        <!-- <div class="dropdown">
-                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="#">View detail</a>
-                                                <a class="dropdown-item" href="#">Edit info</a>
-                                                <a class="dropdown-item text-danger" href="#">Delete</a>
+                                        <td><%= index + 1 %></td>
+                                        <td><%= order.orderDate.toLocaleDateString() %></td>
+                                        <td><b><%= order.address.userName %></b></td>
+                                        <td>₹<%= order.totalAmount %></td>
+                                        <td><span class="badge rounded-pill alert-warning"><%= order.orderStatus %></span></td>
+                                        <td><span class="badge rounded-pill alert-warning"><%= order.paymentStatus %></span></td>
+                                        <td class="text-end">
+                                            <a href="/admin/editorderdetails/<%= order._id %>" class="btn btn-md rounded font-sm">Detail</a>
+                                            <!-- Dropdown Menu (commented out for simplicity) -->
+                                            <!-- 
+                                            <div class="dropdown">
+                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
+                                                    <i class="material-icons md-more_horiz"></i>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#">View detail</a>
+                                                    <a class="dropdown-item" href="#">Edit info</a>
+                                                    <a class="dropdown-item text-danger" href="#">Delete</a>
+                                                </div>
                                             </div>
-                                        </div>  -->
-                                    </td>
-                                </tr>
+                                            -->
+                                        </td>
+                                    </tr>
                                 <% }); %>
                             </tbody>
                         </table>

@@ -347,6 +347,13 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#userWallet"
+                                                role="tab" aria-controls="address" aria-selected="true"><i
+                                                    class="bi bi-wallet mr-10"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wallet" viewBox="0 0 16 16">
+                                                        <path d="M0 3a2 2 0 0 1 2-2h13.5a.5.5 0 0 1 0 1H15v2a1 1 0 0 1 1 1v8.5a1.5 1.5 0 0 1-1.5 1.5h-12A2.5 2.5 0 0 1 0 12.5V3zm1 1.732V12.5A1.5 1.5 0 0 0 2.5 14h12a.5.5 0 0 0 .5-.5V5H2a1.99 1.99 0 0 1-1-.268zM1 3a1 1 0 0 0 1 1h12V2H2a1 1 0 0 0-1 1z"/>
+                                                      </svg></i>Wallet</a>
+                                        </li>
                                         <!-- <li class="nav-item">
                                             <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab" href="#track-orders" role="tab" aria-controls="track-orders" aria-selected="false"><i class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
                                         </li> -->
@@ -367,7 +374,7 @@
                                     <div class="tab-pane fade active show" id="dashboard" role="tabpanel" aria-labelledby="dashboard-tab">
                                         <div class="card">
                                             <div class="card-header">
-                                                <span style="color: black;font-size: medium;font-weight: 500;">Hello, </span>
+                                                <span style="color: black;font-size:medium;font-weight: 500;">Hello, </span>
                                                 <% for (const key in userId) { %>
                                                     <% if (userId.hasOwnProperty(key)) { %>
                                                         <h3 class="mb-0"><%= userId[key].username %></h3>
@@ -377,7 +384,16 @@
                                             </div>
                                             <div class="card-body">
                                             </div>
-                                            <p>Welcome to CHRONO User Profile! We're thrilled to have you as a member of our watch-loving community. Your profile information is your gateway to a personalized shopping experience. Feel free to update your details, explore our exclusive collections, and keep track of your watch orders. If you have any questions or need assistance, our support team is just a click away. Thanks for choosing CHRONO</p>
+                                            <p>Welcome to CHRONO User Profile! We're thrilled to have you as a member of our watch-loving community. Your profile information is your gateway to a personalized shopping experience. Feel free to update your details, explore our exclusive collections, and keep track of your watch orders. If you have any questions or need assistance, our support team is just a click away. Thanks for choosing CHRONO.</p>
+                                        </div>
+                                        <br>
+                                        
+                                        <div style="font-size: medium;font-weight: 600;">
+                                            <ul>
+                                                <li>User name:-<%=userId.username%></li>
+                                                <li>Email:-  <%=userId.email%></li>
+                                                <li>PhoneNumber:-<%=userId.phoneNumber%></li>
+                                            </ul>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab" style="margin-left: 45px;">
@@ -400,22 +416,33 @@
                                                         </thead>
                                                     
                                                         <tbody>
-                                                            <% listorders.forEach((order) => { %>
+                                                            <% if (!listorders || listorders.length === 0) { %>
                                                                 <tr>
-                                                                    <td style="border-bottom: 1px black solid;">
-                                                                        <ul>
-                                                                            <% order.products.forEach((product) => { %>
-                                                                                <li>•<%= product.productId.name %></li>
-                                                                            <% }); %>
-                                                                        </ul>
-                                                                    </td>
-                                                                    <td style="border-bottom: 1px black solid;"><%= order.orderDate %></td>
-                                                                    <td style="border-bottom: 1px black solid;">₹<%= order.totalAmount %></td> <!-- Assuming the price is the same for all products in the order -->
-                                                                    <td style="border-bottom: 1px black solid;"><%= order.orderStatus %></td>
-                                                                    <td style="border-bottom: 1px black solid;"><%= order.paymentStatus %></td>
-                                                                    <td style="border-bottom: 1px black solid;"><a href="/orderdetails/<%= order._id %>" class="btn btn-primary">View details</a></td>
+                                                                    <td colspan="6">No Orders</td>
                                                                 </tr>
-                                                            <% }); %>
+                                                            <% } else { %>
+                                                                <% listorders.forEach((order) => { %>
+                                                                    <tr>
+                                                                        <td style="border-bottom: 1px black solid;">
+                                                                            <ul>
+                                                                                <% order.products.forEach((product) => { %>
+                                                                                    <li>•<%= product.productId.name %></li>
+                                                                                <% }); %>
+                                                                            </ul>
+                                                                        </td>
+                                                                        <td style="border-bottom: 1px black solid;"><%= order.orderDate %></td>
+                                                                        <td style="border-bottom: 1px black solid;">₹<%= order.totalAmount %></td>
+                                                                        <td style="border-bottom: 1px black solid;"><%= order.orderStatus %></td>
+                                                                        <td style="border-bottom: 1px black solid;"><%= order.paymentStatus %></td>
+                                                                        <td style="border-bottom: 1px black solid;">
+                                                                            <a href="/orderdetails/<%= order._id %>" class="btn btn-primary">View Details</a>
+                                                                        </td>
+                                                                        <td>
+                                                                            <a href="/invoice/<%= order._id %>" class="btn btn-primary">Invoice Details</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                <% }); %>
+                                                            <% } %>
                                                         </tbody>
                                                     </table>
                                                     
@@ -423,6 +450,59 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="tab-pane fade" id="userWallet" role="tabpanel"
+                                    aria-labelledby="userWallet-tab">
+                                    <div class="card">
+
+
+                                        
+    <h4>Your Wallet</h4>
+    <br>
+
+    <section id="balance">
+        <h5>Account Balance</h5>
+        <p>Your current balance:<span style="font-size: medium;font-weight: 600;">₹<%= wallet.amount%></span></p>
+        <br><br>
+    </section>
+    <section id="transaction-history">
+        <h5>Transaction History</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Payment status</th>
+                    <th>Transaction ID</th>
+                </tr>
+            </thead>
+            <% if(!listorders || listorders.length == 0 ){%>
+                <tr>
+                 <td colspan="6">No Orders</td>
+                </tr>
+           <% }else  {%>
+            <tbody>
+                <% listorders.forEach((items)=>{%>
+                <tr>
+                    <%if(items.paymentMethod === "Wallet"){%>
+                    <td><%=items.orderDate%> </td>
+                    <td><%=items.paymentMethod%></td>
+                    <td><%=items.totalAmount%></td>
+                    <td><%=items.paymentStatus%></td>
+                    <td><%=items._id%></td>
+                </tr>
+                <%}})}%>
+            </tbody>
+        </table>
+    </section>
+
+    <section id="add-funds">
+        <button type="button" class="btn btn-primary btn-sm">Add Funds</button>
+    </section>
+                                    </div>
+                                </div>
+
+
                                     <div class="tab-pane fade" id="address" role="tabpanel" aria-labelledby="address-tab">
                                         <div class="row">
                                             <div><button class="btn btn-fill-out btn-block mt-30"><a style="color: beige;" href="/getadd-address">Add Address</a></button></div>
@@ -458,24 +538,24 @@
                                             </div>
                                             <div class="card-body">
                                             
-                                                <p>Already have an account? <a href="page-login-register.html">Log in instead!</a></p>
-                                                <form method="post" name="enq">
+                                                <!-- <p>Already have an account? <a href="page-login-register.html">Log in instead!</a></p> -->
+                                                <form action="/changecurrpassword" method="post" name="enq">
                                                     <div class="row">
                                                         <div class="form-group col-md-6">
-                                                            <label>First Name <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="name" type="text">
+                                                            <label>Name <span class="required"></span></label>
+                                                            <input required="" class="form-control square" style="font-size:medium;font-weight: 500;" name="name" type="text" value="<%=userId.username%>">
                                                         </div>
-                                                        <div class="form-group col-md-6">
+                                                        <!-- <div class="form-group col-md-6">
                                                             <label>Last Name <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="phone">
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Display Name <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="dname" type="text">
-                                                        </div>
+                                                        </div> -->
                                                         <div class="form-group col-md-12">
-                                                            <label>Email Address <span class="required">*</span></label>
-                                                            <input required="" class="form-control square" name="email" type="email">
+                                                            <label>Email Address <span class="required"></span></label>
+                                                            <input required="" style="font-size:medium;font-weight: 500;" class="form-control square" name="email" type="email" value="<%=userId.email%>">
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Current Password <span class="required">*</span></label>
@@ -490,7 +570,7 @@
                                                             <input required="" class="form-control square" name="cpassword" type="password">
                                                         </div>
                                                         <div class="col-md-12">
-                                                            <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save</button>
+                                                            <button type="submit" class="btn btn-fill-out submit" name="submit" value="Submit">Save </button>
                                                         </div>
                                                     </div>
                                                 </form>

@@ -540,7 +540,7 @@
                                                 <!-- <a href="page-privacy-policy.html"><i class="fi-rs-book-alt mr-5 text-muted"></i>Learn more</a> -->
                                             </div>
                                             <div class="form-group">
-                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" name="submit">Submit &amp; Register</button>
+                                                <button type="submit" class="btn btn-fill-out btn-block hover-up" id="signInButton" name="submit">Submit &amp; Register</button>
                                             </div>
                                         </form>
                                         
@@ -565,141 +565,116 @@
     </main>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const sendOTPButton = document.getElementById("sendOTPButton");
-            const verifyOTPButton = document.getElementById("verifyOTPButton");
-            const otpInput = document.getElementById("otp");
-            const resendOTPButton = document.getElementById("resendOTPButton");
-             const timerElement = document.getElementById("timer");
+       document.addEventListener("DOMContentLoaded", function () {
+    const registrationForm = document.getElementById("registrationForm");
+    const otpInput = document.getElementById("otp");
+    const sendOTPButton = document.getElementById("sendOTPButton");
+    const verifyOTPButton = document.getElementById("verifyOTPButton");
+    const signInButton = document.getElementById("signInButton");
 
-            sendOTPButton.addEventListener("click", function (e) {
-                e.preventDefault();
+    // Initially, disable the "Sign In" button
+    signInButton.disabled = true;
 
-                const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+    sendOTPButton.addEventListener("click", function (e) {
+        e.preventDefault();
 
-                if (!phoneNumber) {
-                    errSignupPhoneNumber.innerHTML = "Phone number is required."
-                    return;
-                }
+        const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
 
-                fetch(`/sent-otp?phoneNumber=${phoneNumber}`)
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then((data) => {
-                        console.log("Response from server:", data);
+        if (!phoneNumber) {
+            errSignupPhoneNumber.innerHTML = "Phone number is required.";
+            return;
+        }
 
-                        Swal.fire({
-                         position: 'top-centre',
-                         icon: 'success',
-                        title: 'OTP send sucessfully',
-                         showConfirmButton: false,
-                         timer: 1500
-                         }) 
-                        startResendTimer();
-                    })
-                    .catch((error) => {
-                        console.error("Error sending OTP:", error);
-                    });
-            });
-
-            function startResendTimer(){
-                let remaningTime=60;
-                timerElement.style.display ="block";
-                resendOTPButton.style.display="none"
-
-                const countdown =setInterval(()=>{
-                    timerElement.textContent=`Resend in ${remaningTime}seconds`;
-                    remaningTime--;
-
-                    if(remaningTime < 0){
-                        clearInterval(countdown);
-                        timerElement.style.display="none";
-                        resendOTPButton.style.display ="block"
-                    }
-                },1000)
-            }
-
-            resendOTPButton.addEventListener("click",function(e){
-                e.preventDefault();
-                const phoneNumber=document.querySelector('input[name="phoneNumber"]').value
-            if(!phoneNumber){
-             errSignupPhoneNumber.innerHTML="Phone Number is required.";
-             return;   
-            }
-
-            fetch(`/sent-otp?phoneNumber=${phoneNumber}`)
-            .then((response)=>{
-                if(!response.ok){
-                    throw new Error(`HTTP erroe!Status:${response.status}`);
+        fetch(`/sent-otp?phoneNumber=${phoneNumber}`)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 return response.json();
-
             })
-            .then((data)=>{
-                console.log("Resent OTP. Response from server:", data);
+            .then((data) => {
+                console.log("Response from server:", data);
+
                 Swal.fire({
-                         position: 'top-centre',
-                         icon: 'success',
-                        title: 'OTP Resend sucessfully',
-                         showConfirmButton: false,
-                         timer: 1500
-                         }) 
+                    position: 'top-centre',
+                    icon: 'success',
+                    title: 'OTP sent successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
                 startResendTimer();
+                // Enable the "Sign In" button
+                signInButton.disabled = false;
             })
-            .catch((error)=>{
-                console.error("Error resending OTP:", error);
-            })
+            .catch((error) => {
+                console.error("Error sending OTP:", error);
             });
+    });
 
+    
 
-            verifyOTPButton.addEventListener("click", function (e) {
-                e.preventDefault();
+    function startResendTimer() {
+        let remaningTime = 60;
+        timerElement.style.display = "block";
+        resendOTPButton.style.display = "none";
 
-                const otp = otpInput.value;
-                const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+        const countdown = setInterval(() => {
+            timerElement.textContent = `Resend in ${remaningTime} seconds`;
+            remaningTime--;
 
-                if (!phoneNumber || !otp) {
-                    errSignupOtp.innerHTML = "Phone number and OTP are required."
-                    return;
-                }
+            if (remaningTime < 0) {
+                clearInterval(countdown);
+                timerElement.style.display = "none";
+                resendOTPButton.style.display = "block";
+            }
+        }, 1000);
+    }
 
-                fetch(`/verify-otp?phoneNumber=${phoneNumber}&otp=${otp}`,{
-                    method:"POST",
-                    body:otpInput.value
-                })
-                    .then((response) => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! Status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then((data) => {
-                        console.log("OTP verified:", data);
-                        Swal.fire({
-                         position: 'top-centre',
-                         icon: 'success',
-                        title: 'OTP Verified',
-                         showConfirmButton: false,
-                         timer: 1500
-                         }) 
-                         document.querySelector('[name="submit"]').disabled = false;
-                    })
-                    .catch((error) => {
-                        console.error("Error verifying OTP:", error);
-                               Swal.fire({
-                                icon: 'error',
-                                   title: 'Oops...',
-                                    text: 'incorrect OTP!',
-                                })  
-                                document.querySelector('[name="submit"]').disabled = true;         
-                    });
-            });
+    verifyOTPButton.addEventListener("click", function (e) {
+        e.preventDefault();
 
+        const otp = otpInput.value;
+        const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+
+        if (!phoneNumber || !otp) {
+            errSignupOtp.innerHTML = "Phone number and OTP are required.";
+            return;
+        }
+
+        fetch(`/verify-otp?phoneNumber=${phoneNumber}&otp=${otp}`, {
+            method: "POST",
+            body: otpInput.value
         })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("OTP verified:", data);
+                Swal.fire({
+                    position: 'top-centre',
+                    icon: 'success',
+                    title: 'OTP Verified',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                // Enable the "Sign In" button
+                signInButton.disabled = false;
+            })
+            .catch((error) => {
+                console.error("Error verifying OTP:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Incorrect OTP!',
+                });
+            });
+    });
+    });
+
+        
 
             // const loginForm = document.querySelector('form[action="/signin"]');
             // const loginEmailInput = document.getElementById("loginEmail");

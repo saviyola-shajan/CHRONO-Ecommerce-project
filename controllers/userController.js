@@ -5,14 +5,22 @@ const address = require("../models/address");
 const order = require("../models/order");
 const products = require("../models/addProduct");
 const wishlist = require("../models/whishlist");
+const Wallet = require("../models/wallet")
+const category = require("../models/category");
+const Razorpay =require("razorpay")
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 const twilio = require("twilio")(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
+const keyId =process.env.YOUR_KEY_ID
+const keySecret=process.env.YOUR_KEY_SECRET
+const razorpay = new Razorpay({
+  key_id: keyId,
+  key_secret: keySecret,
+});
 const jwt = require("jsonwebtoken");
-const category = require("../models/category");
 const secretKey = process.env.JWT_SECRET;
 
 //get user home page
@@ -114,6 +122,11 @@ module.exports.postUserSignup = async (req, res) => {
         otpInput: req.body.otpInput,
         status: "Unblocked",
         isverified: 0,
+      })
+   const currUser = await usercollecn.findOne({email:req.body.email})
+      await Wallet.create({
+        userId: currUser._id, 
+        amount:0,
       });
       res.render("page-login", { message: "User Sign in Successfully" });
     }
@@ -346,16 +359,36 @@ module.exports.getUserAccount = async (req, res) => {
       path: "products.productId",
       model: "products",
     });
-    res.render("user-account", { userId, useraddress, listorders });
+    const wallet = await Wallet.findOne({userId:userId._id})
+    res.render("user-account", { userId, useraddress, listorders,wallet });
   } catch (error) {
     console.log(error);
   }
 };
 
+//change current password from user account
+module.exports.changePasswordUserAccount = async(req,res)=>{
+  try{
+   const{name,email,password,npassword,cpassword} = req.body
+   const user = await usercollecn.findOne({email:req.user})
+   if(user.password==password){
+  await usercollecn.updateOne({_id:user._id},{$set:{
+      username:name,
+      email:email,
+      password:npassword
+    }})
+    res.redirect("/user-account")
+   }else{
+    res.status(500).json({data:"password incorect"})
+   }
+  }catch(error){
+console.log(error)
+  }
+}
+
 //remove item from cart
 module.exports.removeFromCart = async (req, res) => {
   try {
-    console.log(req.user);
     const user = await usercollecn.findOne({ email: req.user });
     const productId = req.params.productId;
     const updateproduct = await cart.updateOne(
@@ -452,8 +485,6 @@ module.exports.postAddAddress = async (req, res) => {
 // edit address
 module.exports.getEditAddress = async(req,res)=>{
   try{
-    // console.log(req.query.addressId);
-    // const useraddressId =req.query.addressId
      const userdata = await usercollecn.findOne({email:req.user})
     const useraddress = await address.findOne({userId:userdata._id})
     let thataddress;
@@ -518,10 +549,68 @@ module.exports.getPlaceOrder = (req,res)=>{
 }
 
 
-//save orders to the DB
+//save orders to the DB (COD)
 module.exports.postOrders = async (req, res) => {
   try {
-    const UseraddressId =req.body.addressId
+    const UseraddressId = req.body.addressId;
+    const userId = req.user;
+    const userdata = await usercollecn.findOne({ email: req.user });
+    const userAddress = await address.findOne({ userId: userdata._id });
+    const userCart = await cart.findOne({ userId: userdata._id }).populate({
+      path: "products.productId",
+      model: "products",
+    });
+
+    let orderTotal = 0;
+    let orderProducts = [];
+
+    userCart.products.forEach((item) => {
+      const orderItem = {
+        productId: item.productId._id,
+        quantity: item.quantity,
+        price: item.productId.s_price,
+      };
+      orderTotal += orderItem.price * orderItem.quantity;
+      orderProducts.push(orderItem);
+    });
+
+    let delAddress;
+    userAddress.address.forEach((addressId) => {
+      if (UseraddressId == addressId._id.toString()) {
+        delAddress = {
+          addressType: addressId.addressType,
+          userName: addressId.userName,
+          city: addressId.city,
+          landMark: addressId.landMark,
+          state: addressId.state,
+          pincode: addressId.pinCode,
+          phoneNumber: addressId.phoneNumber,
+          altPhone: addressId.altPhone,
+        };
+      }
+    });
+
+    const newOrder = await order.create({
+      userId: userCart.userId._id,
+      products: orderProducts,
+      orderDate: new Date(),
+      totalAmount: orderTotal,
+      paymentMethod: "Cash on delivery",
+      address: delAddress,
+    });
+
+    await newOrder.save();
+    await cart.deleteOne({ userId: userdata._id });
+    res.redirect("/placeorder");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//post order to DB (online payment)
+module.exports.onlinePayment =  async (req, res) => {
+  try {
+    const UseraddressId =req.query.addressId
     const userId = req.user;
     const userdata = await usercollecn.findOne({ email: req.user });
     const userAddress = await address.findOne({userId:userdata._id})
@@ -540,30 +629,134 @@ module.exports.postOrders = async (req, res) => {
       orderTotal += orderItem.price * orderItem.quantity;
       orderProducts.push(orderItem);
     });
+
     let delAddress;
-    userAddress.address.forEach( (addressId) => {
-      if(UseraddressId== addressId._id){
-        delAddress=addressId
+    userAddress.address.forEach((addressId) => {
+      if (UseraddressId == addressId._id.toString()) {
+        delAddress = {
+          addressType: addressId.addressType,
+          userName: addressId.userName,
+          city: addressId.city,
+          landMark: addressId.landMark,
+          state: addressId.state,
+          pincode: addressId.pinCode,
+          phoneNumber: addressId.phoneNumber,
+          altPhone: addressId.altPhone,
+        };
       }
-      
     });
 
+    
+    var options = {
+      amount: orderTotal * 100, 
+      currency: "INR",
+      receipt: "order_rcptid_11"
+    };
+    razorpay.orders.create(options, async function (err, razorOrder) {
+      if (err) {
+        console.error("Error creating Razorpay order:", err);
+        res.status(500).json({ error: "An error occurred while placing the order." });
+      } else {
+        console.log(razorOrder);
+        const newOrder = await order.create({
+          userId: userdata._id,
+          orderID: razorOrder.id,
+          products: orderProducts,
+          orderDate: new Date(),
+          address: delAddress,
+          totalAmount: orderTotal,
+          paymentMethod: "online Payment",
+        });
+        await newOrder.save(); 
+        res.status(200).json({ message: "Order placed successfully.", razorOrder });
+      }
+    });
+    await cart.deleteOne({ userId: userdata._id });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//wallet payment
+module.exports.walletPayment = async(req,res)=>{
+  try{
+    const UseraddressId =req.body.addressId
+    const grandTotal =req.body.totalAmount
+    const userId = req.user;
+    const userdata = await usercollecn.findOne({ email: req.user });
+    const wallet = await Wallet.findOne({userId:userdata._id})
+    if(wallet.amount>=grandTotal){
+      let totalAmount =0;
+      const walletAmount = wallet.amount
+      const finalWalletAmount = walletAmount-grandTotal
+    
+    const userCart = await cart.findOne({ userId: userdata._id }).populate({
+      path: "products.productId",
+      model: "products",
+    });
+    const userAddress = await address.findOne({userId:userdata._id})
+    let orderTotal=0
+    let orderProducts = [];
+    userCart.products.forEach((item) => {
+      const orderItem = {
+        productId: item.productId._id,
+        quantity: item.quantity,
+        price: item.productId.s_price,
+      };
+      orderTotal += orderItem.price * orderItem.quantity;
+      orderProducts.push(orderItem);
+    });
+
+    let delAddress;
+    userAddress.address.forEach((addressId) => {
+      if (UseraddressId == addressId._id.toString()) {
+        delAddress = {
+          addressType: addressId.addressType,
+          userName: addressId.userName,
+          city: addressId.city,
+          landMark: addressId.landMark,
+          state: addressId.state,
+          pincode: addressId.pinCode,
+          phoneNumber: addressId.phoneNumber,
+          altPhone: addressId.altPhone,
+        };
+      }
+    });
 
     const newOrder = await order.create({
       userId: userCart.userId._id,
       products: orderProducts,
       orderDate: new Date(),
       totalAmount: orderTotal,
-      paymentMethod: "Cash on delivery",
-      address:delAddress
+      paymentStatus:"Success",
+      paymentMethod: "Wallet",
+      address: delAddress,
     });
-    await newOrder.save();
     await cart.deleteOne({ userId: userdata._id });
-    res.redirect("/placeorder");
-  } catch (error) {
-    console.log(error);
+    await Wallet.updateOne({userId: userdata._id },{$set:{
+      amount:finalWalletAmount
+    }})
+    res.status(200).json({data:"order placed"})
+  }else{
+    res.status(500).json({error:"Insufficient Balance in Wallet, Try with another payement method!"})
   }
-};
+}catch(error){
+  console.log(error)
+  }
+}
+
+// online payment status
+module.exports.paymentStatus = async (req,res)=>{
+  try{
+    const orderStatus = req.query.status
+const orderItem = await order.updateOne({orderID:req.query.orderId},{$set:{paymentStatus:orderStatus}})
+if(orderStatus=="Success"){
+res.redirect("/placeorder") 
+}   
+  }catch(error){
+    console.log(error)
+  }
+}
 
 //get password reset page
 module.exports.getPasswordResetPage = (req, res) => {
@@ -661,6 +854,21 @@ module.exports.orderDeatils = async (req, res) => {
   }
 };
 
+// get invoice page
+module.exports.getInvoice = async (req,res)=>{
+  try{
+    const orderid =req.params.orderId
+  const orders = await order.findById({_id:orderid}).populate({
+    path:"products.productId",
+    model:"products"
+  })
+    res.render("invoice",{orders})
+  }catch(error){
+console.log(error)
+  }
+}
+
+
 //handling cancels
 module.exports.productCancel = async (req, res) => {
   try {
@@ -670,6 +878,18 @@ module.exports.productCancel = async (req, res) => {
       { _id: req.body.orderID },
       { $set: { orderStatus: "Cancelled", cancelReason: req.body.reason } }
     );
+
+    const newOrder = await order.findOne({_id:req.body.orderID})
+    const userwallet = await Wallet.findOne({userId:userData._id})
+    const walletAmount = userwallet.amount ?? 0;
+    const totalOrderAmount = newOrder.totalAmount ?? 0
+    const newWalletAmount = walletAmount+totalOrderAmount
+    if(newOrder.paymentStatus == "Success"){
+      await Wallet.updateOne({userId:userData._id},{$set:{
+        amount:newWalletAmount
+      }})
+    }
+
     res.redirect("/user-account");
   } catch (error) {
     console.log("An error happened while processig return! :" + error);
@@ -685,6 +905,17 @@ module.exports.returnOrder = async (req, res) => {
       { _id: req.body.orderID },
       { $set: { orderStatus: "Returned", returnReason: req.body.reason } }
     );
+
+    const newOrder = await order.findOne({_id:req.body.orderID})
+    const userwallet = await Wallet.findOne({userId:userData._id})
+    const walletAmount = userwallet.amount ?? 0;
+    const totalOrderAmount = newOrder.totalAmount ?? 0
+    const newWalletAmount = walletAmount+totalOrderAmount
+    if(newOrder.paymentStatus == "Success"){
+      await Wallet.updateOne({userId:userData._id},{$set:{
+        amount:newWalletAmount
+      }})
+    }
     res.redirect("/user-account");
   } catch (error) {
     console.log("An error happened while processig return! :" + error);
@@ -831,3 +1062,5 @@ module.exports.wishlistToCart = async (req, res) => {
     console.log(error);
   }
 };
+
+

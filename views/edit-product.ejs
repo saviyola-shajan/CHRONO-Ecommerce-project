@@ -217,8 +217,12 @@
                                     <input type="text" name="s_price" value="<%= productDeatils.s_price %>" class="form-control" id="sales_price">
                                 </div>
                                 <div class="mb-4">
-                                    <label for="product_category" class="form-label">Product category</label>
-                                    <input type="text" name="category" value="<%= productDeatils.category %>" class="form-control" id="product_category">
+                                    <select name="category" required id="product_category">
+                                        <option value="">Select a category</option>
+                                        <% categorydata.forEach((item) => { %>
+                                        <option value="<%= item.name %>"><%= item.name %></option>
+                                        <% }) %>
+                                    </select>
                                 </div>
                                 <div class="mb-4">
                                     <label for="product_stock" class="form-label">Product stock</label>

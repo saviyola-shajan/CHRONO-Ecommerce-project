@@ -29,5 +29,7 @@ adminRouter.get("/unhidecategory/:categoryId",admincontroller.unhideCategory)
 adminRouter.get("/orderlist",admincontroller.getOrderList)
 adminRouter.get("/editorderdetails/:id",admincontroller.getOrderdetails)
 adminRouter.post("/editorderstatus",admincontroller.editOrderStatus)
+adminRouter.get("/excelsalesreport",admincontroller.getExcelSalesReport)
+adminRouter.get("/pdfsalesreport",admincontroller.getPdfSalesReport)
 
 module.exports = adminRouter;

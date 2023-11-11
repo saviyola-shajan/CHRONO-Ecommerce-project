@@ -17,6 +17,21 @@
     <link rel="shortcut icon" type="image/x-icon" href="userAssets/assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="userAssets/assets/css/maind134.css?v=3.4">
+<style>
+    #placeOrderButton,
+    #walletButton,
+    #rzp-button1 {
+        display: inline-block;
+        width: calc(33.33% - 10px); /* Adjust width and margin as needed */
+        margin-right: 10px;
+    }
+    
+    /* Optional: Remove margin from the last button to avoid extra space */
+    #rzp-button1 {
+        margin-right: 0;
+
+    }
+</style>
 </head>
 
 <body>
@@ -417,156 +432,7 @@
                             </div>
                         </div>
                     </div> -->
-                    <!-- <div class="col-lg-6">
-                        <div class="toggle_info">
-                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
-                        </div>
-                        <div class="panel-collapse collapse coupon_form " id="coupon">
-                            <div class="panel-body">
-                                <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                                <form method="post">
-                                    <div class="form-group">
-                                        <input type="text" placeholder="Enter Coupon Code...">
-                                    </div>
-                                    <div class="form-group">
-                                        <button class="btn  btn-md" name="login">Apply Coupon</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="divider mt-50 mb-50"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div><button class="btn btn-fill-out "><a style="color: beige;" href="/getadd-address">Add Address</a></button></div>
-                    <% if (!addresses) { %>
-                    <br>
-                    <h4 style="margin-top: 10px;">No Address Found</h4>
-                    <% } else { %>
-                        <% let addressNumber = 1; %>
-                        <% addresses.address.forEach((item) => { %>
-                            <div class="col-lg-6">
-                                <div class="card mb-3 mb-lg-0">
-                                    <div class="card-header">
-                                        <h5 class="mb-0">Address <%= addressNumber %></h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <address><%= item.userName %><br><%= item.city %><br><%= item.landMark %><br><%= item.state %></address>
-                                        <p><%= item.pinCode %></p>
-                                        <p><%= item.phoneNumber %></p>
-                                        <a href="#" class="btn-small">Edit</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <% addressNumber++; %>
-                        <% }) %>
-                    <% } %>
-            </div>
-                <div class="row" >
-                    <div class="col-md-6" style="max-width: 35vw;">
-                        <div class="mb-25">
-                            <h4>Billing Details</h4>
-                        </div>
-                        <form method="post">
-                            <div class="form-group">
-                                <input type="text" required="" name="fname" placeholder="First name *">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" required="" name="lname" placeholder="Last name *">
-                            </div>
-                            <div class="form-group">
-                                <input required="" type="text" name="cname" placeholder="Company Name">
-                            </div>
-                            <div class="form-group">
-                                <div class="custom_select">
-                                    
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="billing_address" required="" placeholder="Address *">
-                            </div>
-                            <div class="form-group">
-                                <input type="text" name="billing_address2" required="" placeholder="Address line2">
-                            </div>
-                            <div class="form-group">
-                                <input required="" type="text" name="city" placeholder="City / Town *">
-                            </div>
-                            <div class="form-group">
-                                <input required="" type="text" name="state" placeholder="State / County *">
-                            </div>
-                            <div class="form-group">
-                                <input required="" type="text" name="zipcode" placeholder="Postcode / ZIP *">
-                            </div>
-                            <div class="form-group">
-                                <input required="" type="text" name="phone" placeholder="Phone *">
-                            </div>
-                            <div class="form-group">
-                                <input required="" type="text" name="email" placeholder="Email address *">
-                            </div>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <div class="custome-checkbox">
-                                        <input class="form-check-input" type="checkbox" name="checkbox" id="createaccount">
-                                        <label class="form-check-label label_info" data-bs-toggle="collapse" href="#collapsePassword" data-target="#collapsePassword" aria-controls="collapsePassword" for="createaccount"><span>Create an account?</span></label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="collapsePassword" class="form-group create-account collapse in">
-                                <input required="" type="password" placeholder="Password" name="password">
-                            </div>
-                            <div class="ship_detail">
-                                <div class="form-group">
-                                    <div class="chek-form">
-                                        <div class="custome-checkbox">
-                                            <input class="form-check-input" type="checkbox" name="checkbox" id="differentaddress">
-                                            <label class="form-check-label label_info" data-bs-toggle="collapse" data-target="#collapseAddress" href="#collapseAddress" aria-controls="collapseAddress" for="differentaddress"><span>Ship to a different address?</span></label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="collapseAddress" class="different_address collapse in">
-                                    <div class="form-group">
-                                        <input type="text" required="" name="fname" placeholder="First name *">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" required="" name="lname" placeholder="Last name *">
-                                    </div>
-                                    <div class="form-group">
-                                        <input required="" type="text" name="cname" placeholder="Company Name">
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="custom_select">
-                                            
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" name="billing_address" required="" placeholder="Address *">
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" name="billing_address2" required="" placeholder="Address line2">
-                                    </div>
-                                    <div class="form-group">
-                                        <input required="" type="text" name="city" placeholder="City / Town *">
-                                    </div>
-                                    <div class="form-group">
-                                        <input required="" type="text" name="state" placeholder="State / County *">
-                                    </div>
-                                    <div class="form-group">
-                                        <input required="" type="text" name="zipcode" placeholder="Postcode / ZIP *">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mb-20">
-                                <h5>Additional information</h5>
-                            </div>
-                            <div class="form-group mb-30">
-                                <textarea rows="5" placeholder="Order notes"></textarea>
-                            </div>
-                        </form>
-                    </div> -->
+                    
                    
                     <!-- <div class="col-md-6">
 
@@ -693,7 +559,6 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Your order details go here -->
             <%userCart.products.forEach((product)=>{%>
             <tr>
               <td class="image product-thumbnail"><img src="<%= product.productId.photos[0] %>" alt="#"></td>
@@ -715,24 +580,84 @@
         </table>
       </div>
       <div class="bt-1 border-color-1 mt-30 mb-30"></div>
-      <a id="placeOrderButton" class="btn btn-fill-out btn-block mt-30" style="margin-left: 50px;">Place Order (COD)</a>
-     <a href="/onlinepayment" class="btn btn-fill-out btn-block mt-30" style="margin-left: 125px;">Online Payment</a>
-    </div>
+      <div>
+      <a id="placeOrderButton"  class="btn btn-fill-out btn-block mt-30" >Place Order (COD)</a>
+      <button id="walletButton" type="submit" class="btn btn-fill-out btn-block mt-30">Pay With Wallet</button> 
+      <button id="rzp-button1" type="submit" class="btn btn-fill-out btn-block mt-30" >Pay Now (Online)</button> 
+       </div>
   </div>
 </div>
 
         </section>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const addressRadios = document.querySelectorAll('input[name="selectedAddress"]');
+            const walletButton = document.getElementById('walletButton');
+            const priceSpans = document.querySelectorAll(".price-span");
+
+let total = 0;
+priceSpans.forEach((priceSpan) => {
+  total += parseFloat(priceSpan.textContent);
+});
+
+const grandTotalElement = document.getElementById("grandTotal");
+grandTotalElement.textContent = total.toFixed(2);
+
+
+
+            walletButton.addEventListener('click', function () {
+                const selectedAddressId = getSelectedAddressId();
+                payWithWallet(selectedAddressId);
+            });
+    
+            function getSelectedAddressId() {
+                let selectedId = null;
+                addressRadios.forEach(function (radio) {
+                    if (radio.checked) {
+                        selectedId = radio.getAttribute('data-address-id');
+                    }
+                });
+                return selectedId;
+            }
+    
+            function payWithWallet(addressId) {
+
+                fetch('/walletpayment', {
+                    method: 'post',
+                    body: JSON.stringify({ addressId: addressId,totalAmount: total.toFixed(2) }),
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                })
+                    .then(response => {
+                        if(!response.ok){
+                            // throw new Error("Insufficent Balance")
+                            alert("Insufficent Balance")
+                        }
+                        if(response.ok){
+                        console.log("Wallet payment successful");
+                        window.location.href="/placeorder"  
+            }})
+                    .catch(error => {
+                        console.log("Wallet payment failed:", error);
+                    })
+            }
+        });
+    </script>
+    
+    
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
           const addressRadios = document.querySelectorAll('input[name="selectedAddress"]');
           const placeOrderButton = document.getElementById('placeOrderButton');
+          
       
           placeOrderButton.addEventListener('click', function () {
             const selectedAddressId = getSelectedAddressId();
-            // Now you have the selected address ID, you can send it to the server using an HTTP request.
             sendSelectedAddressToServer(selectedAddressId);
           });
       
@@ -747,11 +672,10 @@
           }
       
           function sendSelectedAddressToServer(addressId) {
-            console.log(addressId);
       
             fetch('/orders', {
-              method: 'post', // Adjust the HTTP method as needed (e.g., POST, GET, etc.)
-              body: JSON.stringify({ addressId: addressId }), // Send the selected address ID in the request body
+              method: 'post', 
+              body: JSON.stringify({ addressId: addressId }), 
               headers: {
                 'Content-Type': 'application/json',
               },
@@ -762,10 +686,13 @@
               })
               .catch(error => {
                 console.log(error);
+
               });
           }
         });
       </script>
+
+      
     <script>
         // Calculate the Grand Total when the page loads
         document.addEventListener("DOMContentLoaded", function () {
@@ -783,6 +710,129 @@
           grandTotalElement.textContent = total.toFixed(2); // You can format it as needed
         });
       </script>
+
+<script>
+
+    
+</script>
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+ document.addEventListener("DOMContentLoaded", function() {
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      amount: "50000"
+    })
+  };
+
+  var rzp1;
+ 
+
+  // Function to initiate payment
+  function initiatePayment(razorOrder, addressId) {
+    let order = JSON.stringify(razorOrder)
+    console.log(order);
+    var options = {
+      "key": "rzp_test_KQp5QWpvZ9P2O2", 
+      "amount": order.amount, // Amount in currency subunits (e.g., 5000 = 50.00 INR)
+      "currency": "INR",
+      "name": "Chrono Watches",
+      "description": "Test Transaction",
+      "order_id": razorOrder.id, 
+      "handler": function (response) {
+        // alert(response.razorpay_payment_id);
+        window.location.href=`/onlinepaymentstatus?orderId=${razorOrder.id}&status=Success`
+        // alert(response.razorpay_order_id);
+        // alert(response.razorpay_signature);
+        // After successful payment, make a request to the server controller
+        sendAddressToServerController(addressId);
+      },
+      "theme": {
+        "color": "#3399cc"
+      }
+    };
+
+    rzp1 = new Razorpay(options);
+
+    rzp1.on('payment.failed', function (response) {
+        console.log("fail")
+        window.location.href=`/onlinepaymentstatus?orderId=${razorOrder.id}&status=Failed`
+    //   alert(response.error.code);
+    //   alert(response.error.description);
+    //   alert(response.error.source);
+    //   alert(response.error.step);
+    //   alert(response.error.reason);
+    //   alert(response.error.metadata.order_id);
+    //   alert(response.error.metadata.payment_id);
+    });
+
+    rzp1.open();
+  }
+
+  // Add a click event listener to the "Pay Now (Online)" button
+  document.getElementById('rzp-button1').addEventListener('click', function() {
+    const selectedAddressId = getSelectedAddressId();
+    if (selectedAddressId) {
+      // Make the fetch request to create a new orderId
+      fetch(`/onlinepayment?addressId=${selectedAddressId}`, requestOptions)
+        .then(response => response.json())
+        .then(data => {
+          const orderId = data.razorOrder;
+          // Call the initiatePayment function with the orderId and selectedAddressId
+          initiatePayment(orderId, selectedAddressId);
+        })
+        .catch(error => {
+          console.error("Fetch error:", error);
+        });
+    } else {
+      alert('Please select an address before making an online payment.');
+    }
+  });
+
+  // Function to get the selected address ID
+  function getSelectedAddressId() {
+    const addressRadios = document.querySelectorAll('input[name="selectedAddress"]');
+    for (let radio of addressRadios) {
+      if (radio.checked) {
+        return radio.getAttribute('data-address-id');
+      }
+    }
+    return null; // No address selected
+  }
+
+  // Function to send the selected address to the server controller
+  function sendAddressToServerController(addressId) {
+    fetch("/onlinepayment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        addressId: addressId
+      })
+    })
+    .then(response => {
+      console.log("Address sent to server controller.");
+    })
+    .catch(error => {
+      console.error("Error sending address to server controller:", error);
+    });
+  }
+});
+
+
+</script>
+
+
+
+
     <footer class="main">
         <section class="newsletter p-30 text-white wow fadeIn animated">
             <div class="container">
@@ -910,6 +960,7 @@
         </div>
     </div>
     <!-- Vendor JS-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="userAssets/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="userAssets/assets/js/vendor/jquery-3.6.0.min.js"></script>
     <script src="userAssets/assets/js/vendor/jquery-migrate-3.3.0.min.js"></script>

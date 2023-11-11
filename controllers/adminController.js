@@ -4,8 +4,10 @@ const products = require("../models/addProduct");
 const category = require("../models/category");
 const cart = require("../models/cartModel");
 const order = require("../models/order");
+const excelJS = require("exceljs");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs")
 
 module.exports.getAdminLogin = (req, res) => {
   res.render("admin-login");
@@ -165,7 +167,8 @@ module.exports.getEditProduct = async (req, res) => {
   const editItem = req.query.productId;
   try {
     const productDeatils = await products.findById(editItem);
-    res.render("edit-product", { productDeatils });
+    const categorydata = await category.find({})
+    res.render("edit-product", { productDeatils,categorydata });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error in updatting product");
@@ -366,14 +369,11 @@ res.redirect("/admin/categories")
 //show orders list
 module.exports.getOrderList = async (req, res) => {
   try {
-    const orderList = await order.find({}).sort({ orderDate: -1 });
-    let userData = [];
-    for (const orderItem of orderList) {
-      const userId = orderItem.userId;
-      let userDoc = await usercollecn.findById({ _id: userId });
-      userData.push(userDoc.username);
-    }
-    res.render("order-lists", { orderList, userData });
+    const orderList = await order.find({}).sort({orderDate:-1}).populate({
+      path:"products.productId",
+      model:"products",
+    })
+    res.render("order-lists", { orderList});
   } catch (error) {
     console.log(error);
   }
@@ -408,3 +408,87 @@ module.exports.editOrderStatus = async (req, res) => {
     console.log(error);
   }
 };
+
+//sales report excel
+module.exports.getExcelSalesReport = async (req,res)=>{
+  const orders = await order.find({orderStatus:"Delivered"}).populate({
+    path:"products.productId",
+    model:"products",
+  })
+  const workbook = new excelJS.Workbook();  
+  const worksheet = workbook.addWorksheet("Sales Report");
+let SerialNumber= 1;
+  worksheet.columns = [
+    { header: "UserID", key: "UserId", width: 10 }, 
+    { header: 'Order Date', key: 'orderDate', width: 15, style: { numFmt: 'yyyy-mm-dd' } },
+    { header: "Name", key: "Name", width: 10 },
+    { header: "Product", key: "products", width: 25 },
+    { header: "Quantity", key: "quantity", width: 5 },
+    { header: "Total Amount", key: "totalAmount", width: 10 },
+    { header: "Order status", key: "OrderStatus", width: 10 },
+    { header: "Payment Method", key: "PaymentMethod", width: 10 },
+    { header: "Address", key: "address", width: 55 },
+];
+worksheet.getRow(1).eachCell((cell) => {
+  cell.font = { bold: true };
+});
+
+orders.forEach((eachorder)=>{
+  eachorder.products.forEach((product)=>{
+    const fullAddress = `${eachorder.address.addressType}\n${eachorder.address.city}, ${eachorder.address.landMark},${eachorder.address.state},${eachorder.address.pincode},${eachorder.address.phonenumber}`;
+    const salesData = {
+      'Sno':SerialNumber++,
+      userId:eachorder.userId,
+      orderDate:eachorder.orderDate,
+      Name:eachorder.address.userName,
+      products: product.productId.name,
+      quantity:product.quantity,
+      totalAmount:eachorder.totalAmount,
+      OrderStatus:eachorder.orderStatus,
+      PaymentMethod:eachorder.paymentMethod,
+      address:fullAddress,
+    }
+    worksheet.addRow(salesData)
+  })
+});
+
+
+const filePath = path.join(__dirname, 'sales_report.xlsx');
+const exportPath = path.resolve(
+  
+  "Public",
+  "sales_report",
+  "sales-report.xlsx"
+);
+
+await workbook.xlsx.writeFile(exportPath)
+    .then(async() => {
+        res.download(exportPath, 'sales_report.xlsx', (err) => {
+            if (err) {
+                res.status(500).send('Error sending the file');
+            }
+        });
+    })
+    .catch((error) => {
+        console.error('Error writing Excel file:', error);
+        res.status(500).send('Error writing the file');
+    })
+  }
+
+  //sales report in PDF
+  module.exports.getPdfSalesReport = async(req,res)=>{
+    try{
+    const orders = await order.find({orderStatus:"Delivered"}).populate({
+      path:"products.productId",
+      model:"products"
+    })
+      res.render("salesreport_pdf",{orders})
+    }catch(error){
+  console.log(error)
+    }
+  }
+
+
+
+ 
+  

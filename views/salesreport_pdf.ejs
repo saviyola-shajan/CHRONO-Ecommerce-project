@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Report PDF</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    /* Add your styles here */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container mt-2" >
+    <div class="row mt-4">
+    <div class="col-12">
+        <button id="printButton" class="btn btn-primary">
+            Print 
+        </button>
+        <a href="admin/getadmin-dash"><button class="btn btn-success">Go Back</button></a>
+    </div>
+    <h1 style="text-align: center; color: #030303;margin-left: 450px; font-size: xx-large;">SALES REPORT</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>S.No</th>
+        <th>Order Date</th>
+        <th>Name</th>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Total Amount</th>
+        <th>Delivered On</th>
+        <th>Payment Method</th>
+        <th>Address</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% let serialNumber = 1; %>
+    <%orders.reverse().forEach((eachorder)=>{%>
+        <tr>
+          <%eachorder.products.forEach((product)=>{%>
+          <td><%= serialNumber++ %></td>
+          <td><%=eachorder.orderDate%></td>
+          <td><%=eachorder.address.userName%></td>
+          <td><%=product.productId.name%></td>
+          <td><%=product.quantity%></td>
+          <td><%=eachorder.totalAmount%></td>
+          <td><%=eachorder.orderDate%></td>
+          <td><%=eachorder.paymentMethod%></td>
+          <td>
+            <%= eachorder.address.addressType %><br>
+            <%= eachorder.address.userName %><br>
+            <%= eachorder.address.city %><br>
+            <%= eachorder.address.state %><br>
+            <%= eachorder.address.pincode %><br>
+            <%= eachorder.address.phoneNumber %>          </td>
+          <%})%>
+        </tr>
+      <%})%>
+    </tbody>
+  </table>
+</div>
+</div>
+<script>
+  document
+      .getElementById("printButton")
+      .addEventListener("click", function () {
+          window.print();
+      });
+</script> 
+</body>
+
+
+</html>
