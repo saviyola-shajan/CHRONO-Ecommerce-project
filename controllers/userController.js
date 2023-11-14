@@ -27,8 +27,19 @@ const secretKey = process.env.JWT_SECRET;
 module.exports.getHomePage = async (req, res) => {
   try {
     const loggedIn = req.cookies.loggedIn;
-    const product = await products.find({ status: "Avaliable" });
-    res.render("home", { product, loggedIn });
+    const page = req.query.page ?? 1;
+    const no_of_docs_each_page = 6;
+    const totalProducts = await products.countDocuments({
+      status: "Avaliable" 
+    });
+    const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
+    const skip = (page - 1) * no_of_docs_each_page;
+
+    const product = await products
+    .find({ status:"Avaliable"})
+    .skip(skip)
+    .limit(no_of_docs_each_page);
+    res.render("home", { product, loggedIn,page,totalPages });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error fetching products");
@@ -259,7 +270,8 @@ module.exports.goTOCart = async (req, res) => {
     const userid = req.user.email;
     const userData = await usercollecn.findOne({ email: req.user });
     const userId = userData._id;
-    const { productId } = req.body;
+    const { productId ,quantity} = req.body;
+    console.log(req.body)
     let userCart = await cart.findOne({ userId });
     if (!userCart) {
       userCart = new cart({
@@ -550,7 +562,7 @@ module.exports.getPlaceOrder = (req,res)=>{
 
 
 //save orders to the DB (COD)
-module.exports.postOrders = async (req, res) => {
+module.exports.postOrdersCod = async (req, res) => {
   try {
     const UseraddressId = req.body.addressId;
     const userId = req.user;
@@ -564,15 +576,16 @@ module.exports.postOrders = async (req, res) => {
     let orderTotal = 0;
     let orderProducts = [];
 
-    userCart.products.forEach((item) => {
+    for (const item of userCart.products) {
       const orderItem = {
         productId: item.productId._id,
         quantity: item.quantity,
         price: item.productId.s_price,
       };
+      await products.updateOne({ _id: orderItem.productId }, { $inc: { stock: -orderItem.quantity } });
       orderTotal += orderItem.price * orderItem.quantity;
       orderProducts.push(orderItem);
-    });
+    };
 
     let delAddress;
     userAddress.address.forEach((addressId) => {
@@ -620,15 +633,16 @@ module.exports.onlinePayment =  async (req, res) => {
     });
     let orderTotal = 0;
     let orderProducts = [];
-    userCart.products.forEach((item) => {
+    for (const item of userCart.products) {
       const orderItem = {
         productId: item.productId._id,
         quantity: item.quantity,
         price: item.productId.s_price,
       };
+      await products.updateOne({ _id: orderItem.productId }, { $inc: { stock: -orderItem.quantity } });
       orderTotal += orderItem.price * orderItem.quantity;
       orderProducts.push(orderItem);
-    });
+    };
 
     let delAddress;
     userAddress.address.forEach((addressId) => {
@@ -697,16 +711,16 @@ module.exports.walletPayment = async(req,res)=>{
     const userAddress = await address.findOne({userId:userdata._id})
     let orderTotal=0
     let orderProducts = [];
-    userCart.products.forEach((item) => {
+    for (const item of userCart.products) {
       const orderItem = {
         productId: item.productId._id,
         quantity: item.quantity,
         price: item.productId.s_price,
       };
+      await products.updateOne({ _id: orderItem.productId }, { $inc: { stock: -orderItem.quantity } });
       orderTotal += orderItem.price * orderItem.quantity;
       orderProducts.push(orderItem);
-    });
-
+    };
     let delAddress;
     userAddress.address.forEach((addressId) => {
       if (UseraddressId == addressId._id.toString()) {
@@ -874,10 +888,15 @@ module.exports.productCancel = async (req, res) => {
   try {
     const userData = await usercollecn.findOne({ email: req.user });
     let userCancel = await order.findOne({ userId: userData._id });
+    const cancelledOrder = await order.findOne({ _id: req.body.orderID });
     await order.updateOne(
       { _id: req.body.orderID },
       { $set: { orderStatus: "Cancelled", cancelReason: req.body.reason } }
     );
+
+    for (const item of cancelledOrder.products) {
+      await products.updateOne({ _id: item.productId }, { $inc: { stock: item.quantity } });
+    }
 
     const newOrder = await order.findOne({_id:req.body.orderID})
     const userwallet = await Wallet.findOne({userId:userData._id})
@@ -901,10 +920,15 @@ module.exports.returnOrder = async (req, res) => {
   try {
     const userData = await usercollecn.findOne({ email: req.user });
     let userReturn = await order.findOne({ userId: userData._id });
+    const returnedOrder = await order.findOne({ _id: req.body.orderID });
     await order.updateOne(
       { _id: req.body.orderID },
       { $set: { orderStatus: "Returned", returnReason: req.body.reason } }
     );
+
+    for (const item of returnedOrder.products) {
+      await products.updateOne({ _id: item.productId }, { $inc: { stock: item.quantity } });
+    }
 
     const newOrder = await order.findOne({_id:req.body.orderID})
     const userwallet = await Wallet.findOne({userId:userData._id})
@@ -927,12 +951,23 @@ module.exports.searchProducts = async (req, res) => {
   try {
     const loggedIn = req.cookies.loggedIn;
     const { search_product } = req.query;
+    const page = req.query.page
+    const no_of_docs_each_page = 6;
+    const totalProducts = await products.countDocuments({
+      status: "Avaliable" 
+    });
+    const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
+    const skip = (page - 1) * no_of_docs_each_page;
+
     const regex = new RegExp(search_product, "i");
-    const product = await products.find({ name: regex });
+    const product = await products
+    .find({  name: regex,status:"Avaliable"})
+    .skip(skip)
+    .limit(no_of_docs_each_page);
     if (product.length === 0) {
-      res.render("home", { message: "No products found", product, loggedIn });
+      res.render("home", { message: "No products found", product, loggedIn,page,totalPages });
     } else {
-      res.render("home", { product, loggedIn });
+      res.render("home", { product, loggedIn,page,totalPages });
     }
   } catch (error) {
     console.log(error);
@@ -944,21 +979,109 @@ module.exports.filterCategory = async (req, res) => {
   try {
     const loggedIn = req.cookies.loggedIn;
     const categories = req.query.category;
-    const product = await products.find({ category: categories });
+    const page = req.query.page
+    const no_of_docs_each_page = 6;
+    const totalProducts = await products.countDocuments({
+      status: "Avaliable" 
+    });
+    const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
+    const skip = (page - 1) * no_of_docs_each_page;
+
+    const product = await products
+    .find({ status:"Avaliable",category: categories})
+    .skip(skip)
+    .limit(no_of_docs_each_page);
     if (product.length === 0) {
       res.render("home", {
         message: "No items found in specified category",
         product,
         loggedIn,
+        page,
+        totalPages
       });
     } else {
-      res.render("home", { product, loggedIn });
+      res.render("home", { product, loggedIn,page,totalPages });
     }
   } catch (error) {
     console.log(error);
   }
 };
 
+//get filter checkbox sidebar
+module.exports.getFiterCheckbox = async(req,res)=>{
+  try{
+    const loggedIn = req.cookies.loggedIn;
+    const selectedBrands = req.body.brand;
+    const selectedMovements = req.body.Movement;
+    const selectedStrapMaterials = req.body.StrapMaterial;
+    const page = req.query.page ?? 1;
+    const no_of_docs_each_page = 6;
+    const totalProducts = await products.countDocuments({
+      status: "Avaliable" 
+    });
+    const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
+    const skip = (page - 1) * no_of_docs_each_page;
+
+    const query = { status:"Avaliable"};
+
+    if (selectedBrands && selectedBrands.length > 0) {
+      query.brand = { $in: selectedBrands };
+    }
+    
+    if (selectedMovements && selectedMovements.length > 0) {
+      query.movement = { $in: selectedMovements };
+    }
+    
+    if (selectedStrapMaterials && selectedStrapMaterials.length > 0) {
+      query.strap_material = { $in: selectedStrapMaterials };
+    }
+
+    const product = await products
+    .find(query)
+    .skip(skip)
+    .limit(no_of_docs_each_page);
+    // const product = await products.find(query);
+   res.render("home",{loggedIn,product,page,totalPages})
+  }catch(error){
+    console.log(error)
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+// filter by price
+module.exports.filterByPrice = async (req, res) => {
+  try {
+    const loggedIn = req.cookies.loggedIn;
+    const sortBy = req.query.sortBy || 'lowToHigh';
+    const page = req.query.page ?? 1;
+    const no_of_docs_each_page = 6;
+    const skip = (page - 1) * no_of_docs_each_page;
+    
+    let product
+    if (sortBy === 'lowToHigh') {
+       product = await products
+      .find({status: 'Avaliable'})
+      .sort({s_price: 1})
+      .skip(skip)
+      .limit(no_of_docs_each_page)
+    } else if (sortBy === 'highToLow') {
+      const anotherproduct = await products
+      .find({status: 'Avaliable'})
+      .sort({s_price: -1})
+      .skip(skip)
+      .limit(no_of_docs_each_page)
+      product = anotherproduct;
+    }
+    const totalProducts = await products.countDocuments({status: 'Avaliable'});
+    const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
+    res.render('home', { loggedIn, product, page, totalPages, sortBy });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+ 
 // get wishlist
 module.exports.getWishlist = async (req, res) => {
   try {

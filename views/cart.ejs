@@ -727,12 +727,12 @@
                                 </thead>
                                
                                   
-                                <tbody>
-                                    
+                                <tbody> 
                                     <% if (userCart && userCart.products.length > 0) { %>
                                   <% userCart.products.forEach(product => { %>
                                     <tr>
-                                      <td class="image product-thumbnail"><img src="<%= product.productId.photos[0] %>" alt="#"></td>
+                                        <%console.log(product)%>
+                                      <td class="image product-thumbnail"><img src="<%= product.productId.photos[0]%>" alt="#"></td>
                                       <td class="product-des product-name">
                                         <h5 class="product-name"><%= product.productId.name %></h5>
                                       </td>

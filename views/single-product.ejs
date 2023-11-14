@@ -867,7 +867,7 @@
                             </h2>
                             <div class="product-detail-rating">
                                 <div class="pro-details-brand">
-                                    <span> Brands: <a href="shop-grid-right.html">
+                                    <span> Brand: <a href="shop-grid-right.html">
                                             <%= singleProduct.brand %>
                                         </a></span>
                                 </div>
@@ -885,7 +885,7 @@
                                         </span></ins>
                                     <ins><span class="old-price font-md ml-15">₹<%= singleProduct.r_price %>
                                                 </span></ins>
-                                    <span class="save-price  font-md color3 ml-15">25% Off</span>
+                                    <span class="save-price  font-md color3 ml-15"><span><%=Math.round(100-((singleProduct.s_price /singleProduct.r_price)*100))%>%</span></span>
                                 </div>
                             </div>
                             <div class="bt-1 border-color-1 mt-15 mb-15"></div>
@@ -939,8 +939,7 @@
                                     <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
                                 </div> -->
                                 <div class="product-extra-link2">
-                                    <button type="submit" class="button button-add-to-cart" onclick="location.href='/addToCart'">Add to cart</button>
-
+                                    <button type="button" class="button button-add-to-cart" onclick="addToCart()">Add to cart</button>
                                     <!-- <a href="/verify-user-authentication">click</a> -->
                                     <a aria-label="Add To Wishlist" class="action-btn hover-up"
                                         href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
@@ -960,6 +959,29 @@
                     </div>
                 </div>
                 <!-- End Gallery -->
+                <!-- <script>
+                    function addToCart() {
+                        fetch('/addToCart', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                productId: productId,
+                quantity: quantity
+            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Handle the response data if needed
+                            console.log(data);
+                        })
+                        .catch(error => {
+                            // Handle errors
+                            console.error('Error:', error);
+                        });
+                    }
+                </script> -->
                 <script>
                     const imageContainer = document.querySelector('.image-container');
                     const productImage = document.querySelector('.product-image');

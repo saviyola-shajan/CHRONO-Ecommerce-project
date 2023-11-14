@@ -20,9 +20,17 @@ const addProductSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  strap_material:{
+    type:String,
+    required:true
+  },
   brand: {
     type: String,
     required: true,
+  },
+  movement:{
+    type:String,
+    required:true
   },
   photos: {
     type: Array,

@@ -58,7 +58,8 @@ const orderSchema = new mongoose.Schema({
   returnReason:{
     type:String,
   }
-});
+},{timestamps:true}
+);
 
 const order = mongoose.model("order", orderSchema);
 module.exports = order;

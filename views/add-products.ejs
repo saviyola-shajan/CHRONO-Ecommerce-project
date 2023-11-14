@@ -166,8 +166,8 @@
                     </a>
                 </li> -->
                 <li class="">
-                    <a class="menu-link" href="page-brands.html"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Brands</span> </a>
+                    <a class="menu-link" href="/admin/sale"> <i class="icon material-icons md-stars"></i>
+                        <span class="text">sales Report</span> </a>
                 </li>
                
             </ul>
@@ -301,6 +301,35 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>Movement:</td>
+                            <td>
+                                <select name="movement" required>
+                                    <option value="" disabled selected>Select Movement Type</option>
+                                    <option value="Automatic">Automatic</option>
+                                    <option value="Quartz">Quartz</option>
+                                    <option value="Mechanical">Mechanical</option>
+                                    <option value="Manual-Winding">Digital</option>
+                                    <option value="Solar-Powered">Analog</option>
+                                </select>
+                                <span id="product_movenment" class="error"></span>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td>Strap Material:</td>
+                            <td>
+                                <select name="strap_material" required>
+                                    <option value="" disabled selected>Select Strap Material</option>
+                                    <option value="Leather">Leather</option>
+                                    <option value="Metal">Metal</option>
+                                    <option value="Rubber">Rubber</option>
+                                    <option value="Nylon">Stainless Steel</option>
+                                </select>
+                                <span id="product_strap_material" class="error"></span>
+                            </td>
+                        </tr>
+                        
+                        <tr>
                             <td>Brand:</td>
                             <td>
                                 <input type="text" name="brand" required>
@@ -353,12 +382,11 @@
                  
                  
                      // Check if product_name is empty
-                     var nameRegex = /^[A-Za-z]+$/;
-                     var nameRegex = /^[A-Za-z]+$/;
-    if (!nameRegex.test(product_name)) {
-        alert("Product Name should contain alphabetic characters only.");
-        return false; // Prevent form submission
-    }
+
+if (product_name.trim() === "") {
+    alert("Product Name cannot be empty.");
+    return false;
+}
 
     // Check if product_brand is not empty
     if (product_brand === "") {

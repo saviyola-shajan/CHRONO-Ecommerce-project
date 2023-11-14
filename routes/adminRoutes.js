@@ -31,5 +31,6 @@ adminRouter.get("/editorderdetails/:id",admincontroller.getOrderdetails)
 adminRouter.post("/editorderstatus",admincontroller.editOrderStatus)
 adminRouter.get("/excelsalesreport",admincontroller.getExcelSalesReport)
 adminRouter.get("/pdfsalesreport",admincontroller.getPdfSalesReport)
+adminRouter.get("/sale",admincontroller.getSale)
 
 module.exports = adminRouter;

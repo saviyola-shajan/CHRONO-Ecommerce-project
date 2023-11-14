@@ -572,7 +572,6 @@
     const verifyOTPButton = document.getElementById("verifyOTPButton");
     const signInButton = document.getElementById("signInButton");
 
-    // Initially, disable the "Sign In" button
     signInButton.disabled = true;
 
     sendOTPButton.addEventListener("click", function (e) {
@@ -660,7 +659,6 @@
                     showConfirmButton: false,
                     timer: 1500
                 });
-                // Enable the "Sign In" button
                 signInButton.disabled = false;
             })
             .catch((error) => {

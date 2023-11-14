@@ -8,6 +8,8 @@ const excelJS = require("exceljs");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs")
+const { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } = require('date-fns');
+
 
 module.exports.getAdminLogin = (req, res) => {
   res.render("admin-login");
@@ -86,6 +88,8 @@ module.exports.postAddProduct = (req, res) => {
     s_price,
     category,
     brand,
+    movement,
+    strap_material,
     stock,
     status,
   } = req.body;
@@ -104,7 +108,9 @@ module.exports.postAddProduct = (req, res) => {
     !brand ||
     !stock ||
     !status ||
-    !photos
+    !photos||
+    !movement||
+    !strap_material
   ) {
     return res.render("add-products", {
       error:
@@ -123,6 +129,8 @@ module.exports.postAddProduct = (req, res) => {
     brand,
     stock,
     status,
+    movement,
+    strap_material,
     photos: photoIds,
   });
 
@@ -188,6 +196,8 @@ module.exports.postEditedProduct = async (req, res) => {
       category,
       brand,
       stock,
+      movement,
+      strap_material
     } = req.body;
 
     const photos = req.files;
@@ -209,6 +219,8 @@ module.exports.postEditedProduct = async (req, res) => {
       category,
       brand,
       stock,
+      movement,
+      strap_material,
       status: existingProduct.status,
       photos: updatedPhotos,
     };
@@ -487,6 +499,62 @@ await workbook.xlsx.writeFile(exportPath)
   console.log(error)
     }
   }
+
+  //gett full sale
+module.exports.getSale = async (req, res) => {
+    try {
+      const allOrders = await order.find({
+        orderStatus: "Delivered"
+    }).populate({
+        path: "products.productId",
+        model: "products"
+    });
+        const reportType = req.query.type;
+        let additionalData;
+
+        switch (reportType) {
+            case 'weekly':
+                additionalData = await order.find({
+                    orderStatus: "Delivered",
+                    orderDate: { $gte: startOfWeek(new Date()), $lte: endOfWeek(new Date()) }
+                }).populate({
+                    path: "products.productId",
+                    model: "products"
+                });
+                break;
+            case 'monthly':
+                additionalData = await order.find({
+                    orderStatus: "Delivered",
+                    orderDate: { $gte: startOfMonth(new Date()), $lte: endOfMonth(new Date()) }
+                }).populate({
+                    path: "products.productId",
+                    model: "products"
+                });
+                break;
+            case 'yearly':
+                additionalData = await order.find({
+                    orderStatus: "Delivered",
+                    orderDate: { $gte: startOfYear(new Date()), $lte: endOfYear(new Date()) }
+                }).populate({
+                    path: "products.productId",
+                    model: "products"
+                });
+                break;
+            default:
+                additionalData = [];
+                break;
+        }
+
+        const orders = [...allOrders, ...additionalData];
+
+        res.render("sales-report-admin", { orders, reportType });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+
 
 
 

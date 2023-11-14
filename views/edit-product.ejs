@@ -209,6 +209,27 @@
                                     <textarea id="w3review" name="description" rows="4" cols="50"><%= productDeatils.description %></textarea>
                                 </div>
                                 <div class="mb-4">
+                                    <label for="strap" class="form-label">Strap Material :</label>
+                                    <select name="strap_material" required>
+                                        <option value="" disabled selected>Select Strap Material</option>
+                                        <option value="Leather">Leather</option>
+                                        <option value="Metal">Metal</option>
+                                        <option value="Rubber">Rubber</option>
+                                        <option value="Nylon">Stainless Steel</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="movement" class="form-label">Movement :</label>
+                                    <select name="movement" required>
+                                        <option value="" disabled selected>Select Movement Type</option>
+                                        <option value="Automatic">Automatic</option>
+                                        <option value="Quartz">Quartz</option>
+                                        <option value="Mechanical">Mechanical</option>
+                                        <option value="Manual-Winding">Digital</option>
+                                        <option value="Solar-Powered">Analog</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
                                     <label for="regular_price" class="form-label">Regular price</label>
                                     <input type="text" name="r_price" value="<%= productDeatils.r_price %>" class="form-control" id="regular_price">
                                 </div>
@@ -217,6 +238,7 @@
                                     <input type="text" name="s_price" value="<%= productDeatils.s_price %>" class="form-control" id="sales_price">
                                 </div>
                                 <div class="mb-4">
+                                    <label for="category" class="form-label">Category :</label>
                                     <select name="category" required id="product_category">
                                         <option value="">Select a category</option>
                                         <% categorydata.forEach((item) => { %>
