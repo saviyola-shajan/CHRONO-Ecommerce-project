@@ -30,13 +30,13 @@ module.exports.getHomePage = async (req, res) => {
     const page = req.query.page ?? 1;
     const no_of_docs_each_page = 6;
     const totalProducts = await products.countDocuments({
-      status: "Avaliable" 
+      status: "Available" 
     });
     const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
     const skip = (page - 1) * no_of_docs_each_page;
 
     const product = await products
-    .find({ status:"Avaliable"})
+    .find({ status:"Available"})
     .skip(skip)
     .limit(no_of_docs_each_page);
     res.render("home", { product, loggedIn,page,totalPages });
@@ -167,7 +167,7 @@ module.exports.postUserLogin = async (req, res) => {
             const token = jwt.sign(email, secretKey);
             res.cookie("token", token, { maxAge: 24 * 60 * 60 * 1000 });
             res.cookie("loggedIn", true, { maxAge: 24 * 60 * 60 * 1000 });
-            const product = await products.find({ status: "Avaliable" });
+            const product = await products.find({ status: "Available" });
             res.redirect("/");
           } catch (error) {
             console.error(error);
@@ -258,7 +258,7 @@ module.exports.getCart = async (req, res) => {
       path: "products.productId",
       model: "products",
     });
-    res.render("cart", { userCart});
+    res.render("cart", { userCart,error:null});
   } catch (error) {
     console.log("error while loading cart", error);
   }
@@ -271,7 +271,6 @@ module.exports.goTOCart = async (req, res) => {
     const userData = await usercollecn.findOne({ email: req.user });
     const userId = userData._id;
     const { productId ,quantity} = req.body;
-    console.log(req.body)
     let userCart = await cart.findOne({ userId });
     if (!userCart) {
       userCart = new cart({
@@ -431,6 +430,16 @@ module.exports.getCheckout = async (req, res) => {
       path: "products.productId",
       model: "products",
     });
+    const outOfStockProducts = userCart.products.filter(product => {
+      return product.productId.stock < product.quantity;
+    });
+    if (outOfStockProducts.length > 0) {
+      const outOfStockProductNames = outOfStockProducts.map(product => product.productId.name);
+      return res.render("cart", {
+        userCart,
+        error: `Some products (${outOfStockProductNames.join(', ')}) are out of stock. Please review your cart.`
+      });    
+    }
     res.render("checkout", { addresses, userCart });
   } catch (error) {
     console.log("error while loading cart", error);
@@ -505,7 +514,6 @@ module.exports.getEditAddress = async(req,res)=>{
       thataddress=address
       }
     })
-    console.log(thataddress)
     res.render("edit-address",{thataddress})
     
   }catch(error){
@@ -954,14 +962,14 @@ module.exports.searchProducts = async (req, res) => {
     const page = req.query.page
     const no_of_docs_each_page = 6;
     const totalProducts = await products.countDocuments({
-      status: "Avaliable" 
+      status: "Available" 
     });
     const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
     const skip = (page - 1) * no_of_docs_each_page;
 
     const regex = new RegExp(search_product, "i");
     const product = await products
-    .find({  name: regex,status:"Avaliable"})
+    .find({  name: regex,status:"Available"})
     .skip(skip)
     .limit(no_of_docs_each_page);
     if (product.length === 0) {
@@ -982,13 +990,13 @@ module.exports.filterCategory = async (req, res) => {
     const page = req.query.page
     const no_of_docs_each_page = 6;
     const totalProducts = await products.countDocuments({
-      status: "Avaliable" 
+      status: "Available" 
     });
     const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
     const skip = (page - 1) * no_of_docs_each_page;
 
     const product = await products
-    .find({ status:"Avaliable",category: categories})
+    .find({ status:"Available",category: categories})
     .skip(skip)
     .limit(no_of_docs_each_page);
     if (product.length === 0) {
@@ -1017,12 +1025,12 @@ module.exports.getFiterCheckbox = async(req,res)=>{
     const page = req.query.page ?? 1;
     const no_of_docs_each_page = 6;
     const totalProducts = await products.countDocuments({
-      status: "Avaliable" 
+      status: "Available" 
     });
     const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
     const skip = (page - 1) * no_of_docs_each_page;
 
-    const query = { status:"Avaliable"};
+    const query = { status:"Available"};
 
     if (selectedBrands && selectedBrands.length > 0) {
       query.brand = { $in: selectedBrands };
@@ -1060,19 +1068,19 @@ module.exports.filterByPrice = async (req, res) => {
     let product
     if (sortBy === 'lowToHigh') {
        product = await products
-      .find({status: 'Avaliable'})
+      .find({status: 'Available'})
       .sort({s_price: 1})
       .skip(skip)
       .limit(no_of_docs_each_page)
     } else if (sortBy === 'highToLow') {
       const anotherproduct = await products
-      .find({status: 'Avaliable'})
+      .find({status: 'Available'})
       .sort({s_price: -1})
       .skip(skip)
       .limit(no_of_docs_each_page)
       product = anotherproduct;
     }
-    const totalProducts = await products.countDocuments({status: 'Avaliable'});
+    const totalProducts = await products.countDocuments({status: 'Available'});
     const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
     res.render('home', { loggedIn, product, page, totalPages, sortBy });
   } catch (error) {
@@ -1105,22 +1113,34 @@ module.exports.goToWishlist = async (req, res) => {
     const userData = await usercollecn.findOne({ email: req.user });
     const userId = userData._id;
     const { productId } = req.body;
-    let userWishlist = await wishlist.findOne({ userId });
-    if (!userWishlist) {
-      userWishlist = new wishlist({
+
+    const existingWishlist = await wishlist.findOne({ userId });
+    if (existingWishlist) {
+      const existingProduct = existingWishlist.products.find(
+        (product) => product.productId.toString() === productId
+      );
+
+      if (existingProduct) {
+        return res.status(500).json({ message: "Product already in the Wishlist" });
+      }
+
+      existingWishlist.products.push({
+        productId: new mongoose.Types.ObjectId(productId),
+      });
+
+      await existingWishlist.save();
+    } else {
+      const newWishlist = new wishlist({
         userId,
         products: [{ productId }],
       });
-    } else {
-      userWishlist.products.push({
-        productId: new mongoose.Types.ObjectId(productId),
-      });
+
+      await newWishlist.save();
     }
-    await userWishlist.save();
 
     res.json({ message: "Product added to the Wishlist" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res
       .status(500)
       .json({ error: "Failed to add the product to the Wishlist" });

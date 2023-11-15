@@ -211,22 +211,22 @@
                                 <div class="mb-4">
                                     <label for="strap" class="form-label">Strap Material :</label>
                                     <select name="strap_material" required>
-                                        <option value="" disabled selected>Select Strap Material</option>
-                                        <option value="Leather">Leather</option>
-                                        <option value="Metal">Metal</option>
-                                        <option value="Rubber">Rubber</option>
-                                        <option value="Nylon">Stainless Steel</option>
+                                        <option value="Leather" <%= (productDeatils.strap_material === 'Leather') ? 'selected' : '' %>>Leather</option>
+                                        <option value="Metal" <%= (productDeatils.strap_material === 'Metal') ? 'selected' : '' %>>Metal</option>
+                                        <option value="Rubber" <%= (productDeatils.strap_material === 'Rubber') ? 'selected' : '' %>>Rubber</option>
+                                        <option value="Steel" <%= (productDeatils.strap_material === 'Stainless Steel') ? 'selected' : '' %>>Stainless Steel</option>
+                                    </select>
                                     </select>
                                 </div>
                                 <div class="mb-4">
                                     <label for="movement" class="form-label">Movement :</label>
                                     <select name="movement" required>
-                                        <option value="" disabled selected>Select Movement Type</option>
-                                        <option value="Automatic">Automatic</option>
-                                        <option value="Quartz">Quartz</option>
-                                        <option value="Mechanical">Mechanical</option>
-                                        <option value="Manual-Winding">Digital</option>
-                                        <option value="Solar-Powered">Analog</option>
+                                        <option value="Automatic" <%= (productDeatils.movement === 'Automatic') ? 'selected' : '' %>>Automatic</option>
+                                        <option value="Quartz" <%= (productDeatils.movement === 'Quartz') ? 'selected' : '' %>>Quartz</option>
+                                        <option value="Mechanical" <%= (productDeatils.movement === 'Mechanical') ? 'selected' : '' %>>Mechanical</option>
+                                        <option value="Digital" <%= (productDeatils.movement === 'Digital') ? 'selected' : '' %>>Digital</option>
+                                        <option value="Analog" <%= (productDeatils.movement === 'Analog') ? 'selected' : '' %>>Analog</option>
+                                        </select>
                                     </select>
                                 </div>
                                 <div class="mb-4">
@@ -240,9 +240,9 @@
                                 <div class="mb-4">
                                     <label for="category" class="form-label">Category :</label>
                                     <select name="category" required id="product_category">
-                                        <option value="">Select a category</option>
                                         <% categorydata.forEach((item) => { %>
-                                        <option value="<%= item.name %>"><%= item.name %></option>
+                                            <%=console.log(item.name)%>
+                                            <option value="<%= item.name %>"  <%= (item.name === item.name) ? 'selected' : '' %>><%=item.name%></option>
                                         <% }) %>
                                     </select>
                                 </div>

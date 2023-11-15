@@ -274,11 +274,15 @@
                                         <td><%= product.brand %></td>
                                         <td><%= product.category %></td>
                                         <td><%= product.s_price %></td>
+                                        <%if(product.stock <= 0){%>
+                                            <td style="color: red;">Out of Stock</td>
+                                            <%}else{%>
                                         <td><%= product.stock %></td>
+                                            <%}%>
                                         <td id="status-<%= product._id %>"><%= product.status %></td>
                                         <td>
-                                            <button class="btn<%= product.status === 'Avaliable' ? ' red-button' : (product.status === 'Out of stock' ? ' green-button' : '') %>" onclick="toggleProductStatus('<%= product._id %>', '<%= product.status %>')">
-                                                <% if (product.status === 'Avaliable') { %>
+                                            <button class="btn<%= product.status === 'Available' ? ' red-button' : (product.status === 'Unavailable' ? ' green-button' : '') %>" onclick="toggleProductStatus('<%= product._id %>', '<%= product.status %>')">
+                                                <% if (product.status === 'Available') { %>
                                                    Unlist
                                                 <% } else { %>
                                                     list
@@ -303,7 +307,7 @@
                             const statusElement = document.querySelector(`#status-${productId}`);
                             
                             // Toggle the user's status
-                            const newStatus = currentStatus === 'Avaliable' ? 'Out of stock' : 'Avaliable';
+                            const newStatus = currentStatus === 'Available' ? 'Unavailable' : 'Available';
                         
                             // Update the user's status in your database (use an API call or Mongoose).
                             // For example, using an API call with the Fetch API:

@@ -160,7 +160,7 @@ module.exports.postProductStatus = async (req, res) => {
   const productId = req.params.productId;
   const newStatus = req.body.status;
   try {
-    const updateProduct = await products.findByIdAndUpdate(productId, {
+    const updateProduct = await products.findByIdAndUpdate(productId, {   
       status: newStatus,
     });
     res.status(200).json({ status: updateProduct.status });

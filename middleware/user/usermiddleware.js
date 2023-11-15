@@ -26,7 +26,7 @@ module.exports.IsUserBlocked= async(req, res, next)=>{
   if(currUser.status =="Blocked"){
     res.clearCookie("token");
     res.clearCookie("loggedIn");
-    res.redirect("/get-login");
+    res.render("page-login",{error:"User is Blocked"});
   }
   next()
 

@@ -716,6 +716,7 @@
                               
                             <table class="table table-bordered table-hover table-striped">
                                 <thead>
+                                    <div style="color: red;font-size: large;font-weight: 600;"><%=error%></div>
                                   <tr>
                                     <th scope="col">Image</th>
                                     <th scope="col">Product Name</th>
@@ -731,13 +732,15 @@
                                     <% if (userCart && userCart.products.length > 0) { %>
                                   <% userCart.products.forEach(product => { %>
                                     <tr>
-                                        <%console.log(product)%>
                                       <td class="image product-thumbnail"><img src="<%= product.productId.photos[0]%>" alt="#"></td>
                                       <td class="product-des product-name">
                                         <h5 class="product-name"><%= product.productId.name %></h5>
                                       </td>
                                       <td class="peice"  data-title="Price" ><span><%= product.productId.s_price %></span></td>
                                       <td class="text-center" data-title="Stock">
+                                        <% if (product.productId.stock <= 0) { %>
+                                            <span class="text-danger">Out of Stock</span>
+                                          <% } else { %>
                                         <div class="detail-qty border radius m-auto" data-product-id="<%= product._id %>">
                                             <a href="javascript:void(0);" class="qty-up">
                                               <i class="fi-rs-angle-small-up"></i>
@@ -747,6 +750,7 @@
                                               <i class="fi-rs-angle-small-down"></i>
                                             </a>
                                           </div>
+                                          <% } %>
                                       </td>
                                       <td class="text-right" data-title="Cart">
                                         <span class="cart-total"> <%= product.productId.s_price * Number(product.quantity) %></span>
@@ -781,27 +785,7 @@
                             <% if (userCart && userCart.products.length > 0) { %>
                             <div class="col-lg-6 col-md-12">
                                
-                                <!-- <div class="mb-30 mt-50">
-                                    <div class="heading_s1 mb-3">
-                                        <h4>Apply Coupon</h4>
-                                    </div>
-                                    <div class="total-amount">
-                                        <div class="left">
-                                            <div class="coupon">
-                                                <form action="#" target="_blank">
-                                                    <div class="form-row row justify-content-center">
-                                                        <div class="form-group col-lg-6">
-                                                            <input class="font-medium" name="Coupon" placeholder="Enter Your Coupon">
-                                                        </div>
-                                                        <div class="form-group col-lg-6">
-                                                            <button class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> -->
+                             
                             </div>
                             <div class="col-lg-6 col-md-12">
                                 <div class="border p-md-4 p-30 border-radius cart-totals">
@@ -811,11 +795,6 @@
                                     <div class="table-responsive">
                                         <table class="table">
                                             <tbody>
-                                                <!-- <tr>
-                                                    <td class="cart_total_label">Cart Subtotal</td>
-                                                    <td class="cart_total_amount"><span class="font-lg fw-900 text-brand" id="cartSubtotal">₹0.00</span></td>
-
-                                                </tr> -->
                                                 <tr>
                                                     <td class="cart_total_label">Shipping</td>
                                                     <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>

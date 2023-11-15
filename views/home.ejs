@@ -657,6 +657,49 @@
                        
                     
                     </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+                    
+                            function loadCheckboxSelections() {
+                                const savedValues = localStorage.getItem('checkboxSelections');
+                    
+                                if (savedValues) {
+                                    const parsedValues = JSON.parse(savedValues);
+                    
+                                    checkboxes.forEach(function (checkbox) {
+                                        if (parsedValues.hasOwnProperty(checkbox.value)) {
+                                            checkbox.checked = parsedValues[checkbox.value];
+                                        }
+                                    });
+                                }
+                            }
+                    
+                            loadCheckboxSelections();
+                    
+                            const filterForm = document.getElementById('filterForm');
+                            filterForm.addEventListener('submit', function () {
+                                const selectedValues = {};
+                    
+                                checkboxes.forEach(function (checkbox) {
+                                    selectedValues[checkbox.value] = checkbox.checked;
+                                });
+                    
+                                localStorage.setItem('checkboxSelections', JSON.stringify(selectedValues));
+                            });
+                    
+                            const clearButton = document.querySelector('.btn-default[href="/"]');
+                            clearButton.addEventListener('click', function () {
+                                localStorage.removeItem('checkboxSelections');
+                                checkboxes.forEach(function (checkbox) {
+                                    checkbox.checked = false;
+                                });
+                            });
+                        });
+                    </script>
+                    
+                    
                     <div class="col-lg-9">
                         <div class="tab-header">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -693,9 +736,7 @@
                                                     </a>
                                                   </div>
                                                   <div class="product-action-1">
-                                                    <a aria-label="Quick view" class="action-btn hover-up" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
                                                     <a aria-label="Add To Wishlist" data-product-id="<%= products._id%>" class="action-btn hover-up addToWishlist" href="#"><i class="fi-rs-heart"></i></a>
-                                                    <a aria-label="Compare" class= "action-btn hover-up " href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                                   </div>
                                                   <div class="product-badges product-badges-position product-badges-mrg">
                                                     <input type="hidden" data-product-id="<%= product._id%>">
@@ -709,7 +750,7 @@
                                                   <h2><a href="/single-product/<%= products._id%>"><%= products.name %></a></h2>
                                                   <div class="rating-result" title="90%">
                                                     <span>
-                                                      <span><%=Math.round(100-((products.s_price /products.r_price)*100))%>%</span>
+                                                      <span style="color: red;"><%=Math.round(100-((products.s_price /products.r_price)*100))%>%</span>
                                                     </span>
                                                   </div>
                                                   <div class="product-price">
@@ -766,47 +807,55 @@
 
 
                             <script>
-                                document.addEventListener("DOMContentLoaded",function(){
-                                    const addtowishlistButton =document.querySelectorAll(".addToWishlist");
-
-                                    addtowishlistButton.forEach((button)=>{
-                                        button.addEventListener("click",function(e){
-                                            e.preventDefault();
-
-                                            const productId = button.getAttribute("data-product-id");
-
-                                            fetch("/addtowishlist",{
-                                                method:"post",
-                                                headers:{
-                                                    "content-type":"application/json"
-                                                },
-                                                body: JSON.stringify({productId:productId}),
-                                            }).then((response) => {
-                                        if (!response.ok) {
-                                          throw new Error(`HTTP error! Status: ${response.status}`);
-                                        }
-                                        return response.json();
-                                      })
-                                      .then((data) => {
-                                        
-                                        console.log("Added to wishlist:", data);
-                                
-                                        Swal.fire({
-                                                 position: 'top-centre',
-                                                 icon: 'success',
-                                                 title: 'Added to Wishlist',
-                                                 showConfirmButton: false,
-                                                  timer: 1500
-                                                 })                              
-                                      })
-                                      .catch((error) => {
-                                        window.location.href="/get-login"
-                                      });
-                                  });
-                                });
-                              });
+                                document.addEventListener("DOMContentLoaded", function () {
+                                    const addToWishlistButtons = document.querySelectorAll(".addToWishlist");
                             
+                                    addToWishlistButtons.forEach((button) => {
+                                        button.addEventListener("click", function (e) {
+                                            e.preventDefault();
+                            
+                                            const productId = button.getAttribute("data-product-id");
+                            
+                                            fetch("/addtowishlist", {
+                                                method: "post",
+                                                headers: {
+                                                    "content-type": "application/json",
+                                                },
+                                                body: JSON.stringify({ productId: productId }),
+                                            })
+                                                .then((response) => {
+                                                    if (!response.ok) {
+                                                        throw new Error("Product already in the Wishlist");
+                                                    }
+                            
+                                                    return response.json();
+                                                })
+                                                .then((data) => {
+                                                    console.log("Added to wishlist:", data);
+                            
+                                                    Swal.fire({
+                                                        position: 'top-centre',
+                                                        icon: 'success',
+                                                        title: 'Added to Wishlist',
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    });
+                                                })
+                                                .catch((error) => {
+                                                    console.error(error);
+                                                    Swal.fire({
+                                                        icon: "error",
+                                                        title: "Oops...",
+                                                        text: error.message || "Failed to add product to Wishlist",
+                                                        footer: '',
+                                                        timer: 1500
+                                                    });
+                                                });
+                                        });
+                                    });
+                                });
                             </script>
+                            
 
 
     
@@ -871,64 +920,27 @@
                 </div>
             </div> -->
         </section>
+       
         <section class="popular-categories section-padding mt-15">
             <div class="container wow fadeIn animated">
                 <h3 class="section-title mb-20"><span>New</span> Arrivals</h3>
                 <div class="carausel-6-columns-cover position-relative">
                     <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-arrows"></div>
                     <div class="carausel-6-columns" id="carausel-6-columns">
+                        <% product.forEach((products) => { %>
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="userAssets/assets/imgs/shop/category-thumb-1.jpg" alt=""></a>
+                                <a href="/single-product/<%= products._id%>"><img src="<%= products.photos[0] %>" alt="img"></a>
                             </figure>
-                            <h5><a href="shop-grid-right.html">T-Shirt</a></h5>
+                            <h5><a href=""><%=products.brand%></a></h5>
                         </div>
-                        <div class="card-1">
-                            <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"> <img src="userAssets/assets/imgs/shop/category-thumb-2.jpg" alt=""></a>
-                            </figure>
-                            <h5><a href="shop-grid-right.html">Bags</a></h5>
-                        </div>
-                        <div class="card-1">
-                            <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="userAssets/assets/imgs/shop/category-thumb-3.jpg" alt=""></a>
-                            </figure>
-                            <h5><a href="shop-grid-right.html">Sandan</a></h5>
-                        </div>
-                        <div class="card-1">
-                            <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="userAssets/assets/imgs/shop/category-thumb-4.jpg" alt=""></a>
-                            </figure>
-                            <h5><a href="shop-grid-right.html">Scarf Cap</a></h5>
-                        </div>
-                        <div class="card-1">
-                            <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="userAssets/assets/imgs/shop/category-thumb-5.jpg" alt=""></a>
-                            </figure>
-                            <h5><a href="shop-grid-right.html">Shoes</a></h5>
-                        </div>
-                        <div class="card-1">
-                            <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="userAssets/assets/imgs/shop/category-thumb-6.jpg" alt=""></a>
-                            </figure>
-                            <h5><a href="shop-grid-right.html">Pillowcase</a></h5>
-                        </div>
-                        <div class="card-1">
-                            <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="userAssets/assets/imgs/shop/category-thumb-7.jpg" alt=""></a>
-                            </figure>
-                            <h5><a href="shop-grid-right.html">Jumpsuits</a></h5>
-                        </div>
-                        <div class="card-1">
-                            <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="userAssets/assets/imgs/shop/category-thumb-8.jpg" alt=""></a>
-                            </figure>
-                            <h5><a href="shop-grid-right.html">Hats</a></h5>
-                        </div>
+                        <%})%>
+                       
                     </div>
                 </div>
             </div>
         </section>
+
         <section class="section-padding">
             <div class="container pb-20">
                 <h3 class="section-title mb-20 wow fadeIn animated"><span>Featured</span> Brands</h3>
@@ -936,25 +948,25 @@
                     <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-3-arrows"></div>
                     <div class="carausel-6-columns text-center" id="carausel-6-columns-3">
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="userAssets/assets/imgs/banner/brand-1.png" alt="">
+                            <img class="img-grey-hover" src="userAssets/assets/imgs/brands/apple1.jpg" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="userAssets/assets/imgs/banner/brand-2.png" alt="">
+                            <img class="img-grey-hover" src="userAssets/assets/imgs/brands/axlogo.png" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="userAssets/assets/imgs/banner/brand-3.png" alt="">
+                            <img class="img-grey-hover" src="userAssets/assets/imgs/brands/sekio.png" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="userAssets/assets/imgs/banner/brand-4.png" alt="">
+                            <img class="img-grey-hover" src="userAssets/assets/imgs/brands/rolex.jpg" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="userAssets/assets/imgs/banner/brand-5.png" alt="">
+                            <img class="img-grey-hover" src="userAssets/assets/imgs/brands/rado.jpg" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="userAssets/assets/imgs/banner/brand-6.png" alt="">
+                            <img class="img-grey-hover" src="userAssets/assets/imgs/brands/hmtt.png" alt="">
                         </div>
                         <div class="brand-logo">
-                            <img class="img-grey-hover" src="userAssets/assets/imgs/banner/brand-3.png" alt="">
+                            <img class="img-grey-hover" src="userAssets/assets/imgs/brands/fossil2.png" alt="">
                         </div>
                     </div>
                 </div>
