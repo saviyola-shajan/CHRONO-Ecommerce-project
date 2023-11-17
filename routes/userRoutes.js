@@ -17,7 +17,7 @@ userRouter.get("/sent-otp", usercontroller.getSendOtp);
 userRouter.post("/verify-otp", usercontroller.postVerifyOtp);
 userRouter.get("/single-product/:productId", usercontroller.getSingleProduct);
 userRouter.get("/cart",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.getCart)
-userRouter.post("/addToCart",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.goTOCart)
+userRouter.get("/addToCart",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.goTOCart)
 userRouter.post("/update-quantity",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.updateQuantity)
 userRouter.get("/user-account",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.getUserAccount)
 userRouter.post("/changecurrpassword",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.changePasswordUserAccount)
@@ -46,7 +46,7 @@ userRouter.get("/filtercategory",userMiddleware.verifyUser,usercontroller.filter
 userRouter.post("/filtercheckbox",usercontroller.getFiterCheckbox)
 userRouter.get("/filterprice",usercontroller.filterByPrice)
 userRouter.get("/wishlist",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.getWishlist)
-userRouter.post("/addtowishlist",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.goToWishlist)
+userRouter.get("/addtowishlist",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.goToWishlist)
 userRouter.post("/removefromwishlist/:productId",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.removeFromWishlist)
 userRouter.get("/wishlistTocart/:productId",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.wishlistToCart)
 

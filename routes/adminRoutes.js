@@ -32,5 +32,13 @@ adminRouter.post("/editorderstatus",admincontroller.editOrderStatus)
 adminRouter.get("/excelsalesreport",admincontroller.getExcelSalesReport)
 adminRouter.get("/pdfsalesreport",admincontroller.getPdfSalesReport)
 adminRouter.get("/sale",admincontroller.getSale)
+adminRouter.get("/coupon",admincontroller.getCoupon)
+adminRouter.get("/addcoupon",admincontroller.getAddCoupon)
+adminRouter.post("/submitaddedcoupon",admincontroller.postAddedCoupon)
+adminRouter.get("/Unblock-coupon/:couponId",admincontroller.unblockCoupon)
+adminRouter.get("/block-coupon/:couponId",admincontroller.blockCoupon)
+adminRouter.get("/edit-coupon/:couponId",admincontroller.editCoupon)
+adminRouter.post("/submit-edit-coupon",admincontroller.postEditcoupon)
+
 
 module.exports = adminRouter;

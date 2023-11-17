@@ -816,12 +816,11 @@
                             
                                             const productId = button.getAttribute("data-product-id");
                             
-                                            fetch("/addtowishlist", {
-                                                method: "post",
+                                            fetch(`/addtowishlist?productId=${productId}`, {
+                                                method: "get",
                                                 headers: {
                                                     "content-type": "application/json",
                                                 },
-                                                body: JSON.stringify({ productId: productId }),
                                             })
                                                 .then((response) => {
                                                     if (!response.ok) {
@@ -869,12 +868,11 @@
                               
                                     const productId = button.getAttribute("data-product-id");
                               
-                                    fetch("/addToCart", {
-                                      method: "post",
+                                    fetch(`/addToCart?productId=${productId}`, {
+                                      method: "get",
                                       headers: {
                                         "Content-Type": "application/json",
                                       },
-                                      body: JSON.stringify({ productId: productId }),
                                     })
                                       .then((response) => {
                                         if (!response.ok) {

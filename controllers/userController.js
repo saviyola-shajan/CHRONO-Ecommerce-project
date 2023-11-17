@@ -6,6 +6,7 @@ const order = require("../models/order");
 const products = require("../models/addProduct");
 const wishlist = require("../models/whishlist");
 const Wallet = require("../models/wallet")
+const bcrypt = require('bcrypt');
 const category = require("../models/category");
 const Razorpay =require("razorpay")
 const nodemailer = require("nodemailer");
@@ -124,9 +125,10 @@ module.exports.postUserSignup = async (req, res) => {
           "User with this phone number already exists. Try another phone number.",
       });
     } else {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
       await usercollecn.create({
         username: req.body.username,
-        password: req.body.password,
+        password: hashedPassword,
         confirmpassword: req.body.confirmpassword,
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
@@ -151,16 +153,12 @@ module.exports.postUserLogin = async (req, res) => {
   const logindata = await usercollecn.findOne({ email: req.body.email });
   if (!logindata) {
     res.render("page-login", { subreddit: "This email is not registered" });
-  } else if (logindata) {
+  }
     if (logindata.status == "Blocked") {
       res.render("page-login", { subreddit: "User is Blocked" });
-    } else if (req.body.password !== logindata.password) {
-      res.render("page-login", { subreddit: "Incorrect Password" });
-    } else {
-      if (
-        req.body.email == logindata.email &&
-        req.body.password == logindata.password
-      ) {
+    } 
+      const passwordMatch = await bcrypt.compare(req.body.password, logindata.password);
+      if(passwordMatch){
         {
           try {
             email = req.body.email;
@@ -172,14 +170,12 @@ module.exports.postUserLogin = async (req, res) => {
           } catch (error) {
             console.error(error);
             res.status(500).send("Error fetching products");
-          }
+          } 
         }
       } else {
         res.redirect("/");
       }
     }
-  }
-};
 
 // for sending otp
 module.exports.getSendOtp = async (req, res) => {
@@ -270,7 +266,7 @@ module.exports.goTOCart = async (req, res) => {
     const userid = req.user.email;
     const userData = await usercollecn.findOne({ email: req.user });
     const userId = userData._id;
-    const { productId ,quantity} = req.body;
+    const { productId ,quantity} = req.query;
     let userCart = await cart.findOne({ userId });
     if (!userCart) {
       userCart = new cart({
@@ -382,16 +378,26 @@ module.exports.changePasswordUserAccount = async(req,res)=>{
   try{
    const{name,email,password,npassword,cpassword} = req.body
    const user = await usercollecn.findOne({email:req.user})
-   if(user.password==password){
-  await usercollecn.updateOne({_id:user._id},{$set:{
-      username:name,
-      email:email,
-      password:npassword
-    }})
-    res.redirect("/user-account")
-   }else{
-    res.status(500).json({data:"password incorect"})
-   }
+   if (!user) {
+    return res.status(404).json({ data: "User not found" });
+  }
+  const passwordMatch = await bcrypt.compare(password, user.password);
+  if (passwordMatch) {
+    const hashedNewPassword = await bcrypt.hash(npassword, 10);
+    await usercollecn.updateOne(
+      { _id: user._id },
+      {
+        $set: {
+          username: name,
+          email: email,
+          password: hashedNewPassword,
+        },
+      }
+    );
+    return res.redirect("/user-account");
+  } else {
+    return res.status(401).json({ data: "Incorrect password" });
+  }
   }catch(error){
 console.log(error)
   }
@@ -851,9 +857,10 @@ module.exports.changePassword = async (req, res) => {
 module.exports.postNewPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const hashedNewPassword = await bcrypt.hash(password, 10);
     await usercollecn.updateOne(
       { email: email },
-      { $set: { password: password } }
+      { $set: { password: hashedNewPassword } }
     );
     res.status(200).json({ data: "password Updated" });
   } catch (error) {
@@ -1112,7 +1119,8 @@ module.exports.goToWishlist = async (req, res) => {
     const userid = req.user.email;
     const userData = await usercollecn.findOne({ email: req.user });
     const userId = userData._id;
-    const { productId } = req.body;
+    const { productId } = req.query;
+    console.log(req.query)
 
     const existingWishlist = await wishlist.findOne({ userId });
     if (existingWishlist) {
