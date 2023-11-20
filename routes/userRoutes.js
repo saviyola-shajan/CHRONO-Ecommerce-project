@@ -20,6 +20,7 @@ userRouter.get("/cart",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,us
 userRouter.get("/addToCart",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.goTOCart)
 userRouter.post("/update-quantity",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.updateQuantity)
 userRouter.get("/user-account",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.getUserAccount)
+userRouter.post("/applyreferel",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.applyReferelOffers)
 userRouter.post("/changecurrpassword",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.changePasswordUserAccount)
 userRouter.post("/remove-from-cart/:productId",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.removeFromCart)
 userRouter.get("/checkout",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.getCheckout)
@@ -49,6 +50,7 @@ userRouter.get("/wishlist",userMiddleware.verifyUser,userMiddleware.IsUserBlocke
 userRouter.get("/addtowishlist",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.goToWishlist)
 userRouter.post("/removefromwishlist/:productId",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.removeFromWishlist)
 userRouter.get("/wishlistTocart/:productId",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.wishlistToCart)
+userRouter.post("/applycoupon",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,usercontroller.applyCoupon)
 
 
 

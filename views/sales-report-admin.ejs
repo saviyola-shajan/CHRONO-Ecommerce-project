@@ -5,7 +5,7 @@
 <!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:32:35 GMT -->
 <head>
     <meta charset="utf-8">
-    <title>Evara Dashboard</title>
+    <title>Chrono Dashboard</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,9 +26,7 @@
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <script>
      $(document).ready(function () {
-            new DataTable('#example', {
-                                sale: [[0, 'desc']] 
-                            });
+            new DataTable('#example');
                         });
 </script>
 <body>
@@ -41,6 +39,9 @@
       <h2 class="content-title card-title">Sales List</h2>
       <p>Sale Insights.</p>
     </div>
+    <button id="printButton" class=" btn-primary" style="border-radius: 5px;padding: 5px;">
+      Print Invoice
+  </button>
     <div>
         <a href="/admin/sale?type=weekly" class="btn btn-primary">Weekly</a>
         <a href="/admin/sale?type=monthly" class="btn btn-primary">Monthly</a>
@@ -110,6 +111,13 @@
 </section>
 <!-- content-main end// -->
 </main>
+<script>
+  document
+      .getElementById("printButton")
+      .addEventListener("click", function () {
+          window.print();
+      });
+</script>
 <script src="/adminAssets/assets/js/vendors/jquery-3.6.0.min.js"></script>
 <script src="/adminAssets/assets/js/vendors/bootstrap.bundle.min.js"></script>
 <script src="/adminAssets/assets/js/vendors/select2.min.js"></script>

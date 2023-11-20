@@ -39,6 +39,13 @@ adminRouter.get("/Unblock-coupon/:couponId",admincontroller.unblockCoupon)
 adminRouter.get("/block-coupon/:couponId",admincontroller.blockCoupon)
 adminRouter.get("/edit-coupon/:couponId",admincontroller.editCoupon)
 adminRouter.post("/submit-edit-coupon",admincontroller.postEditcoupon)
+adminRouter.get("/offers",admincontroller.getOffers)
+adminRouter.get("/addoffer",admincontroller.getAddOffer)
+adminRouter.post("/submitaddedoffer",admincontroller.postAddedOffer)
+adminRouter.get("/block-offer/:offerId",admincontroller.blockOffers)
+adminRouter.get("/unblock-offer/:offerId",admincontroller.unblockOffer)
+adminRouter.get("/edit-offer/:offerId",admincontroller.getEditOffer)
+adminRouter.post("/submit-edit-offer",admincontroller.postEditedProduct)
 
 
 module.exports = adminRouter;

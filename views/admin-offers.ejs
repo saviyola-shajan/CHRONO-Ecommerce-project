@@ -17,6 +17,17 @@
     <link rel="shortcut icon" type="image/x-icon" href="/adminAssets/assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link href="/adminAssets/assets/css/main.css" rel="stylesheet" type="text/css" />
+    <style>.red-button {
+        background-color: red;
+        color: white; /* You can adjust the text color as needed */
+    }
+    
+    .green-button {
+        background-color: green;
+        color: white; /* You can adjust the text color as needed */
+    }
+    
+</style>
 </head>
 
 <body>
@@ -24,7 +35,7 @@
     <aside class="navbar-aside" id="offcanvas_aside">
         <div class="aside-top">
             <a href="/admin/getadmin-dash" class="brand-wrap">
-                <img src="/adminAssets/assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+                <img src="/adminAssets/assets/imgs/icons/mainlogo.svg.jpg" class="logo" alt="Evara Dashboard">
             </a>
             <div>
                 <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
@@ -32,7 +43,7 @@
         </div>
         <nav>
             <ul class="menu-aside">
-                <li class="">
+                <li class="menu-item active">
                     <a class="menu-link" href="/admin/getadmin-dash"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
@@ -54,11 +65,11 @@
                    
                 </li>
                 <li class="">
-                    <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Category</span>
+                    <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-add_box"><img style="width: 23px;" src="\adminAssets\assets\imgs\icons\categories.png" alt=""></i>
+                        <span class="text">Categories</span>
                     </a>
-                   
                 </li>
+                
                 <li class="">
                     <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-add_box"></i>
                         <span class="text">Coupons</span>
@@ -70,12 +81,12 @@
                     </a>
                 
                 </li>
-             
                 <li class="">
-                    <a class="menu-link" href="/admin/sale"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Sales Report</span> </a>
+                    <a class="menu-link" href="/admin/sale"> <i class="icon material-icons md-stars"><img style="width: 23px;" src="\adminAssets\assets\imgs\icons\ballot.png" alt=""></i>
+                        <span class="text">Sales report</span>
+                    </a>
                 </li>
-           
+               
             </ul>
             <hr>
             <ul class="menu-aside">
@@ -147,64 +158,93 @@
         <section class="content-main">
             <div class="content-header">
                 <div>
-                    <h2 class="content-title card-title">Order Management</h2>
-                    <p>Manage the orders</p>
+                    <h2 class="content-title card-title">Offer Management</h2>
+                    <p>Manage the offers</p>
+                    <button  class="btn btn-primary btn-sm rounded"><a style="color: aliceblue;" href="/admin/addoffer">Add offer</a></button>
                 </div>
-            
+                <div>
+                    <input type="text" placeholder="Search order ID" class="form-control bg-white">
+                </div>
             </div>
             <div class="card mb-4">
                 <header class="card-header">
                     <div class="row gx-3">
-                   
+                        <div class="col-lg-4 col-md-6 me-auto">
+                            <input type="text" placeholder="Search..." class="form-control">
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Status</option>
+                                <option>Active</option>
+                                <option>Disabled</option>
+                                <option>Show all</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-2 col-6 col-md-3">
+                            <select class="form-select">
+                                <option>Show 20</option>
+                                <option>Show 30</option>
+                                <option>Show 40</option>
+                            </select>
+                        </div>
                     </div>
                 </header> <!-- card-header end// -->
+                
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="orders">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Sl.no</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Order Status</th>
-                                    <th scope="col">Payment Status</th>
-                                    <th scope="col" class="text-end"> Action </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% orderList.forEach((order, index) => { %>
-                                    <tr style="border-bottom: 1px solid rgb(43, 40, 40);">
-                                        <td><%= index + 1 %></td>
-                                        <td><%= order.orderDate.toLocaleDateString() %></td>
-                                        <td><b><%= order.address.userName %></b></td>
-                                        <td>₹<%= order.totalAmount %></td>
-                                        <td><span class="badge rounded-pill alert-warning"><%= order.orderStatus %></span></td>
-                                        <td><span class="badge rounded-pill alert-warning"><%= order.paymentStatus %></span></td>
-                                        <td class="text-end">
-                                            <a href="/admin/editorderdetails/<%= order._id %>" class="btn btn-md rounded font-sm">Detail</a>
-                                       
-                                           
-                                        </td>
+                        <% if (!offers) { %>
+                            <h5>Currently there are no offers to show...</h5>
+                        <% } else { %>
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <!-- <th scope="col">Sl.no</th> -->
+                                        <th scope="col">Code type</th>
+                                        <th scope="col">Coupon Name</th>
+                                        <th scope="col">Discount Value</th>
+                                        <th scope="col">Expiration Date</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Actions</th>
                                     </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </div> <!-- table-responsive //end -->
-                </div> <!-- card-body end// -->
-            </div> <!-- card end// -->
-<!-- pagination -->
+                                </thead>
+                                <tbody>
+                                    <% offers.forEach((offer) => { %>
+                                        <tr>
+                                            <!-- <td></td> -->
+                                            <td><%= offer.offerName %></td>
+                                            <td><%=offer.offerType%></td>
+                                            <td><%= offer.offerAmount %></td>
+                                            <td><%= offer.endDate.toLocaleDateString('en-US') %></td>
+                                            <td><%= offer.status %></td>
+                                            <td class="">
+                                                <a href="/admin/edit-offer/<%= offer._id %>" class="btn btn-md rounded font-sm">Edit</a>
+                                                
+                                                <% if (offer.status =="Inactive") { %>
+                                                    <a href="/admin/unblock-offer/<%= offer._id %>" class="btn btn-success">Unblock</a>
+                                                <% } else { %>
+                                                    <a href="/admin/block-offer/<%= offer._id %>" class="btn btn-danger">Block</a>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+             <!-- card end// -->
+
+             
 
 
 
-
-
-
+      
         </section> <!-- content-main end// -->
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
-                    <script data-cfasync="false" src="../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+                    <script>
                     document.write(new Date().getFullYear())
                     </script> ©, Evara - HTML Ecommerce Template .
                 </div>
@@ -216,14 +256,6 @@
             </div>
         </footer>
     </main>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-       <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-       <script>
-           $(document).ready(function () {
-               new DataTable('#orders');
-           });
-           </script>
     <script src="/adminAssets/assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/assets/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="/adminAssets/assets/js/vendors/select2.min.js"></script>

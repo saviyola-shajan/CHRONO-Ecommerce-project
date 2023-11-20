@@ -22,6 +22,12 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  referelId:{
+    type:String
+  },
+  redmmedreferels:{
+    type:Array
+  },
   status: {
     type: String,
   },

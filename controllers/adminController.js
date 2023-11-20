@@ -3,6 +3,7 @@ const usercollecn = require("../models/userlogin");
 const products = require("../models/addProduct");
 const category = require("../models/category");
 const cart = require("../models/cartModel");
+const offer = require("../models/offers")
 const coupon =require("../models/coupon")
 const order = require("../models/order");
 const excelJS = require("exceljs");
@@ -10,15 +11,62 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs")
 const { startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear } = require('date-fns');
+const { getMonthlyDataArray, getDailyDataArray, getYearlyDataArray } = require('../helpers/sales-chart');
 
 
 module.exports.getAdminLogin = (req, res) => {
   res.render("admin-login");
 };
 
-module.exports.getAdminDashboard = (req, res) => {
-  res.render("admin-dashboard");
+module.exports.getAdminDashboard = async (req, res) => {
+  try {
+    const orderCount = await order.countDocuments();
+    const product = await products.countDocuments();
+    const categories = await category.countDocuments();
+    const sales = await order.find({ paymentStatus: "Success" });
+    
+    let revenue = 0;
+    sales.forEach((sale) => {
+      revenue += sale.totalAmount;
+    });
+
+    const currentMonth = new Date();
+    const startOfMonthDate = startOfMonth(currentMonth);
+    const endOfMonthDate = endOfMonth(currentMonth);
+
+    const monthlySales = await order.find({
+      paymentStatus: 'Success',
+      createdAt: {
+        $gte: startOfMonthDate,
+        $lte: endOfMonthDate,
+      },
+    });
+
+    let monthlyearnings = 0;
+    monthlySales.forEach((sale) => {
+      monthlyearnings += sale.totalAmount;
+    });
+
+    const dailyDataArray = await getDailyDataArray();
+    const monthlyDataArray = await getMonthlyDataArray();
+    const yearlyDataArray = await getYearlyDataArray();
+
+    res.render("admin-dashboard", {
+      orderCount,
+      product,
+      categories,
+      revenue,
+      monthlyearnings,
+      dailyDataArray,
+      monthlyDataArray,
+      yearlyDataArray
+    });
+  } catch (error) {
+    console.error("Error in getAdminDashboard:", error);
+    res.status(500).send("Internal Server Error");
+  }
 };
+
 
 //chechking deatils aand login admin
 module.exports.postAdminDashboard = async (req, res) => {
@@ -646,8 +694,90 @@ res.redirect("/admin/coupon")
 }
 }
 
+//get offers page
+module.exports.getOffers = async (req,res)=>{
+  try{
+    const offers = await offer.find({})
+    console.log(offers);
+  res.render("admin-offers",{offers})
+  }catch(error){
+    console.log(error)
+  }
+}
 
+//get add offer 
+module.exports.getAddOffer = async(req,res)=>{
+  try{
+  res.render("add-offers")
+  }catch(error){
+    console.log(error);
+  }
+}
 
+//post added offer
+module.exports.postAddedOffer = async(req,res)=>{
+  try{
+ const {offerName,offerType,offerAmount,endDate,startDate,status}=req.body
+ const newOffer = new offer({
+  offerName,offerType,offerAmount,endDate,startDate,status
+ })
+ await newOffer.save()
+ res.redirect("/admin/offers")
+  }catch(error){
+    console.log(error);
+  }
+}
 
- 
-  
+//block offers
+module.exports.blockOffers = async(req,res)=>{
+  try{
+    const offerid = req.params.offerId
+    const newStatus = await offer.findById({_id:offerid})
+    const updatedResult = await offer.updateOne({_id:offerid},{$set:{status:"Inactive"}})
+    res.redirect('/admin/offers')
+  }catch(error){
+    console.log(error)
+  }
+}
+
+//unblock offers
+module.exports.unblockOffer = async(req,res)=>{
+  try{
+    const offerid = req.params.offerId
+    const newStatus = await offer.findById({_id:offerid})
+    const updatedResult = await offer.updateOne({_id:offerid},{$set:{status:"Active"}})
+    res.redirect('/admin/offers')
+  }catch(error){
+    console.log(error)
+  }
+}
+
+//get Edit Offer
+module.exports.getEditOffer = async(req,res)=>{
+  try{
+    const offerid = req.params.offerId
+    const editOffer =await offer.findOne({_id:offerid})
+    res.render("edit-offers",{editOffer})
+  }catch(error){
+    console.log(error)
+  }
+}
+
+//post edited offer
+module.exports.postEditedOffer= async(req,res)=>{
+  try{
+    const offerid =req.body.editoffer
+    const{offerName,offerType,offerAmount,endDate,startDate}=req.body
+    const existingOffer = await offer.findById({_id:offerid})
+    
+    existingOffer.offerName=offerName,
+    existingOffer.offerType=offerType
+    existingOffer.offerAmount=offerAmount
+    existingOffer.endDate=endDate
+    existingOffer.startDate=startDate
+    await existingOffer.save()
+    res.redirect("/admin/offers")
+  }catch(error){
+    console.log(error)
+  }
+}

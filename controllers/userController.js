@@ -5,8 +5,10 @@ const address = require("../models/address");
 const order = require("../models/order");
 const products = require("../models/addProduct");
 const wishlist = require("../models/whishlist");
+const coupon = require("../models/coupon")
 const Wallet = require("../models/wallet")
 const bcrypt = require('bcrypt');
+const uuid = require("uuid")
 const category = require("../models/category");
 const Razorpay =require("razorpay")
 const nodemailer = require("nodemailer");
@@ -133,6 +135,7 @@ module.exports.postUserSignup = async (req, res) => {
         email: req.body.email,
         phoneNumber: req.body.phoneNumber,
         otpInput: req.body.otpInput,
+        referelId:uuid.v4(),
         status: "Unblocked",
         isverified: 0,
       })
@@ -180,7 +183,9 @@ module.exports.postUserLogin = async (req, res) => {
 // for sending otp
 module.exports.getSendOtp = async (req, res) => {
   try {
+    console.log("hey");
     const phoneNumber = req.query.phoneNumber;
+    console.log(phoneNumber);
     await twilio.verify.v2
       .services(process.env.TWILIO_SERVICES_ID)
       .verifications.create({
@@ -403,6 +408,40 @@ console.log(error)
   }
 }
 
+//user referel offer
+module.exports.applyReferelOffers = async (req, res) => {
+  try {
+    const referelcode = req.query.referel;
+    const userId = req.user;
+    const userData = await usercollecn.findOne({ email: userId });
+    const usedReferel = await usercollecn.findOne({ referelId: referelcode });
+
+    if (usedReferel) {
+      if (usedReferel.redmmedreferels.includes(userData._id)) {
+        res.status(400).send({data: "Offer already redeemed by the user" });
+      } else {
+        usedReferel.redmmedreferels.push(userData._id);
+        await usedReferel.save();
+
+        const userWallet = await Wallet.findOne({ userId: userData._id });
+        userWallet.amount += 100;
+        await userWallet.save();
+
+        const referedUserWallet = await Wallet.findOne({ userId: usedReferel._id });
+        referedUserWallet.amount += 100;
+        await referedUserWallet.save();
+
+        res.status(200).send({ data: "Offer redeemed successfully" });
+      }
+    } else {
+      res.status(500).send({ data: "Invalid referral code" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ data: "Internal Server Error" });
+  }
+};
+
 //remove item from cart
 module.exports.removeFromCart = async (req, res) => {
   try {
@@ -432,6 +471,7 @@ module.exports.getCheckout = async (req, res) => {
   try {
     const userData = await usercollecn.findOne({ email: req.user });
     const addresses = await address.findOne({ userId: userData._id });
+    const coupons = await coupon.find({})
     const userCart = await cart.findOne({ userId: userData._id }).populate({
       path: "products.productId",
       model: "products",
@@ -446,7 +486,7 @@ module.exports.getCheckout = async (req, res) => {
         error: `Some products (${outOfStockProductNames.join(', ')}) are out of stock. Please review your cart.`
       });    
     }
-    res.render("checkout", { addresses, userCart });
+    res.render("checkout", { addresses, userCart,coupons});
   } catch (error) {
     console.log("error while loading cart", error);
   }
@@ -582,10 +622,15 @@ module.exports.postOrdersCod = async (req, res) => {
     const userId = req.user;
     const userdata = await usercollecn.findOne({ email: req.user });
     const userAddress = await address.findOne({ userId: userdata._id });
+    const userCoupon= await coupon.findOne({redeemedUsers:userdata._id})
     const userCart = await cart.findOne({ userId: userdata._id }).populate({
       path: "products.productId",
       model: "products",
     });
+  
+    let amount=userCoupon.amount
+    let code=userCoupon.couponCode
+    
 
     let orderTotal = 0;
     let orderProducts = [];
@@ -600,6 +645,7 @@ module.exports.postOrdersCod = async (req, res) => {
       orderTotal += orderItem.price * orderItem.quantity;
       orderProducts.push(orderItem);
     };
+    const grandtotal =orderTotal-amount
 
     let delAddress;
     userAddress.address.forEach((addressId) => {
@@ -621,7 +667,9 @@ module.exports.postOrdersCod = async (req, res) => {
       userId: userCart.userId._id,
       products: orderProducts,
       orderDate: new Date(),
-      totalAmount: orderTotal,
+      totalAmount: grandtotal,
+      discount:amount,
+      couponCode:code,
       paymentMethod: "Cash on delivery",
       address: delAddress,
     });
@@ -641,10 +689,14 @@ module.exports.onlinePayment =  async (req, res) => {
     const userId = req.user;
     const userdata = await usercollecn.findOne({ email: req.user });
     const userAddress = await address.findOne({userId:userdata._id})
+    const userCoupon= await coupon.findOne({redeemedUsers:userdata._id})
     const userCart = await cart.findOne({ userId: userdata._id }).populate({
       path: "products.productId",
       model: "products",
     });
+  let amount=userCoupon.amount
+  let code = userCoupon.couponCode
+      
     let orderTotal = 0;
     let orderProducts = [];
     for (const item of userCart.products) {
@@ -674,9 +726,9 @@ module.exports.onlinePayment =  async (req, res) => {
       }
     });
 
-    
+    const newTotal = orderTotal-amount
     var options = {
-      amount: orderTotal * 100, 
+      amount: newTotal *100, 
       currency: "INR",
       receipt: "order_rcptid_11"
     };
@@ -692,7 +744,9 @@ module.exports.onlinePayment =  async (req, res) => {
           products: orderProducts,
           orderDate: new Date(),
           address: delAddress,
-          totalAmount: orderTotal,
+          totalAmount: newTotal,
+          discount:amount,
+          couponCode:code,
           paymentMethod: "online Payment",
         });
         await newOrder.save(); 
@@ -712,6 +766,7 @@ module.exports.walletPayment = async(req,res)=>{
     const grandTotal =req.body.totalAmount
     const userId = req.user;
     const userdata = await usercollecn.findOne({ email: req.user });
+    const userCoupon= await coupon.findOne({redeemedUsers:userdata._id})
     const wallet = await Wallet.findOne({userId:userdata._id})
     if(wallet.amount>=grandTotal){
       let totalAmount =0;
@@ -735,6 +790,10 @@ module.exports.walletPayment = async(req,res)=>{
       orderTotal += orderItem.price * orderItem.quantity;
       orderProducts.push(orderItem);
     };
+
+    let amount=userCoupon.amount
+    let code = userCoupon.couponCode
+    const grandtotal=orderTotal-amount
     let delAddress;
     userAddress.address.forEach((addressId) => {
       if (UseraddressId == addressId._id.toString()) {
@@ -755,7 +814,9 @@ module.exports.walletPayment = async(req,res)=>{
       userId: userCart.userId._id,
       products: orderProducts,
       orderDate: new Date(),
-      totalAmount: orderTotal,
+      totalAmount: grandtotal,
+      discount:amount,
+      couponCode:code,
       paymentStatus:"Success",
       paymentMethod: "Wallet",
       address: delAddress,
@@ -1120,7 +1181,6 @@ module.exports.goToWishlist = async (req, res) => {
     const userData = await usercollecn.findOne({ email: req.user });
     const userId = userData._id;
     const { productId } = req.query;
-    console.log(req.query)
 
     const existingWishlist = await wishlist.findOne({ userId });
     if (existingWishlist) {
@@ -1213,5 +1273,48 @@ module.exports.wishlistToCart = async (req, res) => {
     console.log(error);
   }
 };
+
+//coupon apply
+module.exports.applyCoupon = async (req, res) => {
+  try {
+    const couponCode = req.query.couponCode;
+    const totalAmount = parseFloat(req.query.grandTotal);
+    const userId = req.user; 
+    const userData = await usercollecn.findOne({ email: userId });
+
+    const usedCoupon = await coupon.findOne({ couponCode: couponCode });
+    const currentDate = new Date();
+
+    if (usedCoupon) {
+      if (usedCoupon.redeemedUsers.includes(userData._id)) {
+        res.status(500).send({ message: "Coupon already redeemed by the user" })
+      } else if (usedCoupon.minimumPurchase > totalAmount) {
+        res.status(500).send({ message: "Minimum Purchase Amount is required" })
+      } else if (usedCoupon.status === "Inactive") {
+        res.status(500).send({ message: "Coupon is Inactive" })
+      } else if (usedCoupon.expiryDate && usedCoupon.expiryDate.getTime() < currentDate.getTime()) {
+        res.status(500).send({ message: "Coupon is Expired" })
+      } else {
+        usedCoupon.redeemedUsers.push(userData._id);
+        await usedCoupon.save();
+
+        const couponAmount = parseFloat(usedCoupon.amount);
+        const updatedTotal = Math.max(totalAmount - couponAmount, 0);
+
+        res.status(200).json({
+          message: "Coupon redeemed successfully",
+          couponAmount: couponAmount,
+          updatedTotal: updatedTotal.toFixed(2),
+        });
+      }
+    } else {
+      res.status(404).send({ message: "Coupon not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: "Internal Server Error" });
+  }
+};
+
 
 
