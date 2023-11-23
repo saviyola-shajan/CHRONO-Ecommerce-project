@@ -750,12 +750,17 @@
                                                   <h2><a href="/single-product/<%= products._id%>"><%= products.name %></a></h2>
                                                   <div class="rating-result" title="90%">
                                                     <span>
-                                                      <span style="color: red;"><%=Math.round(100-((products.s_price /products.r_price)*100))%>%</span>
-                                                    </span>
+                                                        <% if (products.s_price === products.r_price) { %>
+                                                            <div></div>
+                                                          <% } else { %>
+                                                            <span style="color: red;"><%= Math.round(100 - ((products.s_price / products.r_price) * 100)) %>%</span>
+                                                          <% } %>                                                    </span>
                                                   </div>
                                                   <div class="product-price">
                                                     <span>₹<%= products.s_price %></span>
-                                                    <span class="old-price"><%= products.r_price %></span>
+                                                    <% if (products.s_price !== products.r_price) { %>
+                                                      <span class="old-price">₹<%= products.r_price %></span>
+                                                    <% } %>
                                                   </div>
                                                   <div class="product-action-1 show">
                                                     <a
@@ -874,30 +879,42 @@
                                         "Content-Type": "application/json",
                                       },
                                     })
-                                      .then((response) => {
-                                        if (!response.ok) {
-                                          throw new Error(`HTTP error! Status: ${response.status}`);
-                                        }
-                                        return response.json();
-                                      })
-                                      .then((data) => {
-                                        
-                                        console.log("Added to cart:", data);
-                                
-                                        Swal.fire({
-                                                 position: 'top-centre',
-                                                 icon: 'success',
-                                                 title: 'Added to cart',
-                                                 showConfirmButton: false,
-                                                  timer: 1500
-                                                 })                              
-                                      })
-                                      .catch((error) => {
-                                        window.location.href="/get-login"
-                                      });
-                                  });
-                                });
-                              });
+                                    .then((response) => response.json())
+          .then((data) => {
+            if (data.isProductAdded) {
+              console.log("Added to cart:", data);
+              Swal.fire({
+                position: 'top-centre',
+                icon: 'success',
+                title: 'Added to cart',
+                showConfirmButton: false,
+                timer: 1500
+              });
+            } else {
+              console.error("Failed to add the product:", data.error || "Unknown error");
+              Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: data.error || "Failed to add the product to the cart",
+                footer: '',
+                timer: 1500
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error adding to cart:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: "Failed to add the product to the cart",
+              footer: '',
+              timer: 1500
+            });
+            window.location.href = "/get-login";
+          });
+      });
+    });
+  });
                               </script>
                        
                         </div>

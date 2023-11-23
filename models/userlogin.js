@@ -28,6 +28,9 @@ const userSchema = new mongoose.Schema({
   redmmedreferels:{
     type:Array
   },
+  appliedReferel:{
+    type:Boolean
+  },
   status: {
     type: String,
   },

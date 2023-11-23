@@ -493,20 +493,23 @@
             <div class="total-amount">
                 <div class="left">
                     <div class="coupon">
-                        <form id="applyCouponForm"  method="POST">
+                        <form id="applyCouponForm" method="POST">
                             <div class="form-row row justify-content-center">
                                 <div class="form-group col-lg-6">
                                     <input class="font-medium" name="Coupon" id="couponInput" placeholder="Enter Your Coupon">
                                 </div>
                                 <div class="form-group col-lg-6">
                                     <button class="btn btn-sm" id="applyCouponButton">Apply</button>
+                                    <a href="" class="btn btn-sm" id="removeCouponButton" style="display: none;">Remove</a>
                                 </div>
                             </div>
                         </form>
                     </div>
+                    
                     <a href="#" data-toggle="modal" data-target="#couponModal">See Available Coupons? Click here</a>
                 </div>
             </div>
+            
         </div>
     </div>
     
@@ -569,6 +572,7 @@
             const applyCouponForm = document.getElementById('applyCouponForm');
             const couponInput = document.getElementById('couponInput');
             const applyCouponButton = document.getElementById('applyCouponButton');
+            const removeCouponButton = document.getElementById('removeCouponButton');
     
             applyCouponButton.addEventListener('click',async function (event) {
                 event.preventDefault();
@@ -596,6 +600,9 @@
                     showConfirmButton: false,
                     timer: 1500
                 });
+                applyCouponButton.style.display = 'none';
+                removeCouponButton.href = `/removeCoupon?couponCode=${couponCode}`;
+                        removeCouponButton.style.display = 'inline-block';
 
 
                 const couponAmount = data.couponAmount;
@@ -623,7 +630,13 @@ amountTotal.textContent = updatedTotal
         alert('Please enter a coupon code.');
     }
 });
+removeCouponButton.addEventListener('click', async function (event) {
+
+applyCouponButton.style.display = 'inline-block';
+removeCouponButton.style.display = 'none';
+});
         })
+     
         
     </script>
 

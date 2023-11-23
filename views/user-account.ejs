@@ -402,17 +402,24 @@
                                             <p style="font-weight: 600;">Code: <%=userId.referelId%></p>
                                         </div>
                                         <br>
-                                        <h4 style="font-size: larger;font-weight: 700;">If you had any referel code? paste here for Rewards</h4>
-                                        <br>
-                                        <div>
-                                            <input style="border: 2px solid rgb(80, 80, 80);" type="text" placeholder="Paste Code Here" id="codeInput">
-                                        </div>
-                                        <br>
-                                        <button class="btn btn-fill-out btn-block" id="referel">Apply</button>
+                                        <% if (userId.appliedReferel) { %>
+                                            <div></div>
+                                        <% } else { %>
+                                            <div id="referralSection">
+                                                <h4 style="font-size: larger;font-weight: 700;">If you had any referral code? Paste here for Rewards</h4>
+                                                <br>
+                                                <div>
+                                                    <input style="border: 2px solid rgb(80, 80, 80);" type="text" placeholder="Paste Code Here" id="codeInput">
+                                                </div>
+                                                <br>
+                                                <button class="btn btn-fill-out btn-block" id="referel">Apply</button>
+                                            </div>
+                                        <% } %>
                                     </div>
                                     <script>
                                         document.getElementById('referel').addEventListener('click', function () {
                                             const codeValue = document.getElementById('codeInput').value;
+                                            const referralCodeApplied = localStorage.getItem('referralCodeApplied') === 'true';
                                     
                                             if (codeValue.trim() !== "") {
                                                 fetch(`/applyreferel?referel=${codeValue}`, {
@@ -431,16 +438,14 @@
                                                     .then((data) => {
                 console.log(data);
                 Swal.fire({
-                    position: 'top-centre',
-                    icon: 'success',
-                    title: 'Credited 100Rs in Wallet',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    didClose: () => {
-                        window.location.href = "/user-account";
-                    }
-                });
-            })
+                        position: 'top-centre',
+                        icon: 'success',
+                        title: 'Credited 100Rs in Wallet',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                    
+                          })
                                                     .catch((error) => {
                                                         console.error('Error:', error);
                                                         Swal.fire({
@@ -453,6 +458,7 @@
                                                 alert('Please enter a code before applying.');
                                             }
                                         });
+                                
                                     </script>
                                     <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab" style="margin-left: 45px;">
                                         <div class="card">
@@ -579,7 +585,7 @@
                                                                 <address><%= item.userName %><br><%= item.city %><br><%= item.landMark %><br><%= item.state %></address>
                                                                 <p><%= item.pinCode %></p>
                                                                 <p><%= item.phoneNumber %></p>
-                                                                <a href="/editaddress?addressId=<%=item._id%>" class="btn-small">Edit</a>
+                                                                <button class="btn btn-primary"><a  style="color: rgb(245, 244, 244);" href="/editaddress?addressId=<%=item._id%>" class="btn-small">Edit</a></button>
                                                             </div>
                                                         </div>
                                                     </div>

@@ -21,6 +21,25 @@
     <link rel="stylesheet" href="/userAssets/assets/css/maind134.css?v=3.4" />
     <!-- Add these links to your HTML file -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+  .total-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+
+  }
+
+  .total-container > div {
+    font-weight: bold;
+    margin-right: 10px; 
+  }
+
+  .total-container > span {
+    font-weight: normal;
+  }
+</style>
   </head>
 
   <body>
@@ -47,13 +66,13 @@
                 <div id="news-flash" class="d-inline-block">
                   <ul>
                     <li>
-                      Get great devices up to 50% off
-                      <a href="shop-grid-right.html">View details</a>
+                      Get great devices up to 50% off View details
+                    
                     </li>
                     <li>Supper Value Deals - Save more with coupons</li>
                     <li>
-                      Trendy 25silver jewelry, save up 35% off today
-                      <a href="shop-grid-right.html">Shop now</a>
+                      Trendy 25silver jewelry, save up 35% off today Shop now
+                      
                     </li>
                   </ul>
                 </div>
@@ -263,7 +282,11 @@
           <div >
             <a href="/invoice/<%=orderDetails._id %>" class="btn btn-primary">Invoice Details</a>
             <a href="/user-account"><button class="btn btn-success">Go Back</button></a>
-
+            
+          </div>
+          <div class="total-container">
+            <div>Grand Total Amount: <%= orderDetails.totalAmount %></div>
+            <div>Discount Amount: <%= orderDetails.discount %></div>
           </div>
             <table class="table">
                 <thead>
@@ -282,8 +305,8 @@
                 <tbody>
                     <% orderDetails.products.forEach((product) => { %>
                         <tr>
-                            <td><%= orderDetails.orderDate %></td>
-                            <td>•<%= product.productId.name %></td>
+                          <td><%= orderDetails.orderDate.toLocaleDateString('en-US') %></td>
+                          <td>•<%= product.productId.name %></td>
                             <td>₹<%= product.price %></td>
                             <td><%= product.quantity %></td>
                             <td>₹<%= product.price * product.quantity %></td>
