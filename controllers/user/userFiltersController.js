@@ -1,4 +1,5 @@
 const products = require("../../models/addProduct");
+const Banner = require("../../models/banner")
 
 
 module.exports.searchProducts = async (req, res) => {
@@ -7,6 +8,7 @@ module.exports.searchProducts = async (req, res) => {
       const { search_product } = req.query;
       const page = req.query.page
       const no_of_docs_each_page = 6;
+      const banners = await Banner.find({status:"Active"})
       const totalProducts = await products.countDocuments({
         status: "Available" 
       });
@@ -19,9 +21,9 @@ module.exports.searchProducts = async (req, res) => {
       .skip(skip)
       .limit(no_of_docs_each_page);
       if (product.length === 0) {
-        res.render("home", { message: "No products found", product, loggedIn,page,totalPages });
+        res.render("home", { message: "No products found", product, loggedIn,page,totalPages,banners });
       } else {
-        res.render("home", { product, loggedIn,page,totalPages });
+        res.render("home", { product, loggedIn,page,totalPages,banners });
       }
     } catch (error) {
       console.log(error);
@@ -34,6 +36,7 @@ module.exports.searchProducts = async (req, res) => {
       const categories = req.query.category;
       const page = req.query.page
       const no_of_docs_each_page = 6;
+      const banners = await Banner.find({status:"Active"})
       const totalProducts = await products.countDocuments({
         status: "Available" 
       });
@@ -50,10 +53,11 @@ module.exports.searchProducts = async (req, res) => {
           product,
           loggedIn,
           page,
-          totalPages
+          totalPages,
+          banners
         });
       } else {
-        res.render("home", { product, loggedIn,page,totalPages });
+        res.render("home", { product, loggedIn,page,totalPages,banners });
       }
     } catch (error) {
       console.log(error);
@@ -68,6 +72,7 @@ module.exports.searchProducts = async (req, res) => {
       const selectedStrapMaterials = req.body.StrapMaterial;
       const page = req.query.page ?? 1;
       const no_of_docs_each_page = 6;
+      const banners = await Banner.find({status:"Active"})
       const totalProducts = await products.countDocuments({
         status: "Available" 
       });
@@ -93,7 +98,7 @@ module.exports.searchProducts = async (req, res) => {
       .skip(skip)
       .limit(no_of_docs_each_page);
       // const product = await products.find(query);
-     res.render("home",{loggedIn,product,page,totalPages})
+     res.render("home",{loggedIn,product,page,totalPages,banners})
     }catch(error){
       console.log(error)
       res.status(500).send('Internal Server Error');
@@ -123,9 +128,10 @@ module.exports.searchProducts = async (req, res) => {
         .limit(no_of_docs_each_page)
         product = anotherproduct;
       }
+      const banners = await Banner.find({status:"Active"})
       const totalProducts = await products.countDocuments({status: 'Available'});
       const totalPages = Math.ceil(totalProducts / no_of_docs_each_page);
-      res.render('home', { loggedIn, product, page, totalPages, sortBy });
+      res.render('home', { loggedIn, product, page, totalPages, sortBy,banners });
     } catch (error) {
       console.log(error);
       res.status(500).send('Internal Server Error');

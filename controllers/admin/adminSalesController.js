@@ -83,51 +83,32 @@ module.exports.getExcelSalesReport = async (req,res)=>{
 
       module.exports.getSale = async (req, res) => {
         try {
-          const allOrders = await order.find({
-            orderStatus: "Delivered"
-        }).populate({
-            path: "products.productId",
-            model: "products"
-        });
-            const reportType = req.query.type;
-            let additionalData;
-    
-            switch (reportType) {
-                case 'weekly':
-                    additionalData = await order.find({
-                        orderStatus: "Delivered",
-                        orderDate: { $gte: startOfWeek(new Date()), $lte: endOfWeek(new Date()) }
-                    }).populate({
-                        path: "products.productId",
-                        model: "products"
-                    });
-                    break;
-                case 'monthly':
-                    additionalData = await order.find({
-                        orderStatus: "Delivered",
-                        orderDate: { $gte: startOfMonth(new Date()), $lte: endOfMonth(new Date()) }
-                    }).populate({
-                        path: "products.productId",
-                        model: "products"
-                    });
-                    break;
-                case 'yearly':
-                    additionalData = await order.find({
-                        orderStatus: "Delivered",
-                        orderDate: { $gte: startOfYear(new Date()), $lte: endOfYear(new Date()) }
-                    }).populate({
-                        path: "products.productId",
-                        model: "products"
-                    });
-                    break;
-                default:
-                    additionalData = [];
-                    break;
-            }
-    
-            const orders = [...allOrders, ...additionalData];
-    
-            res.render("sales-report-admin", { orders, reportType });
+        const startDate = req.query.startDate ? new Date(req.query.startDate) : undefined;
+        const endDate = req.query.endDate ? new Date(req.query.endDate) : undefined;
+
+        if (startDate) startDate.setHours(0, 0, 0, 0);
+        if (endDate) endDate.setHours(0, 0, 0, 0);
+        
+        let orders;
+
+        if (startDate && endDate) {
+            orders = await order.find({
+                orderStatus: "Delivered",
+                orderDate: { $gte: startDate, $lte: endDate }
+            }).populate({
+                path: "products.productId",
+                model: "products"
+            });
+        } else {
+            orders = await order.find({
+                orderStatus: "Delivered"
+            }).populate({
+                path: "products.productId",
+                model: "products"
+            });
+        }
+
+            res.render("sales-report-admin", { orders});
         } catch (error) {
             console.log(error);
             res.status(500).send("Internal Server Error");

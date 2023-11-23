@@ -74,11 +74,15 @@ module.exports.getAdminLogin = (req, res) => {
             req.body.email == admindata.email &&
             req.body.password == admindata.password
           ) {
-            res.render("admin-dashboard");
+            res.redirect("/admin/getadmin-dash");
           }
         }
       } else {
-        res.redirect("/admin-login");
+        res.redirect("/admin");
       }
     }
   };
+
+  module.exports.getLogout = async(req,res)=>{
+    res.redirect("/admin")
+  }

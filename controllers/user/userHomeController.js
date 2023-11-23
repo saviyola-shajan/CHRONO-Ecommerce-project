@@ -1,11 +1,12 @@
 const products = require("../../models/addProduct");
-
+const Banner = require('../../models/banner')
 
 module.exports.getHomePage = async (req, res) => {
     try {
       const loggedIn = req.cookies.loggedIn;
       const page = req.query.page ?? 1;
       const no_of_docs_each_page = 6;
+      const banners = await Banner.find({status:"Active"})
       const totalProducts = await products.countDocuments({
         status: "Available" 
       });
@@ -16,7 +17,7 @@ module.exports.getHomePage = async (req, res) => {
       .find({ status:"Available"})
       .skip(skip)
       .limit(no_of_docs_each_page);
-      res.render("home", { product, loggedIn,page,totalPages });
+      res.render("home", { product, loggedIn,page,totalPages,banners });
     } catch (error) {
       console.error(error);
       res.status(500).send("Error fetching products");

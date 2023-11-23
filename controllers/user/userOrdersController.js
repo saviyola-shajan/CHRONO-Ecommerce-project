@@ -57,7 +57,6 @@ module.exports.getCheckout = async (req, res) => {
         path: "products.productId",
         model: "products",
       });
-      console.log((userCoupon));
       let amount=0;
       let code='';
     if(userCoupon){

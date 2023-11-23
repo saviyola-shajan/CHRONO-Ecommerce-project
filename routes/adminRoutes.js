@@ -14,6 +14,7 @@ const adminOrdersController =require("../controllers/admin/adminOrdersController
 const adminSalesController = require("../controllers/admin/adminSalesController")
 const adminCouponController = require("../controllers/admin/adminCouponController")
 const adminOffersController =require("../controllers/admin/adminOffersController")
+const adminBannerController = require("../controllers/admin/adminBannerController")
 //login
 adminRouter.get("", adminLoginContrller.getAdminLogin);
 adminRouter.get("/getadmin-dash", adminLoginContrller.getAdminDashboard);
@@ -43,6 +44,7 @@ adminRouter.post("/editorderstatus",adminOrdersController.editOrderStatus)
 adminRouter.get("/excelsalesreport",adminSalesController.getExcelSalesReport)
 adminRouter.get("/pdfsalesreport",adminSalesController.getPdfSalesReport)
 adminRouter.get("/sale",adminSalesController.getSale)
+adminRouter.post("/sales")
 //coupon
 adminRouter.get("/coupon",adminCouponController.getCoupon)
 adminRouter.get("/addcoupon",adminCouponController.getAddCoupon)
@@ -59,6 +61,14 @@ adminRouter.get("/block-offer/:offerId",adminOffersController.blockOffers)
 adminRouter.get("/unblock-offer/:offerId",adminOffersController.unblockOffer)
 adminRouter.get("/edit-offer/:offerId",adminOffersController.getEditOffer)
 adminRouter.post("/submit-edit-offer",adminOffersController.postEditedOffer)
-
+//banner
+adminRouter.get("/banner",adminBannerController.getBanner)
+adminRouter.post("/postaddedbanner",multerMiddleware.upload.single("photo"),adminBannerController.postBanner)
+adminRouter.get("/editbanner",adminBannerController.getEditBanner)
+adminRouter.post("/posteditedbanner/:bannerId",multerMiddleware.upload.single("photo"),adminBannerController.postEditedBanner)
+adminRouter.get("/unblockbanner/:bannerId",adminBannerController.unblockBanner)
+adminRouter.get("/blockbanner/:bannerId",adminBannerController.blockBanner)
+//logout
+adminRouter.get("/logout",adminLoginContrller.getLogout)
 
 module.exports = adminRouter;
