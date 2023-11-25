@@ -1,77 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Coupon</title>
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f4f4f4;
+        padding: 20px;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Coupon</title>
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-  <style>
-    body {
-      background-color: #f4f4f4;
-      padding: 20px;
-    }
+      .coupon-form {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
 
-    .coupon-form {
-      max-width: 600px;
-      margin: 0 auto;
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <button class="btn btn-secondary" ><a style="color: black;" href="/admin/coupon">Back</a></button>
-    <h2 class="text-center mb-4" >Add Coupon</h2>
-    <form action="/admin/submitaddedcoupon" class="coupon-form" method="post">
-      <div class="form-group">
-        <label for="code">Code:</label>
-        <input type="text" class="form-control" id="code" name="couponCode" required>
-      </div>
-      <div class="form-group">
-        <label for="code">Coupon type</label>
-        <input type="text" class="form-control" id="code" name="couponType" required>
-      </div>
-      <div class="form-group row">
-        <label for="description" class="col-sm-2 col-form-label">Description:</label>
-        <div class="col-sm-10">
-          <textarea name="description" id="description" class="form-control" style="height: 50px;"></textarea>
+  <body>
+    <div class="container">
+      <button class="btn btn-secondary">
+        <a style="color: black" href="/admin/coupon">Back</a>
+      </button>
+      <h2 class="text-center mb-4">Add Coupon</h2>
+      <form action="/admin/submitaddedcoupon" class="coupon-form" method="post">
+        <div class="form-group">
+          <label for="code">Code:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="code"
+            name="couponCode"
+            required
+          />
         </div>
-      </div>
-      <div class="form-group">
-        <label for="discountValue">Discount Value:</label>
-        <input type="number" class="form-control" id="discountValue" name="amount" required>
-      </div>
-      <div class="form-group">
-        <label for="minOrderAmount">Minimum Order Amount:</label>
-        <input type="number" class="form-control" id="minOrderAmount" name="minimumPurchase" required>
-      </div>
-      <div class="form-group">
-        <label for="expirationDate">Expiration Date:</label>
-        <input type="date" class="form-control" id="expirationDate" name="expiryDate" required>
-      </div>
-      <div class="form-group">
-        <label for="status">Status:</label>
-        <select class="form-control" id="status" name="status" required>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <button type="submit" class="btn btn-primary">Add Coupon</button>
-      </div>
-    </form>
-  </div>
+        <div class="form-group">
+          <label for="code">Coupon type</label>
+          <input
+            type="text"
+            class="form-control"
+            id="code"
+            name="couponType"
+            required
+          />
+        </div>
+        <div class="form-group row">
+          <label for="description" class="col-sm-2 col-form-label"
+            >Description:</label
+          >
+          <div class="col-sm-10">
+            <textarea
+              name="description"
+              id="description"
+              class="form-control"
+              style="height: 50px"
+            ></textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="discountValue">Discount Value:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="discountValue"
+            name="amount"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="minOrderAmount">Minimum Order Amount:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="minOrderAmount"
+            name="minimumPurchase"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="expirationDate">Expiration Date:</label>
+          <input
+            type="date"
+            class="form-control"
+            id="expirationDate"
+            name="expiryDate"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="status">Status:</label>
+          <select class="form-control" id="status" name="status" required>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Add Coupon</button>
+        </div>
+      </form>
+    </div>
 
-  <!-- Bootstrap JS and Popper.js (required for Bootstrap) -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-</body>
-
+    <!-- Bootstrap JS and Popper.js (required for Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
 </html>

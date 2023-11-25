@@ -11,10 +11,10 @@ const categorySchema = new mongoose.Schema({
   // photo:{
   //   type:String,
   // },
-  status:{
-    type:String,
-    default:'Unhide'
-  }
+  status: {
+    type: String,
+    default: "Unhide",
+  },
 });
 const category = mongoose.model("category", categorySchema);
 module.exports = category;

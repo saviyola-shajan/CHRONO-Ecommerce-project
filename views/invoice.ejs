@@ -1,117 +1,129 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chrono Invoice</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-</head>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
 
-<body>
+  <body>
     <div class="container mt-3">
-        <div class="row mt-4">
-            <div class="col-12">
-                <button id="printButton" class="btn btn-primary">
-                    Print Invoice
-                </button>
-                <a href="/user-account"><button class="btn btn-success">Go Back</button></a>
-            </div>
+      <div class="row mt-4">
+        <div class="col-12">
+          <button id="printButton" class="btn btn-primary">
+            Print Invoice
+          </button>
+          <a href="/user-account"
+            ><button class="btn btn-success">Go Back</button></a
+          >
         </div>
-        <div class="row mt-5">
-            <div class="col-12">
-                <h1>Invoice</h1>
-            </div>
+      </div>
+      <div class="row mt-5">
+        <div class="col-12">
+          <h1>Invoice</h1>
         </div>
-        <div class="row mt-4">
-            <div class="col-6">
-                <h5>Sold by : </h5>
-                <p>Chrono E-Commerce</p>
-                <p>123 Main Street</p>
-                <p>Ernakulam, Kerala, 765423</p>
-                <p>Email: chrono@gmail.com</p>
-            </div>
-            <div class="col-6">
-                <h5>To : </h5>
-                <p><%=orders.address.userName%></p>
-                <p><%=orders.address.landMark%></p>
-                <p><%=orders.address.city%>, <%=orders.address.state%>, <%=orders.address.pincode%></p>
-                <p><%=orders.address.phoneNumber%></p>
-            </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-6">
+          <h5>Sold by :</h5>
+          <p>Chrono E-Commerce</p>
+          <p>123 Main Street</p>
+          <p>Ernakulam, Kerala, 765423</p>
+          <p>Email: chrono@gmail.com</p>
         </div>
-        <div class="row mt-4">
-            <div class="col-12">
-                <p>Order ID: <%=orders.orderID%> </p>
-                <p>Order Date: <%=orders.orderDate%> </p>
-                <p> Order Status : 
-                    <% if (orders.orderStatus === "Delivered") { %>
-                        <span class="badge rounded-pill alert-success"><%=orders.orderStatus%></span>
-                        <%}else if(orders.orderStatus === "Canceled"){%>
-                          <span class="badge rounded-pill alert-danger"><%=orders.orderStatus%></span>
-                        <%}else if(orders.orderStatus === "Returned"){%>
-                          <span class="badge rounded-pill alert-success"><%=orders.orderStatus%></span>
-                        <%}else{%>
-                          <span class="badge rounded-pill alert-warning"><%=orders.orderStatus%></span>
-                        <%}%>
-                </p>
-                <p>Payement Status : <%=orders.paymentStatus%></p>
-                <p>Payement Method : <%=orders.paymentMethod%></p>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Item</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <%if(orders){%>
-                            <%orders.products.forEach((product)=>{%>
-                                <tr>
-                                    <td><%=product.productId.name%></td>
-                                    <td><%=product.productId.description%></td>
-                                    <td><%=product.quantity%></td>
-                                    <td><%=product.productId.s_price%></td>
-                                    <td><%= product.productId.s_price * product.quantity %></td>
-                                </tr>
-                            <%})%>
-                        <%}else{%>
-                            <tr>
-                                <h3>No Order Found</h3>
-                            </tr>
-                        <%}%>
-                    </tbody>
-                </table>
-            </div>
+        <div class="col-6">
+          <h5>To :</h5>
+          <p><%=orders.address.userName%></p>
+          <p><%=orders.address.landMark%></p>
+          <p>
+            <%=orders.address.city%>, <%=orders.address.state%>,
+            <%=orders.address.pincode%>
+          </p>
+          <p><%=orders.address.phoneNumber%></p>
         </div>
-        <div class="row mt-4 mb-5">
-            <div class="col-3">
-                <h4>GROSS AMOUNT</h4>
-                <h4>₹ <%=orders.totalAmount+orders.discount %></h4>
-            </div>
-            <div class="col-3">
-                <h4>DISCOUNT</h4>
-                <h4>₹<%=orders.discount%></h4>
-            </div>
-            <div class="col-3">
-                <h4>SHIPPING CHARGE</h4>
-                <h4>₹ 0<%=orders.shippingCharge%></h4>
-            </div>
-            <div class="col-3">
-                <h4>TOTAL</h4>
-                <h4>₹ <%=orders.totalAmount %></h4>
-            </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-12">
+          <p>Order ID: <%=orders.orderID%></p>
+          <p>Order Date: <%=orders.orderDate%></p>
+          <p>
+            Order Status : <% if (orders.orderStatus === "Delivered") { %>
+            <span class="badge rounded-pill alert-success"
+              ><%=orders.orderStatus%></span
+            >
+            <%}else if(orders.orderStatus === "Canceled"){%>
+            <span class="badge rounded-pill alert-danger"
+              ><%=orders.orderStatus%></span
+            >
+            <%}else if(orders.orderStatus === "Returned"){%>
+            <span class="badge rounded-pill alert-success"
+              ><%=orders.orderStatus%></span
+            >
+            <%}else{%>
+            <span class="badge rounded-pill alert-warning"
+              ><%=orders.orderStatus%></span
+            >
+            <%}%>
+          </p>
+          <p>Payement Status : <%=orders.paymentStatus%></p>
+          <p>Payement Method : <%=orders.paymentMethod%></p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Description</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">Price</th>
+                <th scope="col">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%if(orders){%> <%orders.products.forEach((product)=>{%>
+              <tr>
+                <td><%=product.productId.name%></td>
+                <td><%=product.productId.description%></td>
+                <td><%=product.quantity%></td>
+                <td><%=product.productId.s_price%></td>
+                <td><%= product.productId.s_price * product.quantity %></td>
+              </tr>
+              <%})%> <%}else{%>
+              <tr>
+                <h3>No Order Found</h3>
+              </tr>
+              <%}%>
+            </tbody>
+          </table>
         </div>
+      </div>
+      <div class="row mt-4 mb-5">
+        <div class="col-3">
+          <h4>GROSS AMOUNT</h4>
+          <h4>₹ <%=orders.totalAmount+orders.discount %></h4>
+        </div>
+        <div class="col-3">
+          <h4>DISCOUNT</h4>
+          <h4>₹<%=orders.discount%></h4>
+        </div>
+        <div class="col-3">
+          <h4>SHIPPING CHARGE</h4>
+          <h4>₹ 0<%=orders.shippingCharge%></h4>
+        </div>
+        <div class="col-3">
+          <h4>TOTAL</h4>
+          <h4>₹ <%=orders.totalAmount %></h4>
+        </div>
+      </div>
     </div>
-</body>
-<script>
+  </body>
+  <script>
     document
-        .getElementById("printButton")
-        .addEventListener("click", function () {
-            window.print();
-        });
-</script>
-
+      .getElementById("printButton")
+      .addEventListener("click", function () {
+        window.print();
+      });
+  </script>
 </html>

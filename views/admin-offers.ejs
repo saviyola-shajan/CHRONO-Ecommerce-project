@@ -1,230 +1,294 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-orders-1.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
-<head>
-    <meta charset="utf-8">
+  <!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-orders-1.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+  <head>
+    <meta charset="utf-8" />
     <title>Evara Dashboard</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="/adminAssets/assets/imgs/theme/favicon.svg">
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/adminAssets/assets/imgs/theme/favicon.svg"
+    />
     <!-- Template CSS -->
-    <link href="/adminAssets/assets/css/main.css" rel="stylesheet" type="text/css" />
-    <style>.red-button {
+    <link
+      href="/adminAssets/assets/css/main.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <style>
+      .red-button {
         background-color: red;
         color: white; /* You can adjust the text color as needed */
-    }
-    
-    .green-button {
+      }
+
+      .green-button {
         background-color: green;
         color: white; /* You can adjust the text color as needed */
-    }
-    
-</style>
-</head>
+      }
+    </style>
+  </head>
 
-<body>
+  <body>
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-            <a href="/admin/getadmin-dash" class="brand-wrap">
-                <img src="/adminAssets/assets/imgs/icons/mainlogo.svg.jpg" class="logo" alt="Evara Dashboard">
-            </a>
-            <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
-            </div>
+      <div class="aside-top">
+        <a href="/admin/getadmin-dash" class="brand-wrap">
+          <img
+            src="/adminAssets/assets/imgs/icons/mainlogo.svg.jpg"
+            class="logo"
+            alt="Evara Dashboard"
+          />
+        </a>
+        <div>
+          <button class="btn btn-icon btn-aside-minimize">
+            <i class="text-muted material-icons md-menu_open"></i>
+          </button>
         </div>
-        <nav>
-            <ul class="menu-aside">
-                <li class="menu-item active">
-                    <a class="menu-link" href="/admin/getadmin-dash"> <i class="icon material-icons md-home"></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a class="menu-link" href="/admin/product-list"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Products</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a class="menu-link" href="/admin/orderlist"> <i class="icon material-icons md-shopping_cart"></i>
-                        <span class="text">Orders</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-person"></i>
-                        <span class="text">Users</span>
-                    </a>
-                   
-                </li>
-                <li class="">
-                    <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-add_box"><img style="width: 23px;" src="\adminAssets\assets\imgs\icons\categories.png" alt=""></i>
-                        <span class="text">Categories</span>
-                    </a>
-                </li>
-                
-                <li class="">
-                    <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-add_box"></i>
-                        <span class="text">Coupons</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a class="menu-link" href="/admin/offers"> <i class="icon material-icons md-monetization_on"></i>
-                        <span class="text">Offers</span>
-                    </a>
-                
-                </li>
-                <li class="">
-                    <a class="menu-link" href="/admin/sale"> <i class="icon material-icons md-stars"><img style="width: 23px;" src="\adminAssets\assets\imgs\icons\ballot.png" alt=""></i>
-                        <span class="text">Sales report</span>
-                    </a>
-                </li>
-               
-            </ul>
-            <hr>
-           
-            <br>
-            <br>
-        </nav>
+      </div>
+      <nav>
+        <ul class="menu-aside">
+          <li class="menu-item active">
+            <a class="menu-link" href="/admin/getadmin-dash">
+              <i class="icon material-icons md-home"></i>
+              <span class="text">Dashboard</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/product-list">
+              <i class="icon material-icons md-shopping_bag"></i>
+              <span class="text">Products</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/orderlist">
+              <i class="icon material-icons md-shopping_cart"></i>
+              <span class="text">Orders</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/users">
+              <i class="icon material-icons md-person"></i>
+              <span class="text">Users</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/categories">
+              <i class="icon material-icons md-add_box"
+                ><img
+                  style="width: 23px"
+                  src="\adminAssets\assets\imgs\icons\categories.png"
+                  alt=""
+              /></i>
+              <span class="text">Categories</span>
+            </a>
+          </li>
+
+          <li class="">
+            <a class="menu-link" href="/admin/coupon">
+              <i class="icon material-icons md-add_box"></i>
+              <span class="text">Coupons</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/offers">
+              <i class="icon material-icons md-monetization_on"></i>
+              <span class="text">Offers</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/banner">
+              <i class="icon material-icons md-add_box"></i>
+              <span class="text">Banner</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/sale">
+              <i class="icon material-icons md-stars"
+                ><img
+                  style="width: 23px"
+                  src="\adminAssets\assets\imgs\icons\ballot.png"
+                  alt=""
+              /></i>
+              <span class="text">Sales report</span>
+            </a>
+          </li>
+        </ul>
+        <hr />
+
+        <br />
+        <br />
+      </nav>
     </aside>
     <main class="main-wrap">
-        <header class="main-header navbar">
-            <div class="col-search">
-                <form class="searchform">
-                    <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
-                    </div>
-                    <datalist id="search_terms">
-                        <option value="Products">
-                        <option value="New orders">
-                        <option value="Apple iphone">
-                        <option value="Ahmed Hassan">
-                    </datalist>
-                </form>
+      <header class="main-header navbar">
+        <div class="col-search">
+          <form class="searchform">
+            <div class="input-group">
+              <input
+                list="search_terms"
+                type="text"
+                class="form-control"
+                placeholder="Search term"
+              />
+              <button class="btn btn-light bg" type="button">
+                <i class="material-icons md-search"></i>
+              </button>
             </div>
-            <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
-                <ul class="nav">
-                 
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                    </li>
-                 
-                    <li class="dropdown nav-item">
+            <datalist id="search_terms">
+              <option value="Products"></option>
+              <option value="New orders"></option>
+              <option value="Apple iphone"></option>
+              <option value="Ahmed Hassan"></option>
+            </datalist>
+          </form>
+        </div>
+        <div class="col-nav">
+          <button
+            class="btn btn-icon btn-mobile me-auto"
+            data-trigger="#offcanvas_aside"
+          >
+            <i class="material-icons md-apps"></i>
+          </button>
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link btn-icon darkmode" href="#">
+                <i class="material-icons md-nights_stay"></i>
+              </a>
+            </li>
 
-                        <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
-
-                </ul>
+            <li class="dropdown nav-item">
+              <a class="dropdown-item text-danger" href="/admin/logout"
+                ><i class="material-icons md-exit_to_app"></i>Logout</a
+              >
+            </li>
+          </ul>
+        </div>
+      </header>
+      <section class="content-main">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title card-title">Offer Management</h2>
+            <p>Manage the offers</p>
+            <button class="btn btn-primary btn-sm rounded">
+              <a style="color: aliceblue" href="/admin/addoffer">Add offer</a>
+            </button>
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Search order ID"
+              class="form-control bg-white"
+            />
+          </div>
+        </div>
+        <div class="card mb-4">
+          <header class="card-header">
+            <div class="row gx-3">
+              <div class="col-lg-4 col-md-6 me-auto">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  class="form-control"
+                />
+              </div>
+              <div class="col-lg-2 col-6 col-md-3">
+                <select class="form-select">
+                  <option>Status</option>
+                  <option>Active</option>
+                  <option>Disabled</option>
+                  <option>Show all</option>
+                </select>
+              </div>
+              <div class="col-lg-2 col-6 col-md-3">
+                <select class="form-select">
+                  <option>Show 20</option>
+                  <option>Show 30</option>
+                  <option>Show 40</option>
+                </select>
+              </div>
             </div>
-        </header>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Offer Management</h2>
-                    <p>Manage the offers</p>
-                    <button  class="btn btn-primary btn-sm rounded"><a style="color: aliceblue;" href="/admin/addoffer">Add offer</a></button>
-                </div>
-                <div>
-                    <input type="text" placeholder="Search order ID" class="form-control bg-white">
-                </div>
+          </header>
+          <!-- card-header end// -->
+
+          <div class="card-body">
+            <div class="table-responsive">
+              <% if (!offers) { %>
+              <h5>Currently there are no offers to show...</h5>
+              <% } else { %>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <!-- <th scope="col">Sl.no</th> -->
+                    <th scope="col">Code type</th>
+                    <th scope="col">Coupon Name</th>
+                    <th scope="col">Discount Value</th>
+                    <th scope="col">Expiration Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% offers.forEach((offer) => { %>
+                  <tr>
+                    <!-- <td></td> -->
+                    <td><%= offer.offerName %></td>
+                    <td><%=offer.offerType%></td>
+                    <td><%= offer.offerAmount %></td>
+                    <td><%= offer.endDate.toLocaleDateString('en-US') %></td>
+                    <td><%= offer.status %></td>
+                    <td class="">
+                      <a
+                        href="/admin/edit-offer/<%= offer._id %>"
+                        class="btn btn-md rounded font-sm"
+                        >Edit</a
+                      >
+
+                      <% if (offer.status =="Inactive") { %>
+                      <a
+                        href="/admin/unblock-offer/<%= offer._id %>"
+                        class="btn btn-success"
+                        >Unblock</a
+                      >
+                      <% } else { %>
+                      <a
+                        href="/admin/block-offer/<%= offer._id %>"
+                        class="btn btn-danger"
+                        >Block</a
+                      >
+                      <% } %>
+                    </td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+              <% } %>
             </div>
-            <div class="card mb-4">
-                <header class="card-header">
-                    <div class="row gx-3">
-                        <div class="col-lg-4 col-md-6 me-auto">
-                            <input type="text" placeholder="Search..." class="form-control">
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Status</option>
-                                <option>Active</option>
-                                <option>Disabled</option>
-                                <option>Show all</option>
-                            </select>
-                        </div>
-                        <div class="col-lg-2 col-6 col-md-3">
-                            <select class="form-select">
-                                <option>Show 20</option>
-                                <option>Show 30</option>
-                                <option>Show 40</option>
-                            </select>
-                        </div>
-                    </div>
-                </header> <!-- card-header end// -->
-                
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <% if (!offers) { %>
-                            <h5>Currently there are no offers to show...</h5>
-                        <% } else { %>
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <!-- <th scope="col">Sl.no</th> -->
-                                        <th scope="col">Code type</th>
-                                        <th scope="col">Coupon Name</th>
-                                        <th scope="col">Discount Value</th>
-                                        <th scope="col">Expiration Date</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% offers.forEach((offer) => { %>
-                                        <tr>
-                                            <!-- <td></td> -->
-                                            <td><%= offer.offerName %></td>
-                                            <td><%=offer.offerType%></td>
-                                            <td><%= offer.offerAmount %></td>
-                                            <td><%= offer.endDate.toLocaleDateString('en-US') %></td>
-                                            <td><%= offer.status %></td>
-                                            <td class="">
-                                                <a href="/admin/edit-offer/<%= offer._id %>" class="btn btn-md rounded font-sm">Edit</a>
-                                                
-                                                <% if (offer.status =="Inactive") { %>
-                                                    <a href="/admin/unblock-offer/<%= offer._id %>" class="btn btn-success">Unblock</a>
-                                                <% } else { %>
-                                                    <a href="/admin/block-offer/<%= offer._id %>" class="btn btn-danger">Block</a>
-                                                <% } %>
-                                            </td>
-                                        </tr>
-                                    <% }); %>
-                                </tbody>
-                            </table>
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-             <!-- card end// -->
-
-             
-
-
-
-      
-        </section> <!-- content-main end// -->
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                    document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
-                </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
-                    </div>
-                </div>
-            </div>
-        </footer>
+          </div>
+        </div>
+        <!-- card end// -->
+      </section>
+      <!-- content-main end// -->
+      <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+          <div class="col-sm-6">
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            ©, Evara - HTML Ecommerce Template .
+          </div>
+          <div class="col-sm-6">
+            <div class="text-sm-end">All rights reserved</div>
+          </div>
+        </div>
+      </footer>
     </main>
     <script src="/adminAssets/assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -232,9 +296,11 @@
     <script src="/adminAssets/assets/js/vendors/perfect-scrollbar.js"></script>
     <script src="/adminAssets/assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
-    <script src="/adminAssets/assets/js/main.js" type="text/javascript"></script>
-</body>
+    <script
+      src="/adminAssets/assets/js/main.js"
+      type="text/javascript"
+    ></script>
+  </body>
 
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-orders-1.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:22 GMT -->
+  <!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-orders-1.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:22 GMT -->
 </html>

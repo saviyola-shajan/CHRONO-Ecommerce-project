@@ -1,272 +1,331 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
-
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
-<head>
-    <meta charset="utf-8">
+  <!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+  <head>
+    <meta charset="utf-8" />
     <title>Evara Dashboard</title>
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta property="og:title" content="">
-    <meta property="og:type" content="">
-    <meta property="og:url" content="">
-    <meta property="og:image" content="">
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="/adminAssets/assets/imgs/theme/favicon.svg">
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="/adminAssets/assets/imgs/theme/favicon.svg"
+    />
     <!-- Template CSS -->
-    <link href="/adminAssets/assets/css/main.css" rel="stylesheet" type="text/css" />
-</head>
+    <link
+      href="/adminAssets/assets/css/main.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+  </head>
 
-<body>
+  <body>
     <div class="screen-overlay"></div>
     <aside class="navbar-aside" id="offcanvas_aside">
-        <div class="aside-top">
-            <a href="/admin/getadmin-dash" class="brand-wrap">
-                <img src="/adminAssets/assets/imgs/icons/mainlogo.svg.jpg" class="logo" alt="Evara Dashboard">
-            </a>
-            <div>
-                <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i> </button>
-            </div>
+      <div class="aside-top">
+        <a href="/admin/getadmin-dash" class="brand-wrap">
+          <img
+            src="/adminAssets/assets/imgs/icons/mainlogo.svg.jpg"
+            class="logo"
+            alt="Evara Dashboard"
+          />
+        </a>
+        <div>
+          <button class="btn btn-icon btn-aside-minimize">
+            <i class="text-muted material-icons md-menu_open"></i>
+          </button>
         </div>
-        <nav>
-            <ul class="menu-aside">
-                <li class="">
-                    <a class="menu-link" href="/admin/getadmin-dash"> <i class="icon material-icons md-home"></i>
-                        <span class="text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a class="menu-link" href="/admin/product-list"> <i class="icon material-icons md-shopping_bag"></i>
-                        <span class="text">Products</span>
-                    </a>
-                   
-                </li>
-                <li class="">
-                    <a class="menu-link" href="/admin/orderlist"> <i class="icon material-icons md-shopping_cart"></i>
-                        <span class="text">Orders</span>
-                    </a>
-                    <!-- <li class="">
+      </div>
+      <nav>
+        <ul class="menu-aside">
+          <li class="">
+            <a class="menu-link" href="/admin/getadmin-dash">
+              <i class="icon material-icons md-home"></i>
+              <span class="text">Dashboard</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/product-list">
+              <i class="icon material-icons md-shopping_bag"></i>
+              <span class="text">Products</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/orderlist">
+              <i class="icon material-icons md-shopping_cart"></i>
+              <span class="text">Orders</span>
+            </a>
+            <!-- <li class="">
                         <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-shopping_cart"></i>
                             <span class="text">Orders</span>
                         </a>
                         <div class="submenu">
                             <a href="page-orders-1.html">Order list 1</a>
                              <a href="page-orders-detail.html">Order detail</a> -->
-                        <!-- </div>  -->
-                    <!-- </li>  -->
-               </li>
-               <li class="">
-                <a class="menu-link" href="/admin/users"> <i class="icon material-icons md-person"></i>
-                    <span class="text">Users</span>
-                </a>
-                <!-- <div class="submenu">
+            <!-- </div>  -->
+            <!-- </li>  -->
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/users">
+              <i class="icon material-icons md-person"></i>
+              <span class="text">Users</span>
+            </a>
+            <!-- <div class="submenu">
                     <a href="page-account-login.html">User management</a>
                     <a href="page-account-register.html">User registration</a>
                     <a href="page-error-404.html">Error 404</a> -->
-                <!-- </div> -->
-            </li>
+            <!-- </div> -->
+          </li>
 
-            <li class="">
-                <a class="menu-link" href="/admin/categories"> <i class="icon material-icons md-add_box"></i>
-                    <span class="text">Category</span>
-                </a>
-                <!-- <div class="submenu">
+          <li class="">
+            <a class="menu-link" href="/admin/categories">
+              <i class="icon material-icons md-add_box"></i>
+              <span class="text">Category</span>
+            </a>
+            <!-- <div class="submenu">
                     <a href="/admin/add-products">Add products</a>
               
                 </div> -->
-            </li>
-         
-                    <li class="">
-                        <a class="menu-link" href="/admin/coupon"> <i class="icon material-icons md-add_box"></i>
-                            <span class="text">Coupons</span>
-                        </a>
-                    </li>
-                   
-              
-                
-                    <li class="">
-                        <a class="menu-link" href="/admin/offers"> <i class="icon material-icons md-monetization_on"></i>
-                            <span class="text">Offers</span>
-                        </a>
-                    
-                    </li>
+          </li>
 
-                <li class="">
-                    <a class="menu-link" href="/admin/sale"> <i class="icon material-icons md-stars"></i>
-                        <span class="text">Sales Report</span> </a>
-                </li>
-              
-            </ul>
-            <hr>
-          
-            <br>
-            <br>
-        </nav>
+          <li class="">
+            <a class="menu-link" href="/admin/coupon">
+              <i class="icon material-icons md-add_box"></i>
+              <span class="text">Coupons</span>
+            </a>
+          </li>
+
+          <li class="">
+            <a class="menu-link" href="/admin/offers">
+              <i class="icon material-icons md-monetization_on"></i>
+              <span class="text">Offers</span>
+            </a>
+          </li>
+          <li class="">
+            <a class="menu-link" href="/admin/banner">
+              <i class="icon material-icons md-add_box"></i>
+              <span class="text">Banner</span>
+            </a>
+          </li>
+
+          <li class="">
+            <a class="menu-link" href="/admin/sale">
+              <i class="icon material-icons md-stars"></i>
+              <span class="text">Sales Report</span>
+            </a>
+          </li>
+        </ul>
+        <hr />
+
+        <br />
+        <br />
+      </nav>
     </aside>
     <main class="main-wrap">
-        <header class="main-header navbar">
-            <div class="col-search">
-                <form class="searchform">
-                    <div class="input-group">
-                        <input list="search_terms" type="text" class="form-control" placeholder="Search term">
-                        <button class="btn btn-light bg" type="button"> <i class="material-icons md-search"></i></button>
-                    </div>
-                    <datalist id="search_terms">
-                        <option value="Products">
-                        <option value="New orders">
-                        <option value="Apple iphone">
-                        <option value="Ahmed Hassan">
-                    </datalist>
-                </form>
+      <header class="main-header navbar">
+        <div class="col-search">
+          <form class="searchform">
+            <div class="input-group">
+              <input
+                list="search_terms"
+                type="text"
+                class="form-control"
+                placeholder="Search term"
+              />
+              <button class="btn btn-light bg" type="button">
+                <i class="material-icons md-search"></i>
+              </button>
             </div>
-            <div class="col-nav">
-                <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"> <i class="material-icons md-apps"></i> </button>
-                <ul class="nav">
-                  
-                    <li class="nav-item">
-                        <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-                    </li>
-                   
-                
-                    <li class="dropdown nav-item">
+            <datalist id="search_terms">
+              <option value="Products"></option>
+              <option value="New orders"></option>
+              <option value="Apple iphone"></option>
+              <option value="Ahmed Hassan"></option>
+            </datalist>
+          </form>
+        </div>
+        <div class="col-nav">
+          <button
+            class="btn btn-icon btn-mobile me-auto"
+            data-trigger="#offcanvas_aside"
+          >
+            <i class="material-icons md-apps"></i>
+          </button>
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link btn-icon darkmode" href="#">
+                <i class="material-icons md-nights_stay"></i>
+              </a>
+            </li>
 
-                        <a class="dropdown-item text-danger" href="/admin/logout"><i class="material-icons md-exit_to_app"></i>Logout</a>
-
-                </ul>
-            </div>
-        </header>
-        <section class="content-main">
-            <div class="content-header">
-                <div>
-                    <h2 class="content-title card-title">Categories </h2>
-                    <p>Add, edit or delete a category</p>
-                </div>
-                <div>
-                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <form action="/admin/create-category" method="post"  >
-                                <div class="mb-4">
-                                    <label for="product_name" class="form-label">Name</label>
-                                    <input type="text" name="name" placeholder="Type here" class="form-control" id="product_name" required />
-                                    <!-- <span id="nameError" style="color: red;"></span> -->
-                                    <span style="color: red;"><%=error%></span>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Description</label>
-                                    <textarea placeholder="Type here" name="description" class="form-control" required></textarea>
-                                    <span id="descriptionError" style="color: red;"></span>
-                                </div>
-                                <!-- <div class="mb-4">
+            <li class="dropdown nav-item">
+              <a class="dropdown-item text-danger" href="/admin/logout"
+                ><i class="material-icons md-exit_to_app"></i>Logout</a
+              >
+            </li>
+          </ul>
+        </div>
+      </header>
+      <section class="content-main">
+        <div class="content-header">
+          <div>
+            <h2 class="content-title card-title">Categories</h2>
+            <p>Add, edit or delete a category</p>
+          </div>
+          <div>
+            <input
+              type="text"
+              placeholder="Search Categories"
+              class="form-control bg-white"
+            />
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <form action="/admin/create-category" method="post">
+                  <div class="mb-4">
+                    <label for="product_name" class="form-label">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Type here"
+                      class="form-control"
+                      id="product_name"
+                      required
+                    />
+                    <!-- <span id="nameError" style="color: red;"></span> -->
+                    <span style="color: red"><%=error%></span>
+                  </div>
+                  <div class="mb-4">
+                    <label class="form-label">Description</label>
+                    <textarea
+                      placeholder="Type here"
+                      name="description"
+                      class="form-control"
+                      required
+                    ></textarea>
+                    <span id="descriptionError" style="color: red"></span>
+                  </div>
+                  <!-- <div class="mb-4">
                                     <label class="form-label">Photo</label>
                                     <input type="file" name="photo" accept="image/*" required />
                                 </div> -->
-                                <div class="mb-4">
-                                    <label class="form-label">Status</label>
-                                    <select class="form-select">
-                                        <option>Unhide</option>
-                                        <option>Hide</option>
-                                    </select>
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Create category</button>
-                                </div>
-                            </form>
-                            
-                        </div>
-                        <div class="col-md-9">
-                            <div class="table-responsive" >
-                                <table class="table table-hover" id="category" >
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center" >
-                                                <!-- <div class="form-check">
+                  <div class="mb-4">
+                    <label class="form-label">Status</label>
+                    <select class="form-select">
+                      <option>Unhide</option>
+                      <option>Hide</option>
+                    </select>
+                  </div>
+                  <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                      Create category
+                    </button>
+                  </div>
+                </form>
+              </div>
+              <div class="col-md-9">
+                <div class="table-responsive">
+                  <table class="table table-hover" id="category">
+                    <thead>
+                      <tr>
+                        <th class="text-center">
+                          <!-- <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" value="" />
                                                 </div> -->
-                                            </th>
-                                           
-                                            <th>Name</th>
-                                            <th>Description</th>
-                                            <!-- <th>Photo</th> -->
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <% dataCategory.reverse().forEach(categories=> {%>
-                                        <tr>
-                                            <td class="text-center">
-                                                <!-- <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" value="" />
-                                                </div> -->
-                                            </td>
-                                            
-                                            <td><b><%=categories.name%></b></td>
-                                            <td><%=categories.description%></td>
-                                            <!-- <td><img src="<%=categories.photo%>" alt="category photo" height="68"></td> -->
-                                            <td>
-                                                <a class="status-action btn
-                                                   <%= categories.status === 'Unhide' ? 'btn-success' : 'btn-danger' %>"
-                                                   href="/admin/<%= categories.status === 'Unhide' ? 'hidecategory' : 'unhidecategory' %>/<%= categories._id %>">
-                                                   <%= categories.status === 'Unhide' ? 'Unhide' : 'Hide' %>
-                                                </a>
-                                            </td>
-                                            <td class="text-end">
-                                                <div>
-                                                        <!-- <a class="dropdown-item" href="#">View detail</a> -->
-                                                       <button class="btn btn-info"> <a style="color: black;" href="/admin/editcategory/<%=categories._id%>">Edit</a></button>
-                                                        <!-- <a class="dropdown-item text-danger" href="#">Delete</a> -->
-                                                    </div>                                                
-                                            </td>
-                                        </tr>
-                                        <% });%>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div> <!-- .col// -->
-                    </div> <!-- .row // -->
-                </div> <!-- card body .// -->
-            </div> <!-- card .// -->
-        </section>
-         <!-- content-main end// -->
+                        </th>
 
-        
-            
-            
-        <footer class="main-footer font-xs">
-            <div class="row pb-30 pt-15">
-                <div class="col-sm-6">
-                    <script>
-                    document.write(new Date().getFullYear())
-                    </script> ©, Evara - HTML Ecommerce Template .
+                        <th>Name</th>
+                        <th>Description</th>
+                        <!-- <th>Photo</th> -->
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% dataCategory.reverse().forEach(categories=> {%>
+                      <tr>
+                        <td class="text-center">
+                          <!-- <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="" />
+                                                </div> -->
+                        </td>
+
+                        <td><b><%=categories.name%></b></td>
+                        <td><%=categories.description%></td>
+                        <!-- <td><img src="<%=categories.photo%>" alt="category photo" height="68"></td> -->
+                        <td>
+                          <a
+                            class="status-action btn <%= categories.status === 'Unhide' ? 'btn-success' : 'btn-danger' %>"
+                            href="/admin/<%= categories.status === 'Unhide' ? 'hidecategory' : 'unhidecategory' %>/<%= categories._id %>"
+                          >
+                            <%= categories.status === 'Unhide' ? 'Unhide' :
+                            'Hide' %>
+                          </a>
+                        </td>
+                        <td class="text-end">
+                          <div>
+                            <!-- <a class="dropdown-item" href="#">View detail</a> -->
+                            <button class="btn btn-info">
+                              <a
+                                style="color: black"
+                                href="/admin/editcategory/<%=categories._id%>"
+                                >Edit</a
+                              >
+                            </button>
+                            <!-- <a class="dropdown-item text-danger" href="#">Delete</a> -->
+                          </div>
+                        </td>
+                      </tr>
+                      <% });%>
+                    </tbody>
+                  </table>
                 </div>
-                <div class="col-sm-6">
-                    <div class="text-sm-end">
-                        All rights reserved
-                    </div>
-                </div>
+              </div>
+              <!-- .col// -->
             </div>
-        </footer>
+            <!-- .row // -->
+          </div>
+          <!-- card body .// -->
+        </div>
+        <!-- card .// -->
+      </section>
+      <!-- content-main end// -->
+
+      <footer class="main-footer font-xs">
+        <div class="row pb-30 pt-15">
+          <div class="col-sm-6">
+            <script>
+              document.write(new Date().getFullYear());
+            </script>
+            ©, Evara - HTML Ecommerce Template .
+          </div>
+          <div class="col-sm-6">
+            <div class="text-sm-end">All rights reserved</div>
+          </div>
+        </div>
+      </footer>
     </main>
 
-      <!-- for pagination -->
-      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-      <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-         <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-         <script>
-            $(document).ready(function () {
-                new DataTable('#category', {
-                    order: [[0, 'desc']] 
-                });
-            });
-            </script>
-                  
+    <!-- for pagination -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        new DataTable("#category", {
+          order: [[0, "desc"]],
+        });
+      });
+    </script>
 
     <script src="/adminAssets/assets/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="/adminAssets/assets/js/vendors/bootstrap.bundle.min.js"></script>
@@ -274,9 +333,11 @@
     <script src="/adminAssets/assets/js/vendors/perfect-scrollbar.js"></script>
     <script src="/adminAssets/assets/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
-    <script src="/adminAssets/assets/js/main.js" type="text/javascript"></script>
-</body>
+    <script
+      src="/adminAssets/assets/js/main.js"
+      type="text/javascript"
+    ></script>
+  </body>
 
-
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
+  <!-- Mirrored from wp.alithemes.com/html/evara/evara-backend/page-categories.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 01 Aug 2021 15:33:21 GMT -->
 </html>

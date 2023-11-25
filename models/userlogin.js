@@ -15,21 +15,21 @@ const userSchema = new mongoose.Schema({
   phoneNumber: {
     type: Number,
     required: true,
-    unique:true,
+    unique: true,
   },
   email: {
     type: String,
     required: true,
     unique: true,
   },
-  referelId:{
-    type:String
+  referelId: {
+    type: String,
   },
-  redmmedreferels:{
-    type:Array
+  redmmedreferels: {
+    type: Array,
   },
-  appliedReferel:{
-    type:Boolean
+  appliedReferel: {
+    type: Boolean,
   },
   status: {
     type: String,
@@ -37,10 +37,10 @@ const userSchema = new mongoose.Schema({
   isverified: {
     type: Number,
   },
-  createdOn:{
-      type: Date,
-      default: Date.now,
-  }
+  createdOn: {
+    type: Date,
+    default: Date.now,
+  },
 });
 const usercollecn = mongoose.model("usercollecn", userSchema);
 module.exports = usercollecn;

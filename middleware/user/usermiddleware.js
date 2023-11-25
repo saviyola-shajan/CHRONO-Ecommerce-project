@@ -20,18 +20,13 @@ module.exports.verifyUser = (req, res, next) => {
   );
 };
 
-module.exports.IsUserBlocked= async(req, res, next)=>{
-  user = req.user
-  const currUser = await usercollecn.findOne({email:user})
-  if(currUser.status =="Blocked"){
+module.exports.IsUserBlocked = async (req, res, next) => {
+  user = req.user;
+  const currUser = await usercollecn.findOne({ email: user });
+  if (currUser.status == "Blocked") {
     res.clearCookie("token");
     res.clearCookie("loggedIn");
-    res.render("page-login",{error:"User is Blocked"});
+    res.render("page-login", { error: "User is Blocked" });
   }
-  next()
-
-}
-
-
-
-
+  next();
+};
