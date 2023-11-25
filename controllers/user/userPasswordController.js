@@ -8,16 +8,17 @@ const bcrypt = require('bcrypt');
 
 
 
-module.exports.getPasswordResetPage = (req, res) => {
+module.exports.getPasswordResetPage = (req, res,next) => {
     try {
       const loggedIn = req.cookies.loggedIn;
       res.render("forgotpassword", { loggedIn });
     } catch (error) {
       console.log(error);
+      next("Error while loading Forgotpassword")
     }
   };
 
-  module.exports.getPasswordResetOtp = async (req, res) => {
+  module.exports.getPasswordResetOtp = async (req, res,next) => {
     try {
       const userEmail = req.query.email;
       const user = await usercollecn.findOne({ email: userEmail });
@@ -36,10 +37,11 @@ module.exports.getPasswordResetPage = (req, res) => {
       }
     } catch (error) {
       console.log(error);
+     next ("Error in sending OTP")
     }
   };
 
-  module.exports.getVerifyPasswordResetOtp = async (req, res) => {
+  module.exports.getVerifyPasswordResetOtp = async (req, res,next) => {
     try {
       const otp = req.query.otp;
       const email = req.query.email;
@@ -58,16 +60,18 @@ module.exports.getPasswordResetPage = (req, res) => {
       }
     } catch (error) {
       console.log(error);
+      next("Error in veriyfing OTP")
     }
   };
 
-  module.exports.changePassword = async (req, res) => {
+  module.exports.changePassword = async (req, res,next) => {
     try {
       const Email = req.query.email;
       const loggedIn = req.cookies.loggedIn;
       res.render("changepassword", { Email, loggedIn });
     } catch (error) {
       console.log(error);
+      next("Error in Changing Password")
     }
   };
 
@@ -79,6 +83,7 @@ module.exports.getPasswordResetPage = (req, res) => {
         { email: email },
         { $set: { password: hashedNewPassword } }
       );
+      // res.redirect("get-login")
       res.status(200).json({ data: "password Updated" });
     } catch (error) {
       console.log(error);

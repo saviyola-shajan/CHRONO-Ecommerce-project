@@ -5,7 +5,7 @@ const Wallet = require("../../models/wallet")
 
 
 
-module.exports.orderDeatils = async (req, res) => {
+module.exports.orderDeatils = async (req, res,next) => {
     try {
       const orderId = req.params.orderId;
       const orderDetails = await order.findById({ _id: orderId}).populate({
@@ -15,10 +15,11 @@ module.exports.orderDeatils = async (req, res) => {
       res.render("orderdetails", { orderDetails });
     } catch (error) {
       console.log(error);
+      next("Error in Getting Order Deatils")
     }
   };
 
-  module.exports.getInvoice = async (req,res)=>{
+  module.exports.getInvoice = async (req,res,next)=>{
     try{
       const orderid =req.params.orderId
     const orders = await order.findById({_id:orderid}).populate({
@@ -28,10 +29,11 @@ module.exports.orderDeatils = async (req, res) => {
       res.render("invoice",{orders})
     }catch(error){
   console.log(error)
+  next("Error in Getting Invoice")
     }
   }
 
-  module.exports.productCancel = async (req, res) => {
+  module.exports.productCancel = async (req, res,next) => {
     try {
       const userData = await usercollecn.findOne({ email: req.user });
       let userCancel = await order.findOne({ userId: userData._id });
@@ -58,11 +60,12 @@ module.exports.orderDeatils = async (req, res) => {
   
       res.redirect("/user-account");
     } catch (error) {
-      console.log("An error happened while processig return! :" + error);
+      console.log(error);
+      next("Error in Canceling Product")
     }
   };
 
-  module.exports.returnOrder = async (req, res) => {
+  module.exports.returnOrder = async (req, res,next) => {
     try {
       const userData = await usercollecn.findOne({ email: req.user });
       let userReturn = await order.findOne({ userId: userData._id });
@@ -88,6 +91,7 @@ module.exports.orderDeatils = async (req, res) => {
       }
       res.redirect("/user-account");
     } catch (error) {
-      console.log("An error happened while processig return! :" + error);
+      console.log( error);
+      next("Error in Returing Product ")
     }
   };

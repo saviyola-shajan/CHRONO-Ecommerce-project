@@ -6,7 +6,8 @@ const walletSchema = mongoose.Schema({
         ref : 'usercollecn'
     },
     amount : {
-        type : Number
+        type : Number,
+        default:"0"
     }
 })
 

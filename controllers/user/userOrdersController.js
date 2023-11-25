@@ -16,7 +16,7 @@ const razorpay = new Razorpay({
 
 
 
-module.exports.getCheckout = async (req, res) => {
+module.exports.getCheckout = async (req, res,next) => {
     try {
       const userData = await usercollecn.findOne({ email: req.user });
       const addresses = await address.findOne({ userId: userData._id });
@@ -38,15 +38,22 @@ module.exports.getCheckout = async (req, res) => {
       }
       res.render("checkout", { addresses, userCart,coupons});
     } catch (error) {
-      console.log("error while loading cart", error);
+      console.log( error);
+     next("Error in Loading Checkout")
     }
   };
 
-  module.exports.getPlaceOrder = (req,res)=>{
-    res.render("place-order")
+  module.exports.getPlaceOrder = (req,res,next)=>{
+    try{
+      res.render("place-order")
+
+    }catch(error){
+      console.log(error);
+      next("Error in Loading Place order")
+    }
   }
 
-  module.exports.postOrdersCod = async (req, res) => {
+  module.exports.postOrdersCod = async (req, res,next) => {
     try {
       const UseraddressId = req.body.addressId;
       const userId = req.user;
@@ -111,10 +118,11 @@ module.exports.getCheckout = async (req, res) => {
       res.redirect("/placeorder");
     } catch (error) {
       console.log(error);
+      next("Error while Placing COD")
     }
   };
 
-  module.exports.onlinePayment =  async (req, res) => {
+  module.exports.onlinePayment =  async (req, res,next) => {
     try {
       const UseraddressId =req.query.addressId
       const userId = req.user;
@@ -191,10 +199,11 @@ module.exports.getCheckout = async (req, res) => {
       await cart.deleteOne({ userId: userdata._id });
     } catch (error) {
       console.log(error);
+      next("Error while Placing Online Payment")
     }
   };
 
-  module.exports.walletPayment = async(req,res)=>{
+  module.exports.walletPayment = async(req,res,next)=>{
     try{
       const UseraddressId =req.body.addressId
       const grandTotal =req.body.totalAmount
@@ -268,10 +277,11 @@ module.exports.getCheckout = async (req, res) => {
     }
   }catch(error){
     console.log(error)
+    next("Error while Paying With Wallet")
     }
   }
 
-  module.exports.paymentStatus = async (req,res)=>{
+  module.exports.paymentStatus = async (req,res,next)=>{
     try{
       const orderStatus = req.query.status
   const orderItem = await order.updateOne({orderID:req.query.orderId},{$set:{paymentStatus:orderStatus}})
@@ -280,5 +290,6 @@ module.exports.getCheckout = async (req, res) => {
   }   
     }catch(error){
       console.log(error)
+      next("Error while Updating payment Status")
     }
   }

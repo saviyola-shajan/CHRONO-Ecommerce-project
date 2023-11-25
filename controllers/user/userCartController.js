@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 
 
-module.exports.getCart = async (req, res) => {
+module.exports.getCart = async (req, res,next) => {
     try {
       const userData = await usercollecn.findOne({ email: req.user });
       const userCart = await cart.findOne({ userId: userData._id }).populate({
@@ -15,7 +15,8 @@ module.exports.getCart = async (req, res) => {
       });
       res.render("cart", { userCart,error:null});
     } catch (error) {
-      console.log("error while loading cart", error);
+      console.log(error);
+      next("Error while loading cart")
     }
   };
 

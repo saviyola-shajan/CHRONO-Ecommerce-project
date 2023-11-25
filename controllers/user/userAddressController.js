@@ -2,8 +2,14 @@ const usercollecn = require("../../models/userlogin");
 const address = require("../../models/address");
 
 
-module.exports.getAddAddress = async (req, res) => {
+module.exports.getAddAddress = async (req, res,next) => {
+  try{
+
     res.render("add-address");
+  }catch(error){
+    console.log(error);
+    next("Error in adding Address")
+  }
   };
 
   module.exports.postAddAddress = async (req, res) => {
@@ -57,7 +63,7 @@ module.exports.getAddAddress = async (req, res) => {
     }
   };
 
-  module.exports.getEditAddress = async(req,res)=>{
+  module.exports.getEditAddress = async(req,res,next)=>{
     try{
        const userdata = await usercollecn.findOne({email:req.user})
       const useraddress = await address.findOne({userId:userdata._id})
@@ -71,11 +77,12 @@ module.exports.getAddAddress = async (req, res) => {
       
     }catch(error){
    console.log(error)
+   next("Error in Edit Address")
     }
     
   }
 
-  module.exports.postEditedAddress = async (req, res) => {
+  module.exports.postEditedAddress = async (req, res,next) => {
     try {
       const addressId = req.body.addressId;
       const addressType = req.body.addressType;
@@ -112,6 +119,6 @@ module.exports.getAddAddress = async (req, res) => {
       }
     } catch (error) {
       console.log(error);
-      res.status(500).send("Internal server error");
+      next("Error in Adding Address")
     }
   };

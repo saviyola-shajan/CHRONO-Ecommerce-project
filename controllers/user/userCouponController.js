@@ -44,7 +44,7 @@ module.exports.applyCoupon = async (req, res) => {
     }
   };
 
-  module.exports.removeCoupon = async(req,res)=>{
+  module.exports.removeCoupon = async(req,res,next)=>{
     try{
       const couponCode = req.query.couponCode;
       const userId = req.user; 
@@ -59,6 +59,7 @@ module.exports.applyCoupon = async (req, res) => {
       res.redirect("/checkout")
     }catch(error){
       console.log(error)
+      next("Error in Removing Coupon")
     }
   }
   

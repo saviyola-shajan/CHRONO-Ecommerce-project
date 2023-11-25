@@ -83,7 +83,7 @@
                                             </button>
                                             <br>
                                             <button class="btn btn-primary" type="button" id="verifyOTPButton" data-mdb-ripple-color="dark">
-                                                <a href="/verify-otp" style="color: beige;">Verify OTP</a>
+                                                <a href="" style="color: beige;">Verify OTP</a>
                                             </button>
                                             <div class="error-message" id="errSignupOtp"></div>
                                             <div class="login_footer form-group">
@@ -125,14 +125,15 @@
             const verifyOTPButton = document.getElementById("verifyOTPButton");
             const resendOTPButton = document.getElementById("resendOTPButton");
             const timerElement = document.getElementById("timer");
+            const signIn = document.getElementById("signInButton")
     
             let countdown;
     
-            function validateBeforeSendOTP() {
                 sendOTPButton.addEventListener("click", function (e) {
                     e.preventDefault();
     
                      const phoneNumber = document.querySelector('input[name="phoneNumber"]').value;
+                     console.log(phoneNumber)
         const username = document.getElementById("username").value;
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
@@ -174,7 +175,6 @@
                             console.error("Error sending OTP:", error);
                         });
                 });
-            }
     
             function startResendTimer() {
                 let remainingTime = 60;
@@ -233,7 +233,6 @@
                     });
             });
     
-            function validateBeforeVerifyOTP() {
                 verifyOTPButton.addEventListener("click", function (e) {
                     e.preventDefault();
     
@@ -250,7 +249,7 @@
                     }
     
                     fetch(`/verify-otp?phoneNumber=${phoneNumber}&otp=${otp}`, {
-                        method: "POST",
+                        method: "post",
                         body: otpInput.value
                     })
                         .then((response) => {
@@ -260,6 +259,7 @@
                             return response.json();
                         })
                         .then((data) => {
+
                             console.log("OTP verified:", data);
                             Swal.fire({
                                 position: 'top-centre',
@@ -268,8 +268,11 @@
                                 showConfirmButton: false,
                                 timer: 1500
                             });
-                            signIn.style.display="block"
-                        })
+                            if (signIn) {
+    signIn.style.display = "block";
+} else {
+    console.error("signInButton element not found");
+}                        })
                         .catch((error) => {
                             console.error("Error verifying OTP:", error);
                             Swal.fire({
@@ -279,13 +282,10 @@
                             });
                         });
                 });
-            }
+            
     
-            // Call the validation functions
             validateBeforeSendOTP();
             validateBeforeVerifyOTP();
-    
-            // ... (rest of the script)
         });
     
         function validateBeforeSubmit() {

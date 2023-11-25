@@ -16,7 +16,8 @@ const userPasswordController = require("../controllers/user/userPasswordControll
 const userOrderDeatilsController = require("../controllers/user/userOrderDeatilsController")
 const userFiltersController = require("../controllers/user/userFiltersController")
 const userWishlistController = require("../controllers/user/userWishlistController")
-const userCouponController = require("../controllers/user/userCouponController")
+const userCouponController = require("../controllers/user/userCouponController");
+const { errorMiddleware } = require("../middleware/user/errorMiddleware");
 
 //login
 // userRouter.get('/verify',userLoginController.verifymail)
@@ -76,4 +77,6 @@ userRouter.post("/applycoupon",userMiddleware.verifyUser,userMiddleware.IsUserBl
 userRouter.get("/removecoupon",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,userCouponController.removeCoupon)
 //logout
 userRouter.get("/logout",userMiddleware.verifyUser,userLoginController.getlogout);
+
+userRouter.use(errorMiddleware)
 module.exports = userRouter;

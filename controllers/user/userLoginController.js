@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 const usercollecn = require("../../models/userlogin");
 const products = require("../../models/addProduct");
+const Wallet = require("../../models/wallet")
 require("dotenv").config();
 const bcrypt = require('bcrypt');
 const uuid = require("uuid")
@@ -76,7 +77,7 @@ module.exports.postUserLogin = async (req, res) => {
               res.redirect("/");
             } catch (error) {
               console.error(error);
-              res.status(500).send("Error fetching products");
+              next("Error");
             } 
           }
         } else {
@@ -139,9 +140,7 @@ module.exports.postUserLogin = async (req, res) => {
 
       module.exports.getSendOtp = async (req, res) => {
         try {
-          console.log("hey");
           const phoneNumber = req.query.phoneNumber;
-          console.log(phoneNumber);
           await twilio.verify.v2
             .services(process.env.TWILIO_SERVICES_ID)
             .verifications.create({
@@ -162,6 +161,7 @@ module.exports.postUserLogin = async (req, res) => {
         try {
           const phoneNumber = req.query.phoneNumber;
           const otp = req.query.otp;
+          console.log(otp);
           if (!phoneNumber) {
             return res.status(400).json({ error: "Phone number not provided" });
           }
@@ -171,7 +171,6 @@ module.exports.postUserLogin = async (req, res) => {
               to: `+91${phoneNumber}`,
               code: otp,
             });
-      
           if (verifyOTP.valid) {
             res.status(200).json({ data: "OTP verified successfully" });
           } else {

@@ -5,7 +5,7 @@ const Wallet = require("../../models/wallet")
 const bcrypt = require('bcrypt');
 
 
-module.exports.getUserAccount = async (req, res) => {
+module.exports.getUserAccount = async (req, res,next) => {
     try {
       const userId = await usercollecn.findOne({ email: req.user });
       const useraddress = await address.findOne({ userId: userId._id });
@@ -17,6 +17,7 @@ module.exports.getUserAccount = async (req, res) => {
       res.render("user-account", { userId, useraddress, listorders,wallet });
     } catch (error) {
       console.log(error);
+      next("Error Fetching Products..!")
     }
   };
 
@@ -54,7 +55,7 @@ module.exports.getUserAccount = async (req, res) => {
     }
   };
 
-  module.exports.changePasswordUserAccount = async(req,res)=>{
+  module.exports.changePasswordUserAccount = async(req,res,next)=>{
     try{
      const{name,email,password,npassword,cpassword} = req.body
      const user = await usercollecn.findOne({email:req.user})
@@ -80,5 +81,6 @@ module.exports.getUserAccount = async (req, res) => {
     }
     }catch(error){
   console.log(error)
+  next("Error In Changing Password..!")
     }
   }

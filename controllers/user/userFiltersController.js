@@ -2,7 +2,7 @@ const products = require("../../models/addProduct");
 const Banner = require("../../models/banner")
 
 
-module.exports.searchProducts = async (req, res) => {
+module.exports.searchProducts = async (req, res,next) => {
     try {
       const loggedIn = req.cookies.loggedIn;
       const { search_product } = req.query;
@@ -27,10 +27,11 @@ module.exports.searchProducts = async (req, res) => {
       }
     } catch (error) {
       console.log(error);
+      next("Error in Searching Products")
     }
   };
 
-  module.exports.filterCategory = async (req, res) => {
+  module.exports.filterCategory = async (req, res,next) => {
     try {
       const loggedIn = req.cookies.loggedIn;
       const categories = req.query.category;
@@ -61,10 +62,11 @@ module.exports.searchProducts = async (req, res) => {
       }
     } catch (error) {
       console.log(error);
+      next("Error in Filter Category")
     }
   };
 
-  module.exports.getFiterCheckbox = async(req,res)=>{
+  module.exports.getFiterCheckbox = async(req,res,next)=>{
     try{
       const loggedIn = req.cookies.loggedIn;
       const selectedBrands = req.body.brand;
@@ -101,11 +103,11 @@ module.exports.searchProducts = async (req, res) => {
      res.render("home",{loggedIn,product,page,totalPages,banners})
     }catch(error){
       console.log(error)
-      res.status(500).send('Internal Server Error');
+      next("Error in Filter Checkbox")
     }
   }
 
-  module.exports.filterByPrice = async (req, res) => {
+  module.exports.filterByPrice = async (req, res,next) => {
     try {
       const loggedIn = req.cookies.loggedIn;
       const sortBy = req.query.sortBy || 'lowToHigh';
@@ -134,6 +136,6 @@ module.exports.searchProducts = async (req, res) => {
       res.render('home', { loggedIn, product, page, totalPages, sortBy,banners });
     } catch (error) {
       console.log(error);
-      res.status(500).send('Internal Server Error');
+      next("Error in Sort By Price")
     }
   };

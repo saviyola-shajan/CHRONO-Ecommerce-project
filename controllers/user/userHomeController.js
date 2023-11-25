@@ -1,7 +1,7 @@
 const products = require("../../models/addProduct");
 const Banner = require('../../models/banner')
 
-module.exports.getHomePage = async (req, res) => {
+module.exports.getHomePage = async (req, res,next) => {
     try {
       const loggedIn = req.cookies.loggedIn;
       const page = req.query.page ?? 1;
@@ -20,11 +20,11 @@ module.exports.getHomePage = async (req, res) => {
       res.render("home", { product, loggedIn,page,totalPages,banners });
     } catch (error) {
       console.error(error);
-      res.status(500).send("Error fetching products");
+      next("Error fetching product Deatils");
     }
   };
 
-  module.exports.getSingleProduct = async (req, res) => {
+  module.exports.getSingleProduct = async (req, res,next) => {
     const loggedIn =req.cookies.loggedIn
     const productId = req.params.productId;
     try {
@@ -35,6 +35,6 @@ module.exports.getHomePage = async (req, res) => {
       res.render("single-product", { singleProduct,loggedIn });
     } catch (error) {
       console.error(error);
-      res.status(500).send("error fetching product deatils");
+      next("Error fetching product deatils");
     }
   };

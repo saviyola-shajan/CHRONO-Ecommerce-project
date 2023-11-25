@@ -4,7 +4,7 @@ const cart = require("../../models/cartModel");
 const mongoose = require("mongoose");
 
 
-module.exports.getWishlist = async (req, res) => {
+module.exports.getWishlist = async (req, res,next) => {
     try {
       const userData = await usercollecn.findOne({ email: req.user });
       const userWishlist = await wishlist
@@ -15,7 +15,8 @@ module.exports.getWishlist = async (req, res) => {
         });
       res.render("wishlist", { userWishlist });
     } catch (error) {
-      console.log("error while loading cart", error);
+      console.log(error);
+      next("error while loading cart")
     }
   };
 
@@ -82,7 +83,7 @@ module.exports.getWishlist = async (req, res) => {
     }
   };
 
-  module.exports.wishlistToCart = async (req, res) => {
+  module.exports.wishlistToCart = async (req, res,next) => {
     try {
       const userId = req.user;
       const userData = await usercollecn.findOne({ email: req.user });
@@ -113,5 +114,6 @@ module.exports.getWishlist = async (req, res) => {
       res.redirect("/wishlist");
     } catch (error) {
       console.log(error);
+      next("Failed to add to Cart")
     }
   };
