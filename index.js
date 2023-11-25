@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cookieparser());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-const MONGO_CNT = "mongodb://127.0.0.1:27017/chrono";
+const MONGO_CNT = "mongodb+srv://saviyolashajan69:Shajanshiny69@saviyola.ojbsrln.mongodb.net/test";
 app.use(express.static(__dirname + "/public"));
 
 const userRouter = require("./routes/userRoutes");
