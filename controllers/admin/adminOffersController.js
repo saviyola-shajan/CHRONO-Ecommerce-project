@@ -3,7 +3,6 @@ const offer = require("../../models/offers");
 module.exports.getOffers = async (req, res) => {
   try {
     const offers = await offer.find({});
-    console.log(offers);
     res.render("admin-offers", { offers });
   } catch (error) {
     console.log(error);

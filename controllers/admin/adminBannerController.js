@@ -36,7 +36,6 @@ module.exports.postEditedBanner = async (req, res) => {
     const banner = req.params.bannerId;
     const { description, startDate, endDate } = req.body;
     const newPhoto = req.file;
-    console.log(req.file);
     const existingBanner = await Banner.findOne({ _id: banner });
     if (newPhoto) {
       existingBanner.photo = newPhoto.path;

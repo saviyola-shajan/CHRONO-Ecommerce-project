@@ -19,8 +19,9 @@ module.exports.getPasswordResetPage = (req, res, next) => {
 module.exports.getPasswordResetOtp = async (req, res, next) => {
   try {
     const userEmail = req.query.email;
+    console.log(typeof(userEmail));
     const user = await usercollecn.findOne({ email: userEmail });
-    if (user) {
+    if (user.email !== userEmail) {
       await twilio.verify.v2
         .services(process.env.TWILIO_SERVICES_ID)
         .verifications.create({
@@ -31,7 +32,7 @@ module.exports.getPasswordResetOtp = async (req, res, next) => {
           res.status(200).json({ data: "send" });
         });
     } else {
-      res.status(500).json({ data: "user with this Email don't exist" });
+      res.status(200).json({ data: "user with this Email don't exist" });
     }
   } catch (error) {
     console.log(error);
