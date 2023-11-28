@@ -21,7 +21,8 @@ module.exports.getPasswordResetOtp = async (req, res, next) => {
     const userEmail = req.query.email;
     console.log(typeof(userEmail));
     const user = await usercollecn.findOne({ email: userEmail });
-    if (user.email !== userEmail) {
+    console.log(typeof(user.phoneNumber));
+    if (user == userEmail) {
       await twilio.verify.v2
         .services(process.env.TWILIO_SERVICES_ID)
         .verifications.create({

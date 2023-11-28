@@ -17,57 +17,57 @@ const adminOffersController =require("../controllers/admin/adminOffersController
 const adminBannerController = require("../controllers/admin/adminBannerController")
 //login
 adminRouter.get("", adminLoginContrller.getAdminLogin);
-adminRouter.get("/getadmin-dash", adminLoginContrller.getAdminDashboard);
+adminRouter.get("/getadmin-dash",adminLoginContrller.getAdminDashboard);
 adminRouter.post("/admin-dash", adminLoginContrller.postAdminDashboard);
 //users
-adminRouter.get("/users", adminUsersController.getUsers);
-adminRouter.post("/update-user-status/:userId", adminUsersController.postUserStatus);
+adminRouter.get("/users",multerMiddleware.verifyAdmin,adminUsersController.getUsers);
+adminRouter.post("/update-user-status/:userId",multerMiddleware.verifyAdmin, adminUsersController.postUserStatus);
 //products
-adminRouter.get("/product-list", adminProductController.getProductsList);
-adminRouter.get("/add-product", adminProductController.getAddProduct);
+adminRouter.get("/product-list",multerMiddleware.verifyAdmin, adminProductController.getProductsList);
+adminRouter.get("/add-product",multerMiddleware.verifyAdmin, adminProductController.getAddProduct);
 adminRouter.post("/add-product",multerMiddleware.upload.array("photo"), adminProductController.postAddProduct);
-adminRouter.post("/update-product-status/:productId",adminProductController.postProductStatus)
-adminRouter.get("/edit-product",adminProductController.getEditProduct)
+adminRouter.post("/update-product-status/:productId",multerMiddleware.verifyAdmin,adminProductController.postProductStatus)
+adminRouter.get("/edit-product",multerMiddleware.verifyAdmin,adminProductController.getEditProduct)
 adminRouter.post('/submit-edited-product/:productId',multerMiddleware.upload.array("photo"),adminProductController.postEditedProduct)
 //category
-adminRouter.get("/categories",adminCategoryController.getCategory)
-adminRouter.post("/create-category",adminCategoryController.postCreateCategory)
-adminRouter.get("/editcategory/:categoryId",adminCategoryController.getEditCategory)
-adminRouter.post("/submit-editcategory",adminCategoryController.postEditCategory)
-adminRouter.get("/hidecategory/:categoryId",adminCategoryController.hideCategory)
-adminRouter.get("/unhidecategory/:categoryId",adminCategoryController.unhideCategory)
+adminRouter.get("/categories",multerMiddleware.verifyAdmin,adminCategoryController.getCategory)
+adminRouter.post("/create-category",multerMiddleware.verifyAdmin,adminCategoryController.postCreateCategory)
+adminRouter.get("/editcategory/:categoryId",multerMiddleware.verifyAdmin,adminCategoryController.getEditCategory)
+adminRouter.post("/submit-editcategory",multerMiddleware.verifyAdmin,adminCategoryController.postEditCategory)
+adminRouter.get("/hidecategory/:categoryId",multerMiddleware.verifyAdmin,adminCategoryController.hideCategory)
+adminRouter.get("/unhidecategory/:categoryId",multerMiddleware.verifyAdmin,adminCategoryController.unhideCategory)
 //orders
-adminRouter.get("/orderlist",adminOrdersController.getOrderList)
-adminRouter.get("/editorderdetails/:id",adminOrdersController.getOrderdetails)
-adminRouter.post("/editorderstatus",adminOrdersController.editOrderStatus)
+adminRouter.get("/orderlist",multerMiddleware.verifyAdmin,adminOrdersController.getOrderList)
+adminRouter.get("/editorderdetails/:id",multerMiddleware.verifyAdmin,adminOrdersController.getOrderdetails)
+adminRouter.post("/editorderstatus",multerMiddleware.verifyAdmin,adminOrdersController.editOrderStatus)
 //sales report
-adminRouter.get("/excelsalesreport",adminSalesController.getExcelSalesReport)
-adminRouter.get("/pdfsalesreport",adminSalesController.getPdfSalesReport)
-adminRouter.get("/sale",adminSalesController.getSale)
+adminRouter.get("/excelsalesreport",multerMiddleware.verifyAdmin,adminSalesController.getExcelSalesReport)
+adminRouter.get("/pdfsalesreport",multerMiddleware.verifyAdmin,adminSalesController.getPdfSalesReport)
+adminRouter.get("/sale",multerMiddleware.verifyAdmin,adminSalesController.getSale)
 adminRouter.post("/sales")
 //coupon
-adminRouter.get("/coupon",adminCouponController.getCoupon)
-adminRouter.get("/addcoupon",adminCouponController.getAddCoupon)
-adminRouter.post("/submitaddedcoupon",adminCouponController.postAddedCoupon)
-adminRouter.get("/Unblock-coupon/:couponId",adminCouponController.unblockCoupon)
-adminRouter.get("/block-coupon/:couponId",adminCouponController.blockCoupon)
-adminRouter.get("/edit-coupon/:couponId",adminCouponController.editCoupon)
-adminRouter.post("/submit-edit-coupon",adminCouponController.postEditcoupon)
+adminRouter.get("/coupon",multerMiddleware.verifyAdmin,adminCouponController.getCoupon)
+adminRouter.get("/addcoupon",multerMiddleware.verifyAdmin,adminCouponController.getAddCoupon)
+adminRouter.post("/submitaddedcoupon",multerMiddleware.verifyAdmin,adminCouponController.postAddedCoupon)
+adminRouter.get("/Unblock-coupon/:couponId",multerMiddleware.verifyAdmin,adminCouponController.unblockCoupon)
+adminRouter.get("/block-coupon/:couponId",multerMiddleware.verifyAdmin,adminCouponController.blockCoupon)
+adminRouter.get("/edit-coupon/:couponId",multerMiddleware.verifyAdmin,adminCouponController.editCoupon)
+adminRouter.post("/submit-edit-coupon",multerMiddleware.verifyAdmin,adminCouponController.postEditcoupon)
 //offers
-adminRouter.get("/offers",adminOffersController.getOffers)
-adminRouter.get("/addoffer",adminOffersController.getAddOffer)
-adminRouter.post("/submitaddedoffer",adminOffersController.postAddedOffer)
-adminRouter.get("/block-offer/:offerId",adminOffersController.blockOffers)
-adminRouter.get("/unblock-offer/:offerId",adminOffersController.unblockOffer)
-adminRouter.get("/edit-offer/:offerId",adminOffersController.getEditOffer)
-adminRouter.post("/submit-edit-offer",adminOffersController.postEditedOffer)
+adminRouter.get("/offers",multerMiddleware.verifyAdmin,adminOffersController.getOffers)
+adminRouter.get("/addoffer",multerMiddleware.verifyAdmin,adminOffersController.getAddOffer)
+adminRouter.post("/submitaddedoffer",multerMiddleware.verifyAdmin,adminOffersController.postAddedOffer)
+adminRouter.get("/block-offer/:offerId",multerMiddleware.verifyAdmin,adminOffersController.blockOffers)
+adminRouter.get("/unblock-offer/:offerId",multerMiddleware.verifyAdmin,adminOffersController.unblockOffer)
+adminRouter.get("/edit-offer/:offerId",multerMiddleware.verifyAdmin,adminOffersController.getEditOffer)
+adminRouter.post("/submit-edit-offer",multerMiddleware.verifyAdmin,adminOffersController.postEditedOffer)
 //banner
-adminRouter.get("/banner",adminBannerController.getBanner)
+adminRouter.get("/banner",multerMiddleware.verifyAdmin,adminBannerController.getBanner)
 adminRouter.post("/postaddedbanner",multerMiddleware.upload.single("photo"),adminBannerController.postBanner)
-adminRouter.get("/editbanner",adminBannerController.getEditBanner)
+adminRouter.get("/editbanner",multerMiddleware.verifyAdmin,adminBannerController.getEditBanner)
 adminRouter.post("/posteditedbanner/:bannerId",multerMiddleware.upload.single("photo"),adminBannerController.postEditedBanner)
-adminRouter.get("/unblockbanner/:bannerId",adminBannerController.unblockBanner)
-adminRouter.get("/blockbanner/:bannerId",adminBannerController.blockBanner)
+adminRouter.get("/unblockbanner/:bannerId",multerMiddleware.verifyAdmin,adminBannerController.unblockBanner)
+adminRouter.get("/blockbanner/:bannerId",multerMiddleware.verifyAdmin,adminBannerController.blockBanner)
 //logout
 adminRouter.get("/logout",adminLoginContrller.getLogout)
 

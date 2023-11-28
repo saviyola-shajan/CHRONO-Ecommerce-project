@@ -74,7 +74,7 @@ module.exports.postUserLogin = async (req, res) => {
       try {
         email = req.body.email;
         const token = jwt.sign(email, secretKey);
-        res.cookie("token", token, { maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie("usertoken", token, { maxAge: 24 * 60 * 60 * 1000 });
         res.cookie("loggedIn", true, { maxAge: 24 * 60 * 60 * 1000 });
         const product = await products.find({ status: "Available" });
         res.redirect("/");
@@ -186,7 +186,7 @@ module.exports.postVerifyOtp = async (req, res) => {
 };
 
 module.exports.getlogout = (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("usertoken");
   res.clearCookie("loggedIn");
   res.redirect("/get-login");
 };

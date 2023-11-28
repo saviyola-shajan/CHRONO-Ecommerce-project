@@ -15,6 +15,10 @@ const admincollecn = require("../../models/adminlogin");
 const products = require("../../models/addProduct");
 const category = require("../../models/category");
 const order = require("../../models/order");
+const jwt = require("jsonwebtoken");
+const secretKey = process.env.JWT_SECRET;
+require("dotenv").config();
+
 
 module.exports.getAdminLogin = (req, res) => {
   res.render("admin-login");
@@ -68,31 +72,34 @@ module.exports.getAdminDashboard = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
 module.exports.postAdminDashboard = async (req, res) => {
-  const admindata = await admincollecn.findOne({ email: req.body.email });
-  if (!admindata) {
-    res.render("admin-login", { subreddit: "This email is not registered" });
-  } else {
-    if (admindata) {
-      if (req.body.email !== admindata.email) {
-        res.render("admin-login", { subreddit: "Incorrect Email" });
-      } else if (req.body.password !== admindata.password) {
-        res.render("admin-login", { subreddit: "Incorrect Password" });
-      } else {
-        if (
-          req.body.email == admindata.email &&
-          req.body.password == admindata.password
-        ) {
-          res.redirect("/admin/getadmin-dash");
-        }
-      }
-    } else {
-      res.redirect("/admin");
+  try {
+    const admindata = await admincollecn.findOne({ email: req.body.email });
+
+    if (!admindata) {
+      return res.render("admin-login", { subreddit: "This email is not registered" });
     }
+
+    if (req.body.email !== admindata.email) {
+      return res.render("admin-login", { subreddit: "Incorrect Email" });
+    }
+
+    if (req.body.password !== admindata.password) {
+      return res.render("admin-login", { subreddit: "Incorrect Password" });
+    }
+
+    const token = jwt.sign({ email: req.body.email }, secretKey); 
+    res.cookie("admintoken", token, { maxAge: 24 * 60 * 60 * 1000 });
+
+  
+    res.redirect("/admin/getadmin-dash");
+  } catch (error) {
+    console.error(error);
+    res.redirect("/admin");  
   }
 };
 
 module.exports.getLogout = async (req, res) => {
+  res.clearCookie("admintoken");
   res.redirect("/admin");
 };

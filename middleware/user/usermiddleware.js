@@ -4,7 +4,7 @@ const usercollecn = require("../../models/userlogin");
 require("dotenv").config();
 
 module.exports.verifyUser = (req, res, next) => {
-  const token = req.cookies.token;
+  const token = req.cookies.usertoken;
   const verifyToken = jwt.verify(
     token,
     process.env.JWT_SECRET,
@@ -24,8 +24,8 @@ module.exports.IsUserBlocked = async (req, res, next) => {
   user = req.user;
   const currUser = await usercollecn.findOne({ email: user });
   if (currUser.status == "Blocked") {
-    res.clearCookie("token");
-    res.clearCookie("loggedIn");
+    // res.clearCookie("usertoken");
+    // res.clearCookie("loggedIn");
     res.render("page-login", { error: "User is Blocked" });
   }
   next();
