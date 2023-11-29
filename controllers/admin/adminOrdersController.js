@@ -29,6 +29,14 @@ module.exports.editOrderStatus = async (req, res) => {
   try {
     const orderId = req.body.orderId;
     const updatestatus = await order.findById({ _id: orderId });
+    const changedStatus = req.body.orderStatus
+    if(changedStatus === "Delivered"){
+      await order.updateOne(
+        { _id: req.body.orderId },
+        { $set: { orderStatus: req.body.orderStatus,paymentStatus:"Success" } },
+        { new: true }
+      );
+    }
     const status = await order.updateOne(
       { _id: req.body.orderId },
       { $set: { orderStatus: req.body.orderStatus } },
