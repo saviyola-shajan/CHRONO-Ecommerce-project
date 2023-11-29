@@ -60,10 +60,10 @@ const secretKey = process.env.JWT_SECRET;
 module.exports.postUserLogin = async (req, res) => {
   const logindata = await usercollecn.findOne({ email: req.body.email });
   if (!logindata) {
-    res.render("page-login", { subreddit: "This email is not registered" });
+   return res.render("page-login", { error: "This email is not registered" });
   }
   if (logindata.status == "Blocked") {
-    res.render("page-login", { subreddit: "User is Blocked" });
+   return res.render("page-login", { subreddit: "User is Blocked" });
   }
   const passwordMatch = await bcrypt.compare(
     req.body.password,
@@ -84,7 +84,7 @@ module.exports.postUserLogin = async (req, res) => {
       }
     }
   } else {
-    res.redirect("/");
+    res.render("page-login",{error:"Incorrect password"});
   }
 };
 

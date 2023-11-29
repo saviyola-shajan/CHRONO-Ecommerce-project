@@ -19,10 +19,11 @@ module.exports.getPasswordResetPage = (req, res, next) => {
 module.exports.getPasswordResetOtp = async (req, res, next) => {
   try {
     const userEmail = req.query.email;
-    console.log(typeof(userEmail));
+    console.log(userEmail);
     const user = await usercollecn.findOne({ email: userEmail });
-    console.log(typeof(user.phoneNumber));
-    if (user == userEmail) {
+    console.log(user.phoneNumber);
+    if (user.email == userEmail) {
+      console.log("keeri");
       await twilio.verify.v2
         .services(process.env.TWILIO_SERVICES_ID)
         .verifications.create({
@@ -30,10 +31,11 @@ module.exports.getPasswordResetOtp = async (req, res, next) => {
           channel: "sms",
         })
         .then(() => {
+          console.log('e');
           res.status(200).json({ data: "send" });
         });
     } else {
-      res.status(200).json({ data: "user with this Email don't exist" });
+      res.status(500).json({ data: "user with this Email don't exist" });
     }
   } catch (error) {
     console.log(error);
@@ -82,10 +84,9 @@ module.exports.postNewPassword = async (req, res) => {
       { email: email },
       { $set: { password: hashedNewPassword } }
     );
-    // res.redirect("get-login")
     res.status(200).json({ data: "password Updated" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ data: "passwor updatiom failed" });
+    res.status(500).json({ data: "password updatiom failed" });
   }
 };
