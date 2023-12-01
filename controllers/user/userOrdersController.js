@@ -23,7 +23,9 @@ module.exports.getCheckout = async (req, res, next) => {
       path: "products.productId",
       model: "products",
     });
-
+    if(!userCart || userCart.length === 0){
+      return res.redirect("/")
+    }
     const outOfStockProducts = userCart.products.filter((product) => {
       return product.productId.stock < product.quantity;
     });
@@ -45,7 +47,7 @@ module.exports.getCheckout = async (req, res, next) => {
   }
 };
 
-module.exports.getPlaceOrder = (req, res, next) => {
+module.exports.getPlaceOrder = async(req, res, next) => {
   try {
     res.render("place-order");
   } catch (error) {
@@ -65,6 +67,7 @@ module.exports.postOrdersCod = async (req, res, next) => {
       path: "products.productId",
       model: "products",
     });
+     
     let amount = 0;
     let code = "";
     if (userCoupon) {
@@ -76,6 +79,9 @@ module.exports.postOrdersCod = async (req, res, next) => {
     let orderProducts = [];
 
     for (const item of userCart.products) {
+        if (item.productId.stock < item.quantity) {
+         return res.status(200).json({codOutOfStock:true})
+        }
       const orderItem = {
         productId: item.productId._id,
         quantity: item.quantity,
@@ -119,7 +125,7 @@ module.exports.postOrdersCod = async (req, res, next) => {
 
     await newOrder.save();
     await cart.deleteOne({ userId: userdata._id });
-    res.redirect("/placeorder");
+    res.status(200).json("order placed")
   } catch (error) {
     console.log(error);
     next("Error while Placing COD");
@@ -147,6 +153,9 @@ module.exports.onlinePayment = async (req, res, next) => {
     let orderTotal = 0;
     let orderProducts = [];
     for (const item of userCart.products) {
+      if (item.productId.stock < item.quantity) {
+        return res.status(200).json({codOutOfStock:true})
+       }
       const orderItem = {
         productId: item.productId._id,
         quantity: item.quantity,
@@ -235,6 +244,9 @@ module.exports.walletPayment = async (req, res, next) => {
       let orderTotal = 0;
       let orderProducts = [];
       for (const item of userCart.products) {
+        if (item.productId.stock < item.quantity) {
+          return res.status(200).json({codOutOfStock:true})
+         }
         const orderItem = {
           productId: item.productId._id,
           quantity: item.quantity,
@@ -293,10 +305,9 @@ module.exports.walletPayment = async (req, res, next) => {
       res.status(200).json({ data: "order placed" });
     } else {
       res
-        .status(500)
+        .status(200)
         .json({
-          error:
-            "Insufficient Balance in Wallet, Try with another payement method!",
+          staus:true,
         });
     }
   } catch (error) {

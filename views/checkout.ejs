@@ -98,19 +98,8 @@
                     <div class="header-right">
                         <div class="search-style-2">
                             <form action="#">
-                                <!-- <select class="select-active">
-                                    <option>All Categories</option>
-                                    <option>Women's</option>
-                                    <option>Men's</option>
-                                    <option>Cellphones</option>
-                                    <option>Computer</option>
-                                    <option>Electronics</option>
-                                    <option> Accessories</option>
-                                    <option>Home & Garden</option>
-                                    <option>Luggage</option>
-                                    <option>Shoes</option>
-                                    <option>Mother & Kids</option>
-                                </select> -->
+                        </option>
+                                </select> 
                                 <input type="text" placeholder="Search for items...">
                             </form>
                         </div>
@@ -119,13 +108,11 @@
                                 <div class="header-action-icon-2">
                                     <a href="/wishlist">
                                         <img class="svgInject" alt="Evara" src="userAssets/assets/imgs/theme/icons/icon-heart.svg">
-                                        <!-- <span class="pro-count blue"></span> -->
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
                                     <a class="mini-cart-icon" href="/cart">
                                         <img alt="Evara" src="userAssets/assets/imgs/theme/icons/icon-cart.svg">
-                                        <!-- <span class="pro-count blue">2</span> -->
                                     </a>
                                    
                                 </div>
@@ -155,11 +142,9 @@
                                        
                                     </li>
                                     <li>
-                                        <!-- <a href="page-about.html">About</a> -->
                                     </li>
                                   
                                     <li>
-                                        <!-- <a href="page-contact.html">Contact</a> -->
                                     </li>
                                 </ul>
                             </nav>
@@ -287,7 +272,7 @@
             <div class="container">
                 <div class="row">
                     
-
+                    <h4 style="color: red"><%=locals.error%></h4>
 
             <div class="col-lg-5">
                 <button class="btn btn-fill-out"><a style="color: beige;" href="/getadd-address">Add Address</a></button>
@@ -557,33 +542,53 @@ grandTotalElement.textContent = total.toFixed(2);
             }
     
             function payWithWallet(addressId) {
-
-           if( getSelectedAddressId()){
-                fetch('/walletpayment', {
-                    method: 'post',
-                    body: JSON.stringify({ addressId: addressId,totalAmount: total.toFixed(2) }),
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                })
-                    .then(response => {
-                        if(!response.ok){
-                            // throw new Error("Insufficent Balance")
-                            alert("Insufficent Balance")
-                        }
-                        if(response.ok){
-                        console.log("Wallet payment successful");
-                        window.location.href="/placeorder"  
-            }})
-                    .catch(error => {
-                        console.log("Wallet payment failed:", error);
-                    })
-            }else{
-                alert('Please select an address before making an Wallet payment.');
-
+    if (getSelectedAddressId()) {
+        fetch('/walletpayment', {
+            method: 'post',
+            body: JSON.stringify({ addressId: addressId, totalAmount: total.toFixed(2) }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                alert("Insufficient Balance");
+            } else if (data.codOutOfStock) {
+                console.log('Out of stock');
+                Swal.fire({
+                    position: "top-center",
+                    icon: 'error',
+                    title: 'Product is Out of stock. Please check your cart.',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setTimeout(() => {
+                    window.location.href = '/cart';
+                }, 1500);
+            } else {
+                console.log('Order placed successfully');
+                Swal.fire({
+                    position: "top-center",
+                    icon: 'success',
+                    title: 'Order placed successfully',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+                setTimeout(() => {
+                    window.location.href = '/placeorder';
+                }, 1500);
             }
-        }
+        })
+        .catch(error => {
+            console.log("Wallet payment failed:", error);
         });
+    } else {
+        alert('Please select an address before making a Wallet payment.');
+    }
+}
+})
+
     </script>
     
     
@@ -618,9 +623,35 @@ grandTotalElement.textContent = total.toFixed(2);
                     'Content-Type': 'application/json',
                 },
             })
-                .then(response => {
-                    console.log("Address added successfully");
-                    window.location.href = "/placeorder";
+            .then(response=>response.json())
+                .then(data => {
+                    console.log(data)
+               if(data.codOutOfStock){
+                    console.log('Out of stock');
+                        Swal.fire({
+                        position:"top-center",
+                        icon : 'error',
+                        title : ' Product is Out of stock. Please check your cart..!',
+                        showConfirmButton : false,
+                        timer : 1500
+                    })
+                        setTimeout(()=>{
+                            window.location.href = '/cart'
+                        },1500)
+                }else{
+                   console.log('Order placed successfully');
+                   Swal.fire({
+                       position:"top-center",
+                       icon : 'success',
+                       title : 'Order placer successfully',
+                       showConfirmButton : false,
+                       timer : 1500
+                    })
+                    setTimeout(()=>{
+                        window.location.href = '/placeorder'
+                    },1500)
+                }
+               
                 })
                 .catch(error => {
                     console.log(error);
@@ -714,16 +745,38 @@ grandTotalElement.textContent = total.toFixed(2);
     rzp1.open();
   }
 
-  // Add a click event listener to the "Pay Now (Online)" button
   document.getElementById('rzp-button1').addEventListener('click', function() {
     const selectedAddressId = getSelectedAddressId();
     if (selectedAddressId) {
-      // Make the fetch request to create a new orderId
       fetch(`/onlinepayment?addressId=${selectedAddressId}`, requestOptions)
         .then(response => response.json())
         .then(data => {
+            if(data.codOutOfStock){
+                    console.log('Out of stock');
+                        Swal.fire({
+                        position:"top-center",
+                        icon : 'error',
+                        title : ' Product is Out of stock. Please check your cart..!',
+                        showConfirmButton : false,
+                        timer : 1500
+                    })
+                        setTimeout(()=>{
+                            window.location.href = '/cart'
+                        },1500)
+                }else{
+                   console.log('Order placed successfully');
+                   Swal.fire({
+                       position:"top-center",
+                       icon : 'success',
+                       title : 'Order placer successfully',
+                       showConfirmButton : false,
+                       timer : 1500
+                    })
+                    // setTimeout(()=>{
+                    //     window.location.href = '/placeorder'
+                    // },1500)
+                }
           const orderId = data.razorOrder;
-          // Call the initiatePayment function with the orderId and selectedAddressId
           initiatePayment(orderId, selectedAddressId);
         })
         .catch(error => {
@@ -734,7 +787,6 @@ grandTotalElement.textContent = total.toFixed(2);
     }
   });
 
-  // Function to get the selected address ID
   function getSelectedAddressId() {
     const addressRadios = document.querySelectorAll('input[name="selectedAddress"]');
     for (let radio of addressRadios) {
@@ -891,7 +943,6 @@ grandTotalElement.textContent = total.toFixed(2);
             </div>
         </div>
     </div>
-    <!-- Vendor JS-->
     
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="userAssets/assets/js/vendor/modernizr-3.6.0.min.js"></script>
@@ -912,11 +963,9 @@ grandTotalElement.textContent = total.toFixed(2);
     <script src="userAssets/assets/js/plugins/isotope.js"></script>
     <script src="userAssets/assets/js/plugins/scrollup.js"></script>
     <script src="userAssets/assets/js/plugins/jquery.vticker-min.js"></script>
-    <!-- Template  JS -->
     <script src="userAssets/assets/js/maind134.js?v=3.4"></script>
     <script src="userAssets/assets/js/shopd134.js?v=3.4"></script>
 </body>
 
 
-<!-- Mirrored from wp.alithemes.com/html/evara/evara-frontend/shop-checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 15 Jul 2023 10:10:07 GMT -->
 </html>

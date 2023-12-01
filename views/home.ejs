@@ -31,6 +31,15 @@
         .page-btn {
   margin: 0 5px;
 }
+.radio-label {
+        display: inline-block;
+        margin-right: 10px; /* Adjust the margin as needed */
+    }
+
+    .radio-label input[type="radio"] {
+        transform: scale(0.5); /* Adjust the scale factor to make it smaller */
+        margin-right: 5px; /* Adjust the margin as needed */
+    }
 
       </style>
 </head>
@@ -153,31 +162,7 @@
                                     <li class="has-children">
                                         <a href="/"><i class=""></i>All Watches</a>
                                         
-                                        <div class="dropdown-menu">
-                                            <ul class="mega-menu d-lg-flex">
-                                                <li class="mega-menu-col col-lg-7">
-                                                    
-                                                </li>
-                                                <li class="mega-menu-col col-lg-5">
-                                                    <div class="header-banner2">
-                                                        <img src="userAssets/assets/imgs/banner/menu-banner-2.jpg" alt="menu_banner1">
-                                                        <div class="banne_info">
-                                                            <h6>10% Off</h6>
-                                                            <h4>New Arrival</h4>
-                                                            <a href="#">Shop now</a>
-                                                        </div>
-                                                    </div>
-                                                    <div class="header-banner2">
-                                                        <img src="userAssets/assets/imgs/banner/menu-banner-3.jpg" alt="menu_banner2">
-                                                        <div class="banne_info">
-                                                            <h6>15% Off</h6>
-                                                            <h4>Hot Deals</h4>
-                                                            <a href="#">Shop now</a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
+                       
                                     </li>
                                     <li class="has-children">
                                         <a href="/filtercategory?category=Men"><i class=""></i>Mens Watches</a>
@@ -206,7 +191,6 @@
                                   
                                     </li>
                                 </ul>
-                                <!-- <div class="more_categories">Show more...</div> -->
                             </div>
                         </div>
                         <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block">
@@ -214,19 +198,6 @@
                                 <ul>
                                     <li><a class="active" style="color: black;" href="/">Home </a>
                                       
-                                    </li>
-                                    <li>
-                                        <!-- <a href="page-about.html">About</a> -->
-                                    </li>
-                                   
-                                    </li>
-                                    <!-- <li class="position-static"><a href="#">Contact</a> -->
-                                        <ul class="mega-menu">
-                                         
-                                           
-                                    </li>
-                                   
-                                    
                                     </li>
                                 </ul>
                             </nav>
@@ -389,7 +360,7 @@
                                 <h5 class="widget-title" style="color: black;font-size: large;font-weight: 700;">Category</h5>
                                 <br>
                                 <ul class="categories">
-                                    <li><a href="/">All Watches</a></li>
+                                    <li><a href="/filtercategory?category=All">All Watches</a></li>
                                     <li><a href="/filtercategory?category=Men">Mens Watches</a></li>
                                     <li><a href="/filtercategory?category=Women">Womens Watches</a></li>
                                     <li><a href="/filtercategory?category=Smart Watch">Smart Watches</a></li>
@@ -398,18 +369,36 @@
                             </div>
                             <!-- Fillter By Price -->
                             <div class="sidebar-widget price_range range mb-30">
-                                <div class="widget-header position-relative mb-20 pb-10">
-                                    <h5 class="widget-title" style="color: black;font-size: large;font-weight: 600;">Filter by price</h5>
-                                    <div class="bt-1 border-color-1"></div>
-                                </div>
-                                <div> <a href="/filterprice?sortBy=lowToHigh">Low to High</a> </div>
-                                    <div><a href="/filterprice?sortBy=highToLow">High to Low</a></div>
+                              
                                 <br>
                                 <form id="filterForm" action="/filtercheckbox" method="post">
                                 <div class="list-group">
                                     <div class="list-group-item mb-10 mt-10">
+                                        <div class="widget-header position-relative mb-20 pb-10">
+                                            <h5 class="widget-title" style="color: black; font-size: large; font-weight: 600;">Filter by price</h5>
+                                            <div class="bt-1 border-color-1"></div>
+                                        </div>
+                                        
+                                        <div class="radio-label">
+                                            <input type="radio" name="priceSort" value="lowToHigh" />
+                                            <label style="font-weight: 600;">Low to High</label>
+                                        </div>
+                                        
+                                        <div class="radio-label">
+                                            <input type="radio" name="priceSort" value="highToLow" />
+                                            <label style="font-weight: 600;" >High to Low</label>
+                                    </div>
+                                    <br>
+                                    <br>
                                         <label class="widget-title" style="color: black;font-size: large;font-weight: 600;">Brand</label>
                                         <div class="custome-checkbox">
+                                            <%if(locals.categories){%>
+                                            <input type="hidden" value="<%=categories%>"  name="category">
+                                            <%}%>
+                                            <%if(locals.sortBy){%>
+                                                <input type="hidden" value="<%=sortBy%>" name="sortBy">
+                                                <%}%>
+                                                
                                             <input class="form-check-input" type="checkbox" name="brand" id="exampleCheckbox1" value="Armani Exchange">
                                             <label class="form-check-label" for="exampleCheckbox1"><span>Armani Exchange</span></label>
                                             <br>
@@ -481,44 +470,54 @@
                     </div>
 
                     <script>
-                        document.addEventListener("DOMContentLoaded", function () {
-                            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                    
-                            function loadCheckboxSelections() {
-                                const savedValues = localStorage.getItem('checkboxSelections');
-                    
-                                if (savedValues) {
-                                    const parsedValues = JSON.parse(savedValues);
-                    
-                                    checkboxes.forEach(function (checkbox) {
-                                        if (parsedValues.hasOwnProperty(checkbox.value)) {
-                                            checkbox.checked = parsedValues[checkbox.value];
-                                        }
-                                    });
-                                }
-                            }
-                    
-                            loadCheckboxSelections();
-                    
-                            const filterForm = document.getElementById('filterForm');
-                            filterForm.addEventListener('submit', function () {
-                                const selectedValues = {};
-                    
-                                checkboxes.forEach(function (checkbox) {
-                                    selectedValues[checkbox.value] = checkbox.checked;
-                                });
-                    
-                                localStorage.setItem('checkboxSelections', JSON.stringify(selectedValues));
-                            });
-                    
-                            const clearButton = document.querySelector('.btn-default[href="/"]');
-                            clearButton.addEventListener('click', function () {
-                                localStorage.removeItem('checkboxSelections');
-                                checkboxes.forEach(function (checkbox) {
-                                    checkbox.checked = false;
-                                });
-                            });
-                        });
+                       document.addEventListener("DOMContentLoaded", function () {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+  let isSecondRequest = false;
+
+  function loadCheckboxSelections() {
+    const savedValues = localStorage.getItem('checkboxSelections');
+
+    if (savedValues && !isSecondRequest) {
+      const parsedValues = JSON.parse(savedValues);
+
+      checkboxes.forEach(function (checkbox) {
+        if (parsedValues.hasOwnProperty(checkbox.value)) {
+          checkbox.checked = parsedValues[checkbox.value];
+        }
+      });
+
+      isSecondRequest = true; // Mark the current request as the second one
+
+      // Clear the localStorage to prevent restoring selections on subsequent page reloads
+      localStorage.removeItem('checkboxSelections');
+    }
+  }
+
+  loadCheckboxSelections();
+
+  const filterForm = document.getElementById('filterForm');
+
+  filterForm.addEventListener('submit', function () {
+    const selectedValues = {};
+
+    checkboxes.forEach(function (checkbox) {
+      selectedValues[checkbox.value] = checkbox.checked;
+    });
+
+    localStorage.setItem('checkboxSelections', JSON.stringify(selectedValues));
+  });
+
+  const clearButton = document.querySelector('.btn-default[href="/"]');
+
+  clearButton.addEventListener('click', function () {
+    localStorage.removeItem('checkboxSelections');
+    checkboxes.forEach(function (checkbox) {
+      checkbox.checked = false;
+    });
+  });
+});
+
                     </script>
                     
                     
@@ -526,21 +525,20 @@
                         <div class="tab-header">
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" type="button" role="tab"><a href="/">All</a></button>
+                                    <button class="nav-link" type="button" role="tab" onclick="window.location.href='/filtercategory?category=All'">All</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link"  type="button" role="tab" ><a href="/filtercategory?category=Men">Men</a></button>
+                             <button class="nav-link" type="button" role="tab" onclick="window.location.href='/filtercategory?category=Men'">Men</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link"  type="button" role="tab"><a href="/filtercategory?category=Women">Women</a></button>
+                                    <button class="nav-link"  type="button" role="tab"  onclick="window.location.href='/filtercategory?category=Women'">Women</button>
                                 </li>
                                 <li class="nav-item" role="presentation">
-                                    <button class="nav-link" type="button" role="tab"><a href="/filtercategory?category=Smart Watch">Smart Watches</a></button>
+                                    <button class="nav-link" type="button" role="tab" onclick="window.location.href='/filtercategory?category=Smart Watch'">Smart Watches</button>
                                 </li>
                             </ul>
                         </div>
-                        <!--End nav-tabs-->
-
+                    
 
                         <div class="tab-content wow fadeIn animated" id="myTabContent">
                             <div class="tab-pane fade show active" id="tab-one" role="tabpanel" aria-labelledby="tab-one">
@@ -593,7 +591,11 @@
                                                     >
                                                       <i class="fi-rs-shopping-bag-add"></i>
                                                     </a>
+                                                
                                                   </div>
+                                                  <% if (products.stock <= 0) { %>
+                                                    <span class="text-danger" style="font-size: large;">Out of Stock</span>
+                                                  <% } %>
                                                   
                                                 </div>
                                               </div>
@@ -614,7 +616,7 @@
                                                     <button type="button" class="page-btn">
                                                       <%= i %> 
                                                     </button>
-                                                  </a>>>
+                                                  </a>
                                                 <% } %>
                                               <% } %>
                                             <% } %>
@@ -832,7 +834,7 @@
                     <div class="col-lg-4 col-md-6">
                         <div class="widget-about font-md mb-md-5 mb-lg-0">
                             <div class="logo logo-width-1 wow fadeIn animated">
-                                <a href="/"><img src="" alt="logo"></a>
+                                <a href="/"><img src="userAssets/assets/imgs/theme/icons/mainlogo.svg.jpg" alt="logo"></a>
                             </div>
                             <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
                             <p class="wow fadeIn animated">

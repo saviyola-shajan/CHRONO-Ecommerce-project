@@ -56,8 +56,8 @@
                             type="text"
                             required
                             name="username"
-                            placeholder="Username"
-                            id="username"
+                            placeholder="Name"
+                            id="username" 
                           />
                           <div class="error-message" id="errSignupName"></div>
                         </div>
@@ -289,39 +289,46 @@
           if (username.trim() === "") {
             document.getElementById("errSignupName").textContent =
               "Please enter your Name.";
+              errSignupName.style.color = "red";
             return false;
           } else if (!alphabetPattern.test(username)) {
             document.getElementById("errSignupName").textContent =
-              "Only alphabet characters are allowed.";
+              "Only alphabet characters are allowed."; 
+              errSignupName.style.color = "red";
             return false;
           }
 
           if (!isValidEmail(email)) {
             document.getElementById("errSignupEmail").textContent =
               "Please enter a valid email address.";
+              errSignupEmail.style.color="red";
             return false;
           }
 
           if (password.length < 6) {
             document.getElementById("errSignupPassword").textContent =
               "Password must have at least 6 characters.";
+              errSignupPassword.style.color="red"
             return false;
           }
 
           if (password !== confirmPassword) {
             document.getElementById("errSignupConfirmPassword").textContent =
               "Passwords do not match.";
+              errSignupConfirmPassword.style.color="red"
             return false;
           }
 
           if (!isValidPhoneNumber(phoneNumber)) {
             document.getElementById("errSignupPhoneNumber").textContent =
               "Please enter a valid phone number.";
+              errSignupPhoneNumber.style.color="red"
             return false;
           }
           if (!phoneNumber) {
             document.getElementById("errSignupPhoneNumber").textContent =
               "Phone number is required.";
+              errSignupPhoneNumber.style.color = "red"
             return false;
           }
           return true;
@@ -342,6 +349,7 @@
           if (!phoneNumber) {
             document.getElementById("errSignupPhoneNumber").textContent =
               "Phone number is required.";
+              errSignupPhoneNumber.style.color="red"
             return;
           }
 
@@ -381,12 +389,15 @@
           // Reset error messages
           document.getElementById("errSignupOtp").textContent =
             "Please enter a valid OTP";
+            errSignupOtp.style.color="red"
           document.getElementById("errSignupPhoneNumber").textContent =
             "Phone number required";
+            errSignupPhoneNumber.style.color="red"
           if (validateBeforeSubmit()) {
             if (!phoneNumber || !otp) {
               document.getElementById("errSignupOtp").textContent =
                 "Phone number and OTP are required.";
+                errSignupOtp.style.color="red"
               return;
             }
 
@@ -448,40 +459,47 @@
         if (username.trim() === "") {
           document.getElementById("errSignupName").textContent =
             "Please enter your Name.";
+            errSignupName.style.color="red"
           return false;
         } else if (!alphabetPattern.test(username)) {
           document.getElementById("errSignupName").textContent =
             "Only alphabet characters are allowed.";
+            errSignupName.style.color="red"
           return false;
         }
 
         if (!isValidEmail(email)) {
           document.getElementById("errSignupEmail").textContent =
             "Please enter a valid email address.";
+            errSignupEmail.style.color="red"
           return false;
         }
 
         if (password.length < 6) {
           document.getElementById("errSignupPassword").textContent =
             "Password must have at least 6 characters.";
+            errSignupPassword.style.color="red"
           return false;
         }
 
         if (password !== confirmPassword) {
           document.getElementById("errSignupConfirmPassword").textContent =
             "Passwords do not match.";
+            errSignupConfirmPassword.style.color="red"
           return false;
         }
 
         if (!isValidPhoneNumber(phoneNumber)) {
           document.getElementById("errSignupPhoneNumber").textContent =
             "Please enter a valid phone number.";
+            errSignupPhoneNumber.style.color="red"
           return false;
         }
 
         if (!isValidOTP(otp)) {
           document.getElementById("errSignupOtp").textContent =
             "Please enter a valid OTP.";
+            errSignupOtp.style.color="red"
           return false;
         }
 

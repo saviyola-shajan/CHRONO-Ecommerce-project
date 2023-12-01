@@ -63,8 +63,8 @@ userRouter.get("/invoice/:orderId",userMiddleware.verifyUser,userMiddleware.IsUs
 userRouter.post("/cancelorder",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,userOrderDeatilsController.productCancel)
 userRouter.post("/returnorder",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,userOrderDeatilsController.returnOrder)
 //filters
-userRouter.get("/search",userMiddleware.verifyUser,userMiddleware.IsUserBlocked,userFiltersController.searchProducts)
-userRouter.get("/filtercategory",userMiddleware.verifyUser,userFiltersController.filterCategory)
+userRouter.get("/search",userFiltersController.searchProducts)
+userRouter.get("/filtercategory",userFiltersController.filterCategory)
 userRouter.post("/filtercheckbox",userFiltersController.getFiterCheckbox)
 userRouter.get("/filterprice",userFiltersController.filterByPrice)
 //wishlist
