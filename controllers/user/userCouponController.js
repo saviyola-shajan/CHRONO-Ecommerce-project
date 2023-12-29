@@ -4,7 +4,6 @@ const usercollecn = require("../../models/userlogin");
 module.exports.applyCoupon = async (req, res) => {
   try {
     const couponCode = req.query.couponCode;
-    console.log(couponCode);
     const totalAmount = parseFloat(req.query.grandTotal);
     const userId = req.user;
     const userData = await usercollecn.findOne({ email: userId });

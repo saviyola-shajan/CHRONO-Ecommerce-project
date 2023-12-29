@@ -484,7 +484,6 @@
     return grandTotal;
   }
 
-  // Helper function to format currency in Indian Rupees
   function formatCurrency(value) {
     return `₹${value.toFixed(2)}`;
   }
@@ -499,9 +498,6 @@
   const quantityButtons = document.querySelectorAll('.qty-up, .qty-down');
   quantityButtons.forEach(qunty => {
     qunty.addEventListener("click", (event) => {
-      // ... (your existing code for updating quantity)
-
-      // Update the grand total
       const newGrandTotal = calculateGrandTotal();
       grandTotalElement.textContent = formatCurrency(newGrandTotal);
     });
